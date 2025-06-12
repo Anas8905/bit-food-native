@@ -1,19 +1,22 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { mockOrderAPI } from '../../api/mockApi';
 
-const OrderTrackingScreen = ({ route, navigation }) => {
-  const { orderId } = route.params;
+
+const OrderTrackingScreen = () => {
+  const { orderId } = useLocalSearchParams();
+  const router = useRouter();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   
@@ -25,7 +28,7 @@ const OrderTrackingScreen = ({ route, navigation }) => {
         setOrder(order);
       } catch (error) {
         Alert.alert('Error', error.message || 'Failed to load order details');
-        navigation.goBack();
+        router.back();
       } finally {
         setLoading(false);
       }
@@ -37,7 +40,7 @@ const OrderTrackingScreen = ({ route, navigation }) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#E84C3D" />
+        <ActivityIndicator size="large" color="#FA4A0C" />
       </View>
     );
   }
@@ -166,7 +169,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
   },
   activeStep: {
-    backgroundColor: '#E84C3D',
+    backgroundColor: '#FA4A0C',
   },
   stepText: {
     fontSize: 14,
@@ -208,7 +211,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#E84C3D',
+    backgroundColor: '#FA4A0C',
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 10,

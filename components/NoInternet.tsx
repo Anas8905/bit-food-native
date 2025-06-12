@@ -5,7 +5,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 const NoInternet = ({ onRetry }) => {
   return (
     <View style={styles.container}>
-      <Ionicons name="wifi-off" size={60} color="#E84C3D" />
+      <Ionicons name="wifi-off" size={60} color="#FA4A0C" />
       <Text style={styles.title}>No Internet Connection</Text>
       <Text style={styles.message}>
         Your internet connection is currently not available please check or try again.
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   button: {
-    backgroundColor: '#E84C3D',
+    backgroundColor: '#FA4A0C',
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 8,

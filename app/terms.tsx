@@ -1,10 +1,12 @@
 import { Checkbox } from 'expo-checkbox';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
 
-const TermsScreen = ({ navigation }) => {
+const TermsScreen = () => {
+  const router = useRouter();
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   
@@ -13,14 +15,13 @@ const TermsScreen = ({ navigation }) => {
       Alert.alert('Error', 'Please accept all terms to continue');
       return;
     }
-    
-    navigation.replace('Main');
+    router.push('/tabs/home');
   };
   
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <BackButton onPress={() => navigation.goBack()} />
+        <BackButton onPress={() => router.back()} />
       </View>
       
       <View style={styles.content}>
@@ -30,7 +31,7 @@ const TermsScreen = ({ navigation }) => {
           <Checkbox
             value={termsAccepted}
             onValueChange={setTermsAccepted}
-            color={termsAccepted ? '#E84C3D' : undefined}
+            color={termsAccepted ? '#FA4A0C' : undefined}
             style={styles.checkbox}
           />
           <Text style={styles.checkboxLabel}>
@@ -42,7 +43,7 @@ const TermsScreen = ({ navigation }) => {
           <Checkbox
             value={privacyAccepted}
             onValueChange={setPrivacyAccepted}
-            color={privacyAccepted ? '#E84C3D' : undefined}
+            color={privacyAccepted ? '#FA4A0C' : undefined}
             style={styles.checkbox}
           />
           <Text style={styles.checkboxLabel}>
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#E84C3D',
+    backgroundColor: '#FA4A0C',
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',

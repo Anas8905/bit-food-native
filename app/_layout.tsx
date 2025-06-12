@@ -12,7 +12,7 @@ export default function RootLayout() {
       <NetworkProvider>
         <CartProvider>
           <AuthProvider>
-            <Slot /> {/* Expo Router renders the current route here */}
+            <Slot /> 
           </AuthProvider>
         </CartProvider>
       </NetworkProvider>

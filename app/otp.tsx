@@ -1,11 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
 import { useAuth } from '../context/AuthContext';
 
-const OTPScreen = ({ navigation }) => {
+const OTPScreen = () => {
+  const reouter = useRouter()
   const [otp, setOtp] = useState(['', '', '', '']);
   const [timer, setTimer] = useState(60);
   const [loading, setLoading] = useState(false);
@@ -56,7 +58,7 @@ const OTPScreen = ({ navigation }) => {
     try {
       setLoading(true);
       await verifyOTP(otpString);
-      navigation.navigate('Terms');
+      reouter.push('/terms')
     } catch (error) {
       Alert.alert('Error', error.message || 'Failed to verify OTP');
     } finally {
@@ -73,7 +75,7 @@ const OTPScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <BackButton onPress={() => navigation.goBack()} />
+        <BackButton onPress={() => reouter.back()} />
         <TouchableOpacity style={styles.supportButton}>
           <Ionicons name="headset-outline" size={24} color="black" />
         </TouchableOpacity>
@@ -175,7 +177,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   button: {
-    backgroundColor: '#E84C3D',
+    backgroundColor: '#FA4A0C',
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',

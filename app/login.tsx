@@ -1,11 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
 import { useAuth } from '../context/AuthContext';
 
-const LoginScreen = ({ navigation }) => {
+
+const LoginScreen = () => {
+  const router = useRouter()
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -31,7 +34,7 @@ const LoginScreen = ({ navigation }) => {
     try {
       setLoading(true);
       await login(phoneNumber);
-      navigation.navigate('OTP');
+      router.push('/otp')
     } catch (error) {
       Alert.alert('Error', error.message || 'Failed to send OTP');
     } finally {
@@ -42,7 +45,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <BackButton onPress={() => navigation.goBack()} />
+        <BackButton onPress={() => router.back()} />
         <TouchableOpacity style={styles.supportButton}>
           <Ionicons name="headset-outline" size={24} color="black" />
         </TouchableOpacity>
@@ -177,7 +180,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#E84C3D',
+    backgroundColor: '#FA4A0C',
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',

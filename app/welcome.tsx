@@ -1,13 +1,15 @@
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const WelcomeScreen = ({ navigation }) => {
+const WelcomeScreen = () => {
+  const router = useRouter(); 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Image 
-          source={{ uri: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-23%20at%201.11.14%E2%80%AFPM-39BqZfT9vwcP4LLuoNv5d0l61rxIyt.png' }} 
+          source={require('../assets/images/welcome.png')}
           style={styles.image} 
           resizeMode="contain"
         />
@@ -16,9 +18,9 @@ const WelcomeScreen = ({ navigation }) => {
         </View>
         <TouchableOpacity 
           style={styles.button}
-          onPress={() => navigation.navigate('Login')}
+          onPress={() => router.push('/login')}
         >
-          <Text style={styles.buttonText}>Yes!! 🍕</Text>
+          <Text style={styles.buttonText}>Let's Eat!!</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -38,7 +40,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 300,
+    height: 600,
   },
   textContainer: {
     marginVertical: 30,
@@ -50,7 +52,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#E84C3D',
+    backgroundColor: '#FA4A0C',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 8,

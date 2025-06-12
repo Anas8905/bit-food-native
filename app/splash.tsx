@@ -1,9 +1,11 @@
+import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 
-const SplashScreen = ({ navigation }) => {
+const SplashScreen = () => {
   const { user, loading } = useAuth();
+  const router = useRouter()
   
   useEffect(() => {
     const checkAuth = async () => {
@@ -11,16 +13,16 @@ const SplashScreen = ({ navigation }) => {
       if (!loading) {
         setTimeout(() => {
           if (user) {
-            navigation.replace('Main');
+            router.push('/tabs/home');
           } else {
-            navigation.replace('Welcome');
+            router.replace('/welcome')
           }
         }, 2000); // 2 seconds delay for splash screen
       }
     };
     
     checkAuth();
-  }, [loading, user, navigation]);
+  }, [loading, user]);
   
   return (
     <View style={styles.container}>
@@ -34,7 +36,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#E84C3D',
+    backgroundColor: '#FA4A0C',
   },
   logo: {
     fontFamily: 'serif',

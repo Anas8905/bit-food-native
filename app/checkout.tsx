@@ -1,14 +1,15 @@
 import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { mockOrderAPI } from '../api/mockApi';
@@ -16,7 +17,8 @@ import BackButton from '../components/BackButton';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 
-const CheckoutScreen = ({ navigation }) => {
+const CheckoutScreen = () => {
+  const router = useRouter();
   const { user } = useAuth();
   const { cart, getCartTotal, clearCart } = useCart();
   
@@ -56,8 +58,7 @@ const CheckoutScreen = ({ navigation }) => {
       const { order } = await mockOrderAPI.placeOrder(orderData);
       
       clearCart();
-      
-      navigation.replace('OrderTracking', { orderId: order.id });
+      router.replace(`/order/track?orderId=${order.id}` as any);
     } catch (error) {
       Alert.alert('Error', error.message || 'Failed to place order');
     } finally {
@@ -68,7 +69,7 @@ const CheckoutScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <BackButton onPress={() => navigation.goBack()} />
+        <BackButton onPress={() => router.back()} />
         <Text style={styles.headerTitle}>Checkout</Text>
         <View style={{ width: 40 }} />
       </View>
@@ -76,7 +77,7 @@ const CheckoutScreen = ({ navigation }) => {
       <ScrollView style={styles.content}>
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <MaterialIcons name="location-pin" size={20} color="#E84C3D" />
+            <MaterialIcons name="location-pin" size={20} color="#FA4A0C" />
             <Text style={styles.sectionTitle}>Delivery Address</Text>
             <TouchableOpacity style={styles.changeButton}>
               <Text style={styles.changeButtonText}>Change</Text>
@@ -91,11 +92,11 @@ const CheckoutScreen = ({ navigation }) => {
         
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="person" size={20} color="#E84C3D" />
+            <Ionicons name="person" size={20} color="#FA4A0C" />
             <Text style={styles.sectionTitle}>Customer Details</Text>
             <TouchableOpacity 
               style={styles.changeButton}
-              onPress={() => navigation.navigate('EditProfile')}
+              onPress={() => {}}
             >
               <Text style={styles.changeButtonText}>Edit</Text>
             </TouchableOpacity>
@@ -109,7 +110,7 @@ const CheckoutScreen = ({ navigation }) => {
         
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <FontAwesome name="credit-card" size={18} color="#E84C3D" />
+            <FontAwesome name="credit-card" size={18} color="#FA4A0C" />
             <Text style={styles.sectionTitle}>Payment Method</Text>
           </View>
           
@@ -120,7 +121,7 @@ const CheckoutScreen = ({ navigation }) => {
         
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="receipt-outline" size={20} color="#E84C3D" />
+            <Ionicons name="receipt-outline" size={20} color="#FA4A0C" />
             <Text style={styles.sectionTitle}>Order Summary</Text>
           </View>
           
@@ -141,8 +142,8 @@ const CheckoutScreen = ({ navigation }) => {
             </View>
             
             <View style={styles.summaryRow}>
-              <Text style={[styles.summaryLabel, { color: '#E84C3D' }]}>Discount</Text>
-              <Text style={[styles.summaryValue, { color: '#E84C3D' }]}>-{discount}</Text>
+              <Text style={[styles.summaryLabel, { color: '#FA4A0C' }]}>Discount</Text>
+              <Text style={[styles.summaryValue, { color: '#FA4A0C' }]}>-{discount}</Text>
             </View>
             
             <View style={styles.divider} />
@@ -223,7 +224,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
   },
   changeButtonText: {
-    color: '#E84C3D',
+    color: '#FA4A0C',
     fontWeight: 'bold',
   },
   addressContainer: {
@@ -298,7 +299,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#F0F0F0',
   },
   placeOrderButton: {
-    backgroundColor: '#E84C3D',
+    backgroundColor: '#FA4A0C',
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',

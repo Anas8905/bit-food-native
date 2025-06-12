@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
     ActivityIndicator,
@@ -11,12 +12,13 @@ import {
     View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { mockPizzaAPI } from '../api/mockApi';
-import BackButton from '../components/BackButton';
-import { useCart } from '../context/CartContext';
+import { mockPizzaAPI } from '../../api/mockApi';
+import BackButton from '../../components/BackButton';
+import { useCart } from '../../context/CartContext';
 
-const PizzaDetailScreen = ({ route, navigation }) => {
-  const { pizzaId } = route.params;
+const PizzaDetailScreen = () => {
+  const { id } = useLocalSearchParams();
+  const router = useRouter();
   const [pizza, setPizza] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -26,9 +28,10 @@ const PizzaDetailScreen = ({ route, navigation }) => {
   
   useEffect(() => {
     const fetchPizza = async () => {
+      console.log(id, 'pizza id')
       try {
         setLoading(true);
-        const { pizza } = await mockPizzaAPI.getPizzaById(pizzaId);
+        const { pizza } = await mockPizzaAPI.getPizzaById(id);
         setPizza(pizza);
         
         // Set default selected size
@@ -37,14 +40,14 @@ const PizzaDetailScreen = ({ route, navigation }) => {
         }
       } catch (error) {
         Alert.alert('Error', error.message || 'Failed to load pizza details');
-        navigation.goBack();
+        router.back();
       } finally {
         setLoading(false);
       }
     };
     
     fetchPizza();
-  }, [pizzaId]);
+  }, [id]);
   
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -69,7 +72,7 @@ const PizzaDetailScreen = ({ route, navigation }) => {
       },
       {
         text: 'Go to Cart',
-        onPress: () => navigation.navigate('Cart'),
+        onPress: () => router.push('/tabs/cart')
       },
     ]);
   };
@@ -85,7 +88,7 @@ const PizzaDetailScreen = ({ route, navigation }) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#E84C3D" />
+        <ActivityIndicator size="large" color="#FA4A0C" />
       </View>
     );
   }
@@ -93,7 +96,7 @@ const PizzaDetailScreen = ({ route, navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <BackButton onPress={() => navigation.goBack()} />
+        <BackButton onPress={() => router.back()} />
         <TouchableOpacity 
           style={styles.favoriteButton}
           onPress={() => toggleFavorite(pizza)}
@@ -101,7 +104,7 @@ const PizzaDetailScreen = ({ route, navigation }) => {
           <Ionicons 
             name={isFavorite(pizza.id) ? "heart" : "heart-outline"} 
             size={24} 
-            color="#E84C3D" 
+            color="#FA4A0C" 
           />
         </TouchableOpacity>
       </View>
@@ -162,14 +165,14 @@ const PizzaDetailScreen = ({ route, navigation }) => {
             style={styles.quantityButton}
             onPress={decrementQuantity}
           >
-            <Ionicons name="remove" size={20} color="#E84C3D" />
+            <Ionicons name="remove" size={20} color="#FA4A0C" />
           </TouchableOpacity>
           <Text style={styles.quantityText}>{quantity}</Text>
           <TouchableOpacity 
             style={styles.quantityButton}
             onPress={incrementQuantity}
           >
-            <Ionicons name="add" size={20} color="#E84C3D" />
+            <Ionicons name="add" size={20} color="#FA4A0C" />
           </TouchableOpacity>
         </View>
         
@@ -231,7 +234,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   category: {
-    color: '#E84C3D',
+    color: '#FA4A0C',
     marginBottom: 5,
   },
   title: {
@@ -263,7 +266,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   variationSubtitle: {
-    color: '#E84C3D',
+    color: '#FA4A0C',
     marginBottom: 15,
   },
   variationOption: {
@@ -292,13 +295,13 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   radioOuterSelected: {
-    borderColor: '#E84C3D',
+    borderColor: '#FA4A0C',
   },
   radioInner: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#E84C3D',
+    backgroundColor: '#FA4A0C',
   },
   variationText: {
     fontSize: 16,
@@ -334,7 +337,7 @@ const styles = StyleSheet.create({
   },
   addToCartButton: {
     flex: 1,
-    backgroundColor: '#E84C3D',
+    backgroundColor: '#FA4A0C',
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',

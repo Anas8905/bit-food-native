@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import {
     Alert,
@@ -10,10 +11,11 @@ import {
     View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import EmptyState from '../components/EmptyState';
-import { useCart } from '../context/CartContext';
+import EmptyState from '../../../components/EmptyState';
+import { useCart } from '../../../context/CartContext';
 
-const CartScreen = ({ navigation }) => {
+const CartScreen = () => {
+  const router = useRouter();
   const { cart, removeFromCart, updateQuantity, getCartTotal } = useCart();
   
   const handleCheckout = () => {
@@ -21,8 +23,7 @@ const CartScreen = ({ navigation }) => {
       Alert.alert('Error', 'Your cart is empty');
       return;
     }
-    
-    navigation.navigate('Checkout');
+    router.push(`/checkout`)
   };
   
   const renderItem = ({ item }) => (
@@ -45,7 +46,7 @@ const CartScreen = ({ navigation }) => {
               }
             }}
           >
-            <Ionicons name="remove" size={16} color="#E84C3D" />
+            <Ionicons name="remove" size={16} color="#FA4A0C" />
           </TouchableOpacity>
           
           <Text style={styles.quantityText}>{item.quantity}</Text>
@@ -54,7 +55,7 @@ const CartScreen = ({ navigation }) => {
             style={styles.quantityButton}
             onPress={() => updateQuantity(item.id, item.size, item.quantity + 1)}
           >
-            <Ionicons name="add" size={16} color="#E84C3D" />
+            <Ionicons name="add" size={16} color="#FA4A0C" />
           </TouchableOpacity>
         </View>
         
@@ -62,7 +63,7 @@ const CartScreen = ({ navigation }) => {
           style={styles.removeButton}
           onPress={() => removeFromCart(item.id, item.size)}
         >
-          <Ionicons name="trash-outline" size={20} color="#E84C3D" />
+          <Ionicons name="trash-outline" size={20} color="#FA4A0C" />
         </TouchableOpacity>
       </View>
     </View>
@@ -75,7 +76,7 @@ const CartScreen = ({ navigation }) => {
         title="No Items Yet"
         message="Still not hungry? :("
         buttonText="Order Deliciousness"
-        onButtonPress={() => navigation.navigate('Home')}
+        onButtonPress={() => router.push('/tabs/home')}
       />
     );
   }
@@ -201,7 +202,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   checkoutButton: {
-    backgroundColor: '#E84C3D',
+    backgroundColor: '#FA4A0C',
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
