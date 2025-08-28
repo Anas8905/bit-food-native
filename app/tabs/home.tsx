@@ -10,11 +10,11 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { mockPizzaAPI } from '../../../api/mockApi';
-import NoInternet from '../../../components/NoInternet';
-import PizzaCard from '../../../components/PizzaCard';
-import Navbar from '../../../components/ui/Navbar';
-import { useNetwork } from '../../../context/NetworkContext';
+import { mockPizzaAPI } from '../../api/mockApi';
+import NoInternet from '../../components/NoInternet';
+import PizzaCard from '../../components/PizzaCard';
+import Navbar from '../../components/ui/Navbar';
+import { useNetwork } from '../../context/NetworkContext';
 
 const HomeScreen: React.FC = () => {
   const router = useRouter();
@@ -70,11 +70,7 @@ const HomeScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Navbar
-        title="PizzaHub"
-        onCartPress={() => router.push('/cart')}
-        onProfilePress={() => router.push('/profile')}
-      />
+      <Navbar location="Work" cartCount={3} />
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />

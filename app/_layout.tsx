@@ -2,8 +2,10 @@ import { Slot } from 'expo-router';
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import CustomDrawer from '../components/ui/CustomDrawer';
 import { AuthProvider } from '../context/AuthContext';
 import { CartProvider } from '../context/CartContext';
+import { DrawerProvider } from '../context/DrawerContext';
 import { NetworkProvider } from '../context/NetworkContext';
 
 export default function RootLayout() {
@@ -12,7 +14,10 @@ export default function RootLayout() {
       <NetworkProvider>
         <CartProvider>
           <AuthProvider>
-            <Slot /> 
+            <DrawerProvider>
+              <Slot />
+              <CustomDrawer />
+            </DrawerProvider>
           </AuthProvider>
         </CartProvider>
       </NetworkProvider>

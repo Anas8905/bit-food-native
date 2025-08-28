@@ -3,7 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useCart } from '../../../context/CartContext';
+import { useCart } from '../../context/CartContext';
 
 export default function TabLayout() {
   const { cart } = useCart();

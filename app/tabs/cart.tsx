@@ -2,17 +2,17 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
-    Alert,
-    FlatList,
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  Alert,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import EmptyState from '../../../components/EmptyState';
-import { useCart } from '../../../context/CartContext';
+import EmptyState from '../../components/EmptyState';
+import { useCart } from '../../context/CartContext';
 
 const CartScreen = () => {
   const router = useRouter();
