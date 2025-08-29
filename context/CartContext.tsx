@@ -15,8 +15,10 @@ interface CartContextType {
   favorites: CartItem[];
   addToCart: (item: CartItem, quantity?: number) => void;
   removeFromCart: (itemId: string, size?: string) => void;
+  removeFromFavorites: (itemId: string, size?: string) => void;
   updateQuantity: (itemId: string, size: string | undefined, quantity: number) => void;
   clearCart: () => void;
+  clearFavorites: () => void;
   toggleFavorite: (item: CartItem) => void;
   getCartTotal: () => number;
   isFavorite: (id: string) => boolean;
@@ -96,6 +98,14 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     saveCart(newCart);
   };
 
+  const removeFromFavorites = (itemId: string, size?: string) => {
+    const newFav = favorites.filter(
+      item => !(item.id === itemId && item.size === size)
+    );
+    setFavorites(newFav);
+    saveFavorites(newFav);
+  };
+
   const updateQuantity = (itemId: string, size: string | undefined, quantity: number) => {
     const newCart = cart.map(item => {
       if (item.id === itemId && item.size === size) {
@@ -111,6 +121,11 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   const clearCart = () => {
     setCart([]);
     saveCart([]);
+  };
+
+  const clearFavorites = () => {
+    setFavorites([]);
+    saveFavorites([]);
   };
 
   const toggleFavorite = (item: CartItem) => {
@@ -144,8 +159,10 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         favorites,
         addToCart,
         removeFromCart,
+        removeFromFavorites,
         updateQuantity,
         clearCart,
+        clearFavorites,
         toggleFavorite,
         getCartTotal,
         isFavorite,

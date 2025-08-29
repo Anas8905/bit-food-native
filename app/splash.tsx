@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 const SplashScreen = () => {
   const { user, loading } = useAuth();
   const router = useRouter()
-  
+
   useEffect(() => {
     const checkAuth = async () => {
       // Wait for auth to load and navigate accordingly
@@ -20,10 +20,10 @@ const SplashScreen = () => {
         }, 2000); // 2 seconds delay for splash screen
       }
     };
-    
+
     checkAuth();
-  }, [loading, user]);
-  
+  }, [loading, user, router]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.logo}>Ratatouille</Text>

@@ -8,7 +8,7 @@ export default function Index() {
     requestAnimationFrame(() => {
       router.replace('/splash');
     });
-  }, []);
+  }, [router]);
 
   return null;
 }

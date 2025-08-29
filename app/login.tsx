@@ -20,22 +20,22 @@ const LoginScreen = () => {
       Alert.alert('Error', 'Please enter your full name');
       return;
     }
-    
+
     if (!email.trim()) {
       Alert.alert('Error', 'Please enter your email');
       return;
     }
-    
+
     if (!phoneNumber.trim()) {
       Alert.alert('Error', 'Please enter your phone number');
       return;
     }
-    
+
     try {
       setLoading(true);
       await login(phoneNumber);
       router.push('/otp')
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to send OTP');
     } finally {
       setLoading(false);
@@ -45,17 +45,17 @@ const LoginScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <BackButton onPress={() => router.back()} />
+        <BackButton onPress={() => router.replace('/welcome')} />
         <TouchableOpacity style={styles.supportButton}>
           <Ionicons name="headset-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
-      
+
       <View style={styles.content}>
         <Text style={styles.title}>Hello!</Text>
-        
+
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>What's your Full name?</Text>
+          <Text style={styles.label}>What&apos;s your Full name?</Text>
           <TextInput
             style={styles.input}
             placeholder="Type here"
@@ -63,9 +63,9 @@ const LoginScreen = () => {
             onChangeText={setFullName}
           />
         </View>
-        
+
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>What's your Email?</Text>
+          <Text style={styles.label}>What&apos;s your Email?</Text>
           <TextInput
             style={styles.input}
             placeholder="Type here"
@@ -75,7 +75,7 @@ const LoginScreen = () => {
             autoCapitalize="none"
           />
         </View>
-        
+
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Enter Your Mobile Number</Text>
           <View style={styles.phoneInputContainer}>
@@ -95,8 +95,8 @@ const LoginScreen = () => {
             />
           </View>
         </View>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={styles.button}
           onPress={handleSendCode}
           disabled={loading}

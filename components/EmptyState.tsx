@@ -1,5 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import { Fontisto, Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const EmptyState = ({ icon, title, message, buttonText, onButtonPress }) => {
@@ -8,7 +7,7 @@ const EmptyState = ({ icon, title, message, buttonText, onButtonPress }) => {
       case 'cart':
         return <Ionicons name="cart-outline" size={60} color="#FA4A0C" />;
       case 'heart':
-        return <Ionicons name="heart-outline" size={60} color="#FA4A0C" />;
+        return <Fontisto name="heart-alt" size={60} color="#FA4A0C"/>
       case 'search':
         return <Ionicons name="search-outline" size={60} color="#FA4A0C" />;
       case 'wifi-off':
@@ -19,7 +18,7 @@ const EmptyState = ({ icon, title, message, buttonText, onButtonPress }) => {
         return <Ionicons name="alert-circle-outline" size={60} color="#FA4A0C" />;
     }
   };
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
@@ -28,7 +27,7 @@ const EmptyState = ({ icon, title, message, buttonText, onButtonPress }) => {
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.message}>{message}</Text>
       {buttonText && (
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.button}
           onPress={onButtonPress}
         >

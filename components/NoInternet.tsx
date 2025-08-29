@@ -1,16 +1,15 @@
-import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import { Feather } from '@expo/vector-icons';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const NoInternet = ({ onRetry }) => {
   return (
     <View style={styles.container}>
-      <Ionicons name="wifi-off" size={60} color="#FA4A0C" />
+      <Feather name="wifi-off" size={60} color="#FA4A0C" />
       <Text style={styles.title}>No Internet Connection</Text>
       <Text style={styles.message}>
         Your internet connection is currently not available please check or try again.
       </Text>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.button}
         onPress={onRetry}
       >

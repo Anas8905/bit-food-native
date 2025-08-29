@@ -10,8 +10,8 @@
 		027AC3DE2F2923A537BEE942 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8305584220C2CE1CCEE2B474 /* ExpoModulesProvider.swift */; };
 		1309645477B6963494ED2EE7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 26B6C585FBC68B2F65F6C3A7 /* PrivacyInfo.xcprivacy */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		2A6527710107DEFAD0F9D76C /* libPods-bitfoodnative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A95C3778CA029F52298C4A7 /* libPods-bitfoodnative.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
+		95534872BBAF8F5BDD6FDCEC /* libPods-bitfoodnative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BBC233B4CC4F885F7250A06B /* libPods-bitfoodnative.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
@@ -20,14 +20,14 @@
 		13B07F961A680F5B00A75B9A /* bitfoodnative.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bitfoodnative.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = bitfoodnative/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = bitfoodnative/Info.plist; sourceTree = "<group>"; };
-		1A95C3778CA029F52298C4A7 /* libPods-bitfoodnative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bitfoodnative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		26B6C585FBC68B2F65F6C3A7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = bitfoodnative/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		47CC8816D2223983220D52DD /* Pods-bitfoodnative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bitfoodnative.debug.xcconfig"; path = "Target Support Files/Pods-bitfoodnative/Pods-bitfoodnative.debug.xcconfig"; sourceTree = "<group>"; };
 		8305584220C2CE1CCEE2B474 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-bitfoodnative/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		87039C377EBDCC7FA3736B4B /* Pods-bitfoodnative.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bitfoodnative.release.xcconfig"; path = "Target Support Files/Pods-bitfoodnative/Pods-bitfoodnative.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = bitfoodnative/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		C84B90E2A14997AD54BCB61E /* Pods-bitfoodnative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bitfoodnative.debug.xcconfig"; path = "Target Support Files/Pods-bitfoodnative/Pods-bitfoodnative.debug.xcconfig"; sourceTree = "<group>"; };
+		BBC233B4CC4F885F7250A06B /* libPods-bitfoodnative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bitfoodnative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		EF8C6C87CCEE4E9C1C6FAAB3 /* Pods-bitfoodnative.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bitfoodnative.release.xcconfig"; path = "Target Support Files/Pods-bitfoodnative/Pods-bitfoodnative.release.xcconfig"; sourceTree = "<group>"; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = bitfoodnative/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* bitfoodnative-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "bitfoodnative-Bridging-Header.h"; path = "bitfoodnative/bitfoodnative-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A6527710107DEFAD0F9D76C /* libPods-bitfoodnative.a in Frameworks */,
+				95534872BBAF8F5BDD6FDCEC /* libPods-bitfoodnative.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,16 +70,16 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				1A95C3778CA029F52298C4A7 /* libPods-bitfoodnative.a */,
+				BBC233B4CC4F885F7250A06B /* libPods-bitfoodnative.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		641A4EAB057E3BF768F30E06 /* Pods */ = {
+		7CEA5C194627609C7CCB8C92 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				C84B90E2A14997AD54BCB61E /* Pods-bitfoodnative.debug.xcconfig */,
-				87039C377EBDCC7FA3736B4B /* Pods-bitfoodnative.release.xcconfig */,
+				47CC8816D2223983220D52DD /* Pods-bitfoodnative.debug.xcconfig */,
+				EF8C6C87CCEE4E9C1C6FAAB3 /* Pods-bitfoodnative.release.xcconfig */,
 			);
 			name = Pods;
 			path = Pods;
@@ -99,8 +99,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				641A4EAB057E3BF768F30E06 /* Pods */,
 				235F43511AD4A9FD464D1F99 /* ExpoModulesProviders */,
+				7CEA5C194627609C7CCB8C92 /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -139,14 +139,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "bitfoodnative" */;
 			buildPhases = (
-				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
+				0B2829DB9B9CB25231F41053 /* [CP] Check Pods Manifest.lock */,
 				185A20EA7C3D4D51A07E4214 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				8192F235A60F5BA8CC5EF836 /* [CP] Embed Pods Frameworks */,
+				CC1B81651630D50268DB43A3 /* [CP] Embed Pods Frameworks */,
+				8CCD5D4E228A51ADE38875B4 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -218,7 +218,7 @@
 			shellPath = /bin/sh;
 			shellScript = "if [[ -f \"$PODS_ROOT/../.xcode.env\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env\"\nfi\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\n# The project root by default is one level up from the ios directory\nexport PROJECT_ROOT=\"$PROJECT_DIR\"/..\n\nif [[ \"$CONFIGURATION\" = *Debug* ]]; then\n  export SKIP_BUNDLING=1\nfi\nif [[ -z \"$ENTRY_FILE\" ]]; then\n  # Set the entry JS file using the bundler's entry resolution.\n  export ENTRY_FILE=\"$(\"$NODE_BINARY\" -e \"require('expo/scripts/resolveAppEntry')\" \"$PROJECT_ROOT\" ios absolute | tail -n 1)\"\nfi\n\nif [[ -z \"$CLI_PATH\" ]]; then\n  # Use Expo CLI\n  export CLI_PATH=\"$(\"$NODE_BINARY\" --print \"require.resolve('@expo/cli', { paths: [require.resolve('expo/package.json')] })\")\"\nfi\nif [[ -z \"$BUNDLE_COMMAND\" ]]; then\n  # Default Expo CLI command for bundling\n  export BUNDLE_COMMAND=\"export:embed\"\nfi\n\n# Source .xcode.env.updates if it exists to allow\n# SKIP_BUNDLING to be unset if needed\nif [[ -f \"$PODS_ROOT/../.xcode.env.updates\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.updates\"\nfi\n# Source local changes to allow overrides\n# if needed\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\n`\"$NODE_BINARY\" --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/react-native-xcode.sh'\"`\n\n";
 		};
-		08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */ = {
+		0B2829DB9B9CB25231F41053 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -259,7 +259,7 @@
 			shellPath = /bin/sh;
 			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-bitfoodnative/expo-configure-project.sh\"\n";
 		};
-		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
+		8CCD5D4E228A51ADE38875B4 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -297,7 +297,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-bitfoodnative/Pods-bitfoodnative-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8192F235A60F5BA8CC5EF836 /* [CP] Embed Pods Frameworks */ = {
+		CC1B81651630D50268DB43A3 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -332,7 +332,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C84B90E2A14997AD54BCB61E /* Pods-bitfoodnative.debug.xcconfig */;
+			baseConfigurationReference = 47CC8816D2223983220D52DD /* Pods-bitfoodnative.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -368,7 +368,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 87039C377EBDCC7FA3736B4B /* Pods-bitfoodnative.release.xcconfig */;
+			baseConfigurationReference = EF8C6C87CCEE4E9C1C6FAAB3 /* Pods-bitfoodnative.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

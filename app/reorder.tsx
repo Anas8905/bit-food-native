@@ -1,3 +1,4 @@
+import BackButton from '@/components/BackButton';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
@@ -64,10 +65,8 @@ const OrderHistoryScreen: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/tabs' as any)}>
-          <Ionicons name="chevron-back" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.title}>EDIT PROFILE</Text>
+        <BackButton onPress={() => router.replace('/tabs/home')} />
+        <Text style={styles.title}>ORDER HISTORY</Text>
       </View>
       <FlatList
         data={orders}
@@ -88,6 +87,7 @@ const styles = StyleSheet.create({
       padding: 16,
       alignItems: 'center',
       flexDirection: 'row',
+      gap: 10,
       marginTop: 20,
     },
     headerText: {
@@ -172,6 +172,6 @@ const styles = StyleSheet.create({
       fontSize: 13,
     },
   });
-  
+
 
 export default OrderHistoryScreen;

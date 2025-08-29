@@ -1,3 +1,4 @@
+import BackButton from '@/components/BackButton';
 import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
@@ -19,7 +20,7 @@ const EditProfileScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState('+92 321 2033774');
   const [email, setEmail] = useState('mikepsully@gmail.com');
 
-  const [addresses, setAddresses] = useState([
+  const [addresses, setAddresses] = useState<any>([
     {
       type: 'Home',
       icon: 'home',
@@ -47,9 +48,7 @@ const EditProfileScreen = () => {
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/tabs' as any)}>
-          <Ionicons name="chevron-back" size={24} color="black" />
-        </TouchableOpacity>
+        <BackButton onPress={() => router.replace('/tabs/home')} />
         <Text style={styles.title}>EDIT PROFILE</Text>
       </View>
 
@@ -131,6 +130,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 10,
     marginTop: 20,
   },
   backButton: {

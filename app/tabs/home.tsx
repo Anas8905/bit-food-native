@@ -15,14 +15,17 @@ import NoInternet from '../../components/NoInternet';
 import PizzaCard from '../../components/PizzaCard';
 import Navbar from '../../components/ui/Navbar';
 import { useNetwork } from '../../context/NetworkContext';
+import { useCart } from '@/context/CartContext';
 
 const HomeScreen: React.FC = () => {
   const router = useRouter();
+  const { cart } = useCart();
   const [categories, setCategories] = useState<string[]>([]);
   const [pizzas, setPizzas] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { isConnected } = useNetwork();
+  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   const fetchData = async () => {
     try {
@@ -31,7 +34,7 @@ const HomeScreen: React.FC = () => {
 
       const pizzasByCategory: Record<string, any[]> = {};
       for (const category of categories) {
-        const { pizzas } = await mockPizzaAPI.getPizzas(category);
+        const { pizzas } = await mockPizzaAPI.getPizzas(category as any);
         pizzasByCategory[category] = pizzas;
       }
 
@@ -70,7 +73,7 @@ const HomeScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Navbar location="Work" cartCount={3} />
+      <Navbar location="Work" cartCount={cartItemCount} />
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />

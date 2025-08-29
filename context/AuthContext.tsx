@@ -10,14 +10,20 @@ interface AuthContextType {
   updateProfile: (data: any) => Promise<any>;
   logout: () => Promise<void>;
   tempPhone: string;
-}  
+}
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<any>(null);
@@ -57,12 +63,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       // Mock API call to verify OTP
       const response = await mockAuthAPI.verifyOTP(tempPhone, otp);
-      
+
       if (response.success) {
         setUser(response.user);
         await AsyncStorage.setItem('user', JSON.stringify(response.user));
       }
-      
+
       return response;
     } catch (error) {
       throw error;
@@ -73,12 +79,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       // Mock API call to update profile
       const response = await mockAuthAPI.updateProfile(userData);
-      
+
       if (response.success) {
         setUser({...user, ...userData});
         await AsyncStorage.setItem('user', JSON.stringify({...user, ...userData}));
       }
-      
+
       return response;
     } catch (error) {
       throw error;
@@ -95,13 +101,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider 
-      value={{ 
-        user, 
-        loading, 
-        login, 
-        verifyOTP, 
-        updateProfile, 
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        login,
+        verifyOTP,
+        updateProfile,
         logout,
         tempPhone
       }}

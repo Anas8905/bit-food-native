@@ -17,7 +17,7 @@ import { useCart } from '../../context/CartContext';
 const CartScreen = () => {
   const router = useRouter();
   const { cart, removeFromCart, updateQuantity, getCartTotal } = useCart();
-  
+
   const handleCheckout = () => {
     if (cart.length === 0) {
       Alert.alert('Error', 'Your cart is empty');
@@ -25,20 +25,20 @@ const CartScreen = () => {
     }
     router.push(`/checkout`)
   };
-  
+
   const renderItem = ({ item }) => (
     <View style={styles.cartItem}>
       <Image source={{ uri: item.image }} style={styles.itemImage} />
-      
+
       <View style={styles.itemDetails}>
         <Text style={styles.itemName}>{item.name}</Text>
         <Text style={styles.itemSize}>{item.size}</Text>
         <Text style={styles.itemPrice}>Rs. {item.price}</Text>
       </View>
-      
+
       <View style={styles.itemActions}>
         <View style={styles.quantityContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.quantityButton}
             onPress={() => {
               if (item.quantity > 1) {
@@ -48,18 +48,18 @@ const CartScreen = () => {
           >
             <Ionicons name="remove" size={16} color="#FA4A0C" />
           </TouchableOpacity>
-          
+
           <Text style={styles.quantityText}>{item.quantity}</Text>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.quantityButton}
             onPress={() => updateQuantity(item.id, item.size, item.quantity + 1)}
           >
             <Ionicons name="add" size={16} color="#FA4A0C" />
           </TouchableOpacity>
         </View>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={styles.removeButton}
           onPress={() => removeFromCart(item.id, item.size)}
         >
@@ -68,7 +68,7 @@ const CartScreen = () => {
       </View>
     </View>
   );
-  
+
   if (cart.length === 0) {
     return (
       <EmptyState
@@ -80,27 +80,27 @@ const CartScreen = () => {
       />
     );
   }
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Cart</Text>
+        <Text style={styles.headerTitle}>CART</Text>
       </View>
-      
+
       <FlatList
         data={cart}
         keyExtractor={(item, index) => `${item.id}-${item.size}-${index}`}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
       />
-      
+
       <View style={styles.footer}>
         <View style={styles.totalContainer}>
           <Text style={styles.totalLabel}>Total</Text>
           <Text style={styles.totalAmount}>Rs. {getCartTotal()}</Text>
         </View>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={styles.checkoutButton}
           onPress={handleCheckout}
         >

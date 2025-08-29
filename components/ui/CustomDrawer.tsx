@@ -1,7 +1,7 @@
 // components/CustomDrawer.tsx
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -12,22 +12,38 @@ import {
   View,
 } from 'react-native';
 import { useDrawer } from '../../context/DrawerContext';
+import { useAuth } from '@/context/AuthContext';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function CustomDrawer() {
   const { isOpen, closeDrawer } = useDrawer();
+  const { logout } = useAuth();
   const translateX = useRef(new Animated.Value(-SCREEN_WIDTH)).current;
+  const [visible, setVisible] = useState(isOpen);
 
   useEffect(() => {
+    if (isOpen) {
+      setVisible(true);
+    }
+
     Animated.timing(translateX, {
       toValue: isOpen ? 0 : -SCREEN_WIDTH,
       duration: 300,
       useNativeDriver: true,
-    }).start();
-  }, [isOpen]);
+    }).start(() => {
+      if (!isOpen) {
+        setVisible(false);
+      }
+    });
+  }, [isOpen, translateX]);
 
-  if (!isOpen) return null;
+  const handleLogout = async () => {
+    await logout();
+    router.push('/login');
+  }
+
+  if (!visible) return null;
 
   return (
     <View style={StyleSheet.absoluteFill}>
@@ -42,22 +58,24 @@ export default function CustomDrawer() {
           <TouchableOpacity onPress={closeDrawer}>
             <Text style={styles.closeIcon}>✕</Text>
           </TouchableOpacity>
-          <Text style={styles.userName}>Taimoor Khan</Text>
-          <Text style={styles.phone}>+92 3212033774</Text>
+          <View style={styles.drawerTitle}>
+            <Text style={styles.userName}>Taimoor Khan</Text>
+            <Text style={styles.phone}>+92 3212033774</Text>
+          </View>
         </View>
 
         <View style={styles.menu}>
-          <DrawerItem label="Profile" icon="user" 
+          <DrawerItem label="Profile" icon="user"
             onPress={() => {
               router.push('/profile')
               closeDrawer()
-            }} 
+            }}
           />
-          <DrawerItem label="Order History" icon="clock" 
+          <DrawerItem label="Order History" icon="clock"
             onPress={() => {
               router.push('/reorder')
               closeDrawer()
-            }} 
+            }}
           />
           <DrawerItem label="Notifications" icon="bell" />
           <DrawerItem label="Offers & Promos" icon="tag" />
@@ -66,7 +84,7 @@ export default function CustomDrawer() {
         </View>
 
         <View style={styles.logoutContainer}>
-          <TouchableOpacity style={styles.logoutBtn}>
+          <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
             <Feather name="log-out" size={20} />
             <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>
@@ -110,9 +128,12 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   closeIcon: {
-    fontSize: 22,
+    fontSize: 20,
     alignSelf: 'flex-start',
     marginBottom: 10,
+  },
+  drawerTitle: {
+    marginTop: 16,
   },
   userName: {
     fontSize: 18,
@@ -137,6 +158,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#ddd',
     paddingTop: 15,
+    marginBottom: 40,
   },
   logoutBtn: {
     flexDirection: 'row',

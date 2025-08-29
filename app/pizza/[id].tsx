@@ -19,13 +19,13 @@ import { useCart } from '../../context/CartContext';
 const PizzaDetailScreen = () => {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const [pizza, setPizza] = useState(null);
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [pizza, setPizza] = useState<any>(null);
+  const [selectedSize, setSelectedSize] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
-  
+
   const { addToCart, isFavorite, toggleFavorite } = useCart();
-  
+
   useEffect(() => {
     const fetchPizza = async () => {
       console.log(id, 'pizza id')
@@ -33,28 +33,28 @@ const PizzaDetailScreen = () => {
         setLoading(true);
         const { pizza } = await mockPizzaAPI.getPizzaById(id);
         setPizza(pizza);
-        
+
         // Set default selected size
         if (pizza.variations && pizza.variations.length > 0) {
           setSelectedSize(pizza.variations[1]); // Default to medium size
         }
-      } catch (error) {
+      } catch (error: any) {
         Alert.alert('Error', error.message || 'Failed to load pizza details');
         router.back();
       } finally {
         setLoading(false);
       }
     };
-    
+
     fetchPizza();
-  }, [id]);
-  
+  }, [id, router]);
+
   const handleAddToCart = () => {
     if (!selectedSize) {
       Alert.alert('Error', 'Please select a size');
       return;
     }
-    
+
     const cartItem = {
       id: pizza.id,
       name: pizza.name,
@@ -63,7 +63,7 @@ const PizzaDetailScreen = () => {
       price: selectedSize.price,
       quantity,
     };
-    
+
     addToCart(cartItem, quantity);
     Alert.alert('Success', 'Added to cart!', [
       {
@@ -76,15 +76,15 @@ const PizzaDetailScreen = () => {
       },
     ]);
   };
-  
+
   const incrementQuantity = () => setQuantity(quantity + 1);
-  
+
   const decrementQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
   };
-  
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -92,26 +92,26 @@ const PizzaDetailScreen = () => {
       </View>
     );
   }
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <BackButton onPress={() => router.back()} />
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.favoriteButton}
           onPress={() => toggleFavorite(pizza)}
         >
-          <Ionicons 
-            name={isFavorite(pizza.id) ? "heart" : "heart-outline"} 
-            size={24} 
-            color="#FA4A0C" 
+          <Ionicons
+            name={isFavorite(pizza.id) ? "heart" : "heart-outline"}
+            size={24}
+            color="#FA4A0C"
           />
         </TouchableOpacity>
       </View>
-      
+
       <ScrollView>
         <Image source={{ uri: pizza.image }} style={styles.image} />
-        
+
         <View style={styles.infoContainer}>
           <View style={styles.titleRow}>
             <View>
@@ -123,13 +123,13 @@ const PizzaDetailScreen = () => {
               <Text style={styles.rating}>{pizza.rating} ({pizza.reviewCount})</Text>
             </View>
           </View>
-          
+
           <Text style={styles.description}>{pizza.description}</Text>
-          
+
           <View style={styles.variationContainer}>
             <Text style={styles.variationTitle}>Variation</Text>
             <Text style={styles.variationSubtitle}>Please select one</Text>
-            
+
             {pizza.variations && pizza.variations.map((variation, index) => (
               <TouchableOpacity
                 key={index}
@@ -140,7 +140,7 @@ const PizzaDetailScreen = () => {
                 onPress={() => setSelectedSize(variation)}
               >
                 <View style={styles.radioContainer}>
-                  <View 
+                  <View
                     style={[
                       styles.radioOuter,
                       selectedSize && selectedSize.size === variation.size && styles.radioOuterSelected,
@@ -158,25 +158,25 @@ const PizzaDetailScreen = () => {
           </View>
         </View>
       </ScrollView>
-      
+
       <View style={styles.footer}>
         <View style={styles.quantityContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.quantityButton}
             onPress={decrementQuantity}
           >
             <Ionicons name="remove" size={20} color="#FA4A0C" />
           </TouchableOpacity>
           <Text style={styles.quantityText}>{quantity}</Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.quantityButton}
             onPress={incrementQuantity}
           >
             <Ionicons name="add" size={20} color="#FA4A0C" />
           </TouchableOpacity>
         </View>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={styles.addToCartButton}
           onPress={handleAddToCart}
         >

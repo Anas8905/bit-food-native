@@ -4,23 +4,23 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const WelcomeScreen = () => {
-  const router = useRouter(); 
+  const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Image 
+        <Image
           source={require('../assets/images/welcome.png')}
-          style={styles.image} 
+          style={styles.image}
           resizeMode="contain"
         />
         <View style={styles.textContainer}>
           <Text style={styles.title}>Hey there!!, feeling hungry for some pizza?</Text>
         </View>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.button}
           onPress={() => router.push('/login')}
         >
-          <Text style={styles.buttonText}>Let's Eat!!</Text>
+          <Text style={styles.buttonText}>Let&apos;s Eat!!</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

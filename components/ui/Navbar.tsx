@@ -1,6 +1,6 @@
 import { useDrawer } from '@/context/DrawerContext';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import {
   Platform,
@@ -9,21 +9,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-type RootDrawerParamList = {
-  Home: undefined;
-  Cart: undefined;
-  Profile: undefined;
-};
-
 
 type NavbarProps = {
   location?: string;
   cartCount?: number;
 };
 
-const Navbar: React.FC<NavbarProps> = ({ location = 'Home', cartCount = 2 }) => {
-  const { openDrawer } = useDrawer(); // ✅ fix: destructure the hook
-  const navigation = useNavigation(); // for cart navigation
+const Navbar: React.FC<NavbarProps> = ({ location = 'Home', cartCount = 0 }) => {
+  const { openDrawer } = useDrawer();
+  const router = useRouter();
 
   return (
     <View style={styles.navbar}>
@@ -45,10 +39,10 @@ const Navbar: React.FC<NavbarProps> = ({ location = 'Home', cartCount = 2 }) => 
 
       {/* Cart Button */}
       <TouchableOpacity
-        style={[styles.circleButton, styles.cartButton]}
-        onPress={() => navigation.navigate('Cart')}
+        style={[styles.circleButton]}
+        onPress={() => router.push('/tabs/cart')}
       >
-        <Ionicons name="cart-outline" size={20} color="white" />
+        <Ionicons name="cart-outline" size={20} color="black" />
         {cartCount > 0 && (
           <View style={styles.badge}>
             <Text style={styles.badgeText}>{cartCount}</Text>
@@ -62,10 +56,9 @@ const Navbar: React.FC<NavbarProps> = ({ location = 'Home', cartCount = 2 }) => 
 const styles = StyleSheet.create({
   navbar: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    height: Platform.OS === 'ios' ? 90 : 70,
-    paddingTop: Platform.OS === 'ios' ? 40 : 20,
+    height: Platform.OS === 'ios' ? 60 : 70,
+    paddingTop: Platform.OS === 'ios' ? 10 : 20,
     paddingHorizontal: 16,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
@@ -78,9 +71,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f2f5',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  cartButton: {
-    backgroundColor: '#000',
     position: 'relative',
   },
   badge: {

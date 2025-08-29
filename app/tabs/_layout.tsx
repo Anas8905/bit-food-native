@@ -1,18 +1,19 @@
 // app/(tabs)/_layout.tsx
-import { Ionicons } from '@expo/vector-icons';
+import { Feather, Fontisto, Ionicons, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useCart } from '../../context/CartContext';
 
 export default function TabLayout() {
-  const { cart } = useCart();
-  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
+  const { cart, favorites } = useCart();
+  const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
+  const favItemsCount = favorites.length;
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarShowLabel: false,
         tabBarActiveTintColor: '#FA4A0C',
         tabBarInactiveTintColor: '#8E8E93',
         tabBarStyle: {
@@ -23,11 +24,45 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
+        name="map"
+        options={{
+          title: 'Map',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="go-kart-track" size={22} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="search"
+        options={{
+          title: 'Search',
+          tabBarIcon: ({ color }) => (
+            <Feather name="search" size={20} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="home"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+          tabBarIcon: ({ color }) => (
+            <SimpleLineIcons name="home" size={19} color={color}  />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="favorites"
+        options={{
+          title: 'Favorites',
+          tabBarIcon: ({ color }) => (
+          <View>
+            <Fontisto name="heart-alt" size={18} color={color} />
+            {favItemsCount > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{favItemsCount}</Text>
+              </View>
+            )}
+          </View>
           ),
         }}
       />
@@ -35,12 +70,12 @@ export default function TabLayout() {
         name="cart"
         options={{
           title: 'Cart',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color }) => (
             <View>
-              <Ionicons name="cart-outline" size={size} color={color} />
-              {cartItemCount > 0 && (
+              <Ionicons name="cart-outline" size={24} color={color} />
+              {cartItemsCount > 0 && (
                 <View style={styles.badge}>
-                  <Text style={styles.badgeText}>{cartItemCount}</Text>
+                  <Text style={styles.badgeText}>{cartItemsCount}</Text>
                 </View>
               )}
             </View>
@@ -55,7 +90,7 @@ const styles = StyleSheet.create({
   badge: {
     position: 'absolute',
     right: -6,
-    top: -3,
+    top: -9,
     backgroundColor: '#FA4A0C',
     borderRadius: 10,
     width: 18,

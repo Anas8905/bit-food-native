@@ -12,9 +12,9 @@ const OTPScreen = () => {
   const [timer, setTimer] = useState(60);
   const [loading, setLoading] = useState(false);
   const { verifyOTP, tempPhone } = useAuth();
-  
-  const inputRefs = useRef([]);
-  
+
+  const inputRefs = useRef<(TextInput | null)[]>([]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setTimer((prevTimer) => {
@@ -25,53 +25,53 @@ const OTPScreen = () => {
         return prevTimer - 1;
       });
     }, 1000);
-    
+
     return () => clearInterval(interval);
   }, []);
-  
+
   const handleOtpChange = (text, index) => {
     const newOtp = [...otp];
     newOtp[index] = text;
     setOtp(newOtp);
-    
+
     // Move to next input if current input is filled
     if (text && index < 3) {
-      inputRefs.current[index + 1].focus();
+      inputRefs.current[index + 1]?.focus();
     }
   };
-  
+
   const handleKeyPress = (e, index) => {
     // Move to previous input on backspace if current input is empty
     if (e.nativeEvent.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs.current[index - 1].focus();
+      inputRefs.current[index - 1]?.focus();
     }
   };
-  
+
   const handleVerifyOTP = async () => {
     const otpString = otp.join('');
-    
+
     if (otpString.length !== 4) {
       Alert.alert('Error', 'Please enter a valid 4-digit OTP');
       return;
     }
-    
+
     try {
       setLoading(true);
       await verifyOTP(otpString);
       reouter.push('/terms')
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to verify OTP');
     } finally {
       setLoading(false);
     }
   };
-  
+
   const handleResendOTP = () => {
     setTimer(60);
     // Implement resend OTP logic here
     Alert.alert('Success', 'OTP resent successfully');
   };
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -80,17 +80,19 @@ const OTPScreen = () => {
           <Ionicons name="headset-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
-      
+
       <View style={styles.content}>
         <Text style={styles.title}>
           Enter the 4-digit code sent to you at {tempPhone}
         </Text>
-        
+
         <View style={styles.otpContainer}>
           {otp.map((digit, index) => (
             <TextInput
               key={index}
-              ref={(ref) => (inputRefs.current[index] = ref)}
+              ref={(ref) => {
+                inputRefs.current[index] = ref;
+              }}
               style={styles.otpInput}
               value={digit}
               onChangeText={(text) => handleOtpChange(text, index)}
@@ -100,18 +102,18 @@ const OTPScreen = () => {
             />
           ))}
         </View>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={styles.resendLink}
           onPress={handleResendOTP}
           disabled={timer > 0}
         >
           <Text style={styles.resendText}>
-            Didn't Recieve OTP code? Resend ({timer > 0 ? `00:${timer.toString().padStart(2, '0')}` : 'now'})
+            Didn&apos;t Recieve OTP code? Resend ({timer > 0 ? `00:${timer.toString().padStart(2, '0')}` : 'now'})
           </Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={styles.button}
           onPress={handleVerifyOTP}
           disabled={loading}
