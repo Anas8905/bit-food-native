@@ -1,5 +1,4 @@
-// app/(tabs)/_layout.tsx
-import { Feather, Fontisto, Ionicons, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
+import { AntDesign, Feather, Fontisto, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { useCart } from '../../context/CartContext';
@@ -24,9 +23,9 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="map"
+        name="address"
         options={{
-          title: 'Map',
+          title: 'Address',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="go-kart-track" size={22} color={color} />
           ),
@@ -46,7 +45,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => (
-            <SimpleLineIcons name="home" size={19} color={color}  />
+            <AntDesign name="home" size={24} color={color}  />
           ),
         }}
       />

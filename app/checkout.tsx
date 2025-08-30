@@ -17,13 +17,15 @@ import { mockOrderAPI } from '../api/mockApi';
 import BackButton from '../components/BackButton';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { useAddress } from '@/context/AddressContext';
 
 const CheckoutScreen = () => {
   const router = useRouter();
   const { user } = useAuth();
   const { cart, getCartTotal, clearCart } = useCart();
+  const { selectedAddress: selectedAddr } = useAddress();
 
-  const [selectedAddress, setSelectedAddress] = useState(user.addresses[0]);
+  const [selectedAddress, setSelectedAddress] = useState(selectedAddr);
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [deliveryInstructions, setDeliveryInstructions] = useState('');
   const [loading, setLoading] = useState(false);
@@ -80,14 +82,20 @@ const CheckoutScreen = () => {
           <View style={styles.sectionHeader}>
             <MaterialIcons name="location-pin" size={20} color="#FA4A0C" />
             <Text style={styles.sectionTitle}>Delivery Address</Text>
-            <TouchableOpacity style={styles.changeButton}>
+            <TouchableOpacity
+              style={styles.changeButton}
+              onPress={() => router.push({
+                pathname: '/tabs/address',
+                params: { addressId: selectedAddress?.id },
+              })}
+            >
               <Text style={styles.changeButtonText}>Change</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.addressContainer}>
             <Image source={{ uri: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-23%20at%201.11.43%E2%80%AFPM-ZvQHn1EW8H5bsPTWEiLGUZ2OsMWNiq.png' }} style={styles.mapImage} />
-            <Text style={styles.address}>{selectedAddress.address}</Text>
+            <Text style={styles.address}>{selectedAddress?.address}</Text>
           </View>
         </View>
 

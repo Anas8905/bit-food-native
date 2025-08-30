@@ -1,6 +1,8 @@
 import BackButton from '@/components/BackButton';
-import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { useAddress } from '@/context/AddressContext';
+import { norm } from '@/utils/common.utils';
+import { AntDesign, Feather, FontAwesome5, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
   Alert,
@@ -16,27 +18,34 @@ import {
 const screenWidth = Dimensions.get('window').width;
 
 const EditProfileScreen = () => {
+  const router = useRouter();
+  const { addresses, removeAddress } = useAddress();
+
+  const editAddress = (addressId: string) => {
+    router.push({
+      pathname: '/tabs/address',
+      params: { addressId },
+    });
+  }
+
+
+  const AddressIcon = ({ label }: { label?: string }) => {
+    const l = norm(label);
+
+    if (l === 'home') {
+      return <AntDesign name="home" size={20} color="#009DFF" />;
+    }
+    if (l === 'office') {
+      return <FontAwesome5 name="building" size={20} color="orange" />;
+    }
+    return <FontAwesome5 name="map-marker-alt" size={20} color="red" />;
+  }
+
   const [fullName, setFullName] = useState('Mike P Sullivan');
   const [phoneNumber, setPhoneNumber] = useState('+92 321 2033774');
   const [email, setEmail] = useState('mikepsully@gmail.com');
 
-  const [addresses, setAddresses] = useState<any>([
-    {
-      type: 'Home',
-      icon: 'home',
-      color: '#007bff',
-      address: 'E-23/12-Z, Al-Rehman Street, Abid Road, Walton',
-    },
-    {
-      type: 'Office',
-      icon: 'business',
-      color: '#e91e63',
-      address: '23 A Khayaban-e-Iqbal, Sector XX DHA Phase 3, Lahore',
-    },
-  ]);
-
   const handleSave = () => {
-    // You can integrate your API logic here
     Alert.alert('Profile Saved', `Name: ${fullName}\nPhone: ${phoneNumber}\nEmail: ${email}`);
   };
 
@@ -82,26 +91,37 @@ const EditProfileScreen = () => {
       {/* Addresses */}
       <View style={styles.addressHeader}>
         <Text style={styles.label}>Addresses</Text>
-        <TouchableOpacity style={styles.addMore}>
+        <TouchableOpacity style={styles.addMore} onPress={() => router.push('/tabs/address')}>
           <Text style={styles.addMoreText}>Add More</Text>
         </TouchableOpacity>
       </View>
 
-      {addresses.map((addr, idx) => (
-        <View key={idx} style={styles.addressCard}>
+      {addresses.map((addr) => (
+        <View key={addr.id} style={styles.addressCard}>
           <View style={styles.iconBox}>
-            <MaterialIcons name={addr.icon} size={20} color={addr.color} />
+            <AddressIcon label={addr.label} />
           </View>
+
           <View style={styles.addressInfo}>
-            <Text style={styles.addressType}>{addr.type.toUpperCase()}</Text>
+            <Text style={styles.addressType}>{addr.label.toUpperCase()}</Text>
             <Text style={styles.addressText}>{addr.address}</Text>
           </View>
           <View style={styles.actions}>
             <TouchableOpacity style={styles.iconBtn}>
-              <Feather name="edit" size={16} color="#FF4D00" />
+              <FontAwesome6
+                name="edit"
+                size={15}
+                color="#FF4D00"
+                onPress={() => editAddress(addr.id)}
+              />
             </TouchableOpacity>
             <TouchableOpacity style={styles.iconBtn}>
-              <Feather name="trash-2" size={16} color="#FF4D00" />
+              <Feather
+                name="trash-2"
+                size={16}
+                color="#FF4D00"
+                onPress={() => removeAddress(addr.id)}
+              />
             </TouchableOpacity>
           </View>
         </View>

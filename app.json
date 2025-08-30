@@ -10,7 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.bitfoodnative"
+      "bundleIdentifier": "com.anonymous.bitfoodnative",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We use your location to show where you are on the map and nearby places."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -36,7 +39,10 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      ["expo-location", {
+        "locationWhenInUsePermission": "We use your location to show where you are on the map and nearby places."
+      }]
     ],
     "experiments": {
       "typedRoutes": true
