@@ -1,118 +1,123 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { getData, removeData, resetAsyncStorage, saveData } from '@/services/asyncStorage';
+import { AuthContextType, AuthResponse, User } from '@/types/auth';
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { mockAuthAPI } from '../api/mockApi';
+import { KEYS } from '@/constants/Keys';
+import { useAddress } from '@/hooks/useAddress';
+import { useRouter } from 'expo-router';
 
-interface AuthContextType {
-  user: any;
-  loading: boolean;
-  login: (phone: string) => Promise<any>;
-  verifyOTP: (otp: string) => Promise<any>;
-  updateProfile: (data: any) => Promise<any>;
-  logout: () => Promise<void>;
-  tempPhone: string;
-}
-interface AuthProviderProps {
-  children: React.ReactNode;
-}
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<any>(null);
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [tempPhone, setTempPhone] = useState<string>('');
+  const { refresh } = useAddress();
 
-  useEffect(() => {
-    // Check if user is logged in
-    const loadUser = async () => {
+  const logout = useCallback(
+    async (opts?: { replace?: boolean }): Promise<void> => {
       try {
-        const userData = await AsyncStorage.getItem('user');
-        if (userData) {
-          setUser(JSON.parse(userData));
+        await Promise.all([
+          removeData(KEYS.USER),
+          removeData(KEYS.TEMP_USER),
+          removeData(KEYS.ADDRESSES),
+          removeData(KEYS.SELECTED_ADDRESS_ID),
+        ]);
+
+        setUser(null);
+        await refresh();
+
+        if (opts?.replace) {
+          router.replace('/welcome');
+        } else {
+          router.push('/welcome');
         }
       } catch (error) {
-        console.log('Error loading user data', error);
-      } finally {
-        setLoading(false);
+        console.log('Error logging out', error);
       }
-    };
+    },
+    [router, refresh]
+  );
 
-    loadUser();
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        // await resetAsyncStorage();
+        const existing = await getData<User>(KEYS.USER);
+        if (!cancelled) {
+          if (!existing) {
+            await logout({ replace: true });
+          } else {
+            setUser(existing)
+          }
+        }
+      } catch {
+        if (!cancelled) await logout({ replace: true });
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [logout]);
+
+  const login = useCallback(async (user: User): Promise<AuthResponse> => {
+    // Mock API call to send OTP
+    return mockAuthAPI.sendOTP(user);
   }, []);
 
-  const login = async (phoneNumber: string): Promise<any> => {
+  const verifyOTP = useCallback(async (otp: string): Promise<AuthResponse> => {
     try {
-      setTempPhone(phoneNumber);
-      // Mock API call to send OTP
-      const response = await mockAuthAPI.sendOTP(phoneNumber);
-      return response;
-    } catch (error) {
-      throw error;
-    }
-  };
+      const tempUser = await getData<User>(KEYS.TEMP_USER);
+      if (!tempUser) {
+        return {
+          success: false,
+          message: 'No user found for OTP verification.',
+        };
+      }
 
-  const verifyOTP = async (otp: string): Promise<any> => {
-    try {
       // Mock API call to verify OTP
-      const response = await mockAuthAPI.verifyOTP(tempPhone, otp);
+      const response = await mockAuthAPI.verifyOTP(tempUser.phoneNumber, otp);
 
       if (response.success) {
-        setUser(response.user);
-        await AsyncStorage.setItem('user', JSON.stringify(response.user));
+        setUser(tempUser);
+        await saveData(KEYS.USER, tempUser);
+        await removeData(KEYS.TEMP_USER);
       }
 
       return response;
     } catch (error) {
       throw error;
     }
-  };
+  }, []);
 
-  const updateProfile = async (userData: any): Promise<any> => {
+  const updateProfile = useCallback(async (userData: Partial<User>): Promise<AuthResponse> => {
     try {
+      const toUpdate = { ...user, ...userData };
       // Mock API call to update profile
-      const response = await mockAuthAPI.updateProfile(userData);
+      const response = await mockAuthAPI.updateProfile(toUpdate);
 
       if (response.success) {
-        setUser({...user, ...userData});
-        await AsyncStorage.setItem('user', JSON.stringify({...user, ...userData}));
+        setUser(toUpdate as User);
       }
 
       return response;
     } catch (error) {
       throw error;
     }
-  };
+  }, [user]);
 
-  const logout = async (): Promise<void> => {
-    try {
-      await AsyncStorage.removeItem('user');
-      setUser(null);
-    } catch (error) {
-      console.log('Error logging out', error);
-    }
-  };
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        login,
-        verifyOTP,
-        updateProfile,
-        logout,
-        tempPhone
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      loading,
+      login,
+      verifyOTP,
+      updateProfile,
+      logout,
+    }),
+    [user, loading, login, verifyOTP, updateProfile, logout]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

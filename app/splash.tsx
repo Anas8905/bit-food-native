@@ -1,7 +1,7 @@
+import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useAuth } from '../context/AuthContext';
 
 const SplashScreen = () => {
   const { user, loading } = useAuth();

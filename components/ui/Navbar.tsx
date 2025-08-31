@@ -1,4 +1,4 @@
-import { useDrawer } from '@/context/DrawerContext';
+import { useDrawer } from '@/hooks/useDrawer';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';

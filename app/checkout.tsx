@@ -1,6 +1,6 @@
 import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -15,9 +15,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { mockOrderAPI } from '../api/mockApi';
 import BackButton from '../components/BackButton';
-import { useAuth } from '../context/AuthContext';
-import { useCart } from '../context/CartContext';
-import { useAddress } from '@/context/AddressContext';
+import { useAuth } from '@/hooks/useAuth';
+import { useCart } from '@/hooks/useCart';
+import { useAddress } from '@/hooks/useAddress';
 
 const CheckoutScreen = () => {
   const router = useRouter();
@@ -46,7 +46,7 @@ const CheckoutScreen = () => {
       setLoading(true);
 
       const orderData = {
-        userId: user.id,
+        // userId: user?.id,
         items: cart,
         subtotal,
         gst,
@@ -112,8 +112,8 @@ const CheckoutScreen = () => {
           </View>
 
           <View style={styles.detailsContainer}>
-            <Text style={styles.detailLabel}>Full Name: {user.fullName}</Text>
-            <Text style={styles.detailLabel}>Phone No: {user.phoneNumber}</Text>
+            <Text style={styles.detailLabel}>Full Name: {user?.fullName}</Text>
+            <Text style={styles.detailLabel}>Phone No: {user?.phoneNumber}</Text>
           </View>
         </View>
 

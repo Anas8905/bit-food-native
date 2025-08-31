@@ -1,9 +1,10 @@
 import BackButton from '@/components/BackButton';
-import { useAddress } from '@/context/AddressContext';
+import { useAddress } from '@/hooks/useAddress';
+import { useAuth } from '@/hooks/useAuth';
 import { norm } from '@/utils/common.utils';
-import { AntDesign, Feather, FontAwesome5, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign, Feather, FontAwesome5, FontAwesome6 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -19,6 +20,7 @@ const screenWidth = Dimensions.get('window').width;
 
 const EditProfileScreen = () => {
   const router = useRouter();
+  const { user } = useAuth();
   const { addresses, removeAddress } = useAddress();
 
   const editAddress = (addressId: string) => {
@@ -27,7 +29,6 @@ const EditProfileScreen = () => {
       params: { addressId },
     });
   }
-
 
   const AddressIcon = ({ label }: { label?: string }) => {
     const l = norm(label);
@@ -65,7 +66,7 @@ const EditProfileScreen = () => {
       <View style={styles.fieldGroup}>
         <Text style={styles.label}>FULL NAME</Text>
         <TextInput
-          value={fullName}
+          value={user?.fullName}
           onChangeText={setFullName}
           style={styles.input}
           placeholder="Full Name"
@@ -73,7 +74,7 @@ const EditProfileScreen = () => {
 
         <Text style={styles.label}>PHONE NUMBER</Text>
         <TextInput
-          value={phoneNumber}
+          value={user?.phoneNumber}
           onChangeText={setPhoneNumber}
           style={styles.input}
           keyboardType="phone-pad"
@@ -81,7 +82,7 @@ const EditProfileScreen = () => {
 
         <Text style={styles.label}>EMAIL</Text>
         <TextInput
-          value={email}
+          value={user?.email}
           onChangeText={setEmail}
           style={styles.input}
           keyboardType="email-address"
@@ -91,7 +92,7 @@ const EditProfileScreen = () => {
       {/* Addresses */}
       <View style={styles.addressHeader}>
         <Text style={styles.label}>Addresses</Text>
-        <TouchableOpacity style={styles.addMore} onPress={() => router.push('/tabs/address')}>
+        <TouchableOpacity style={styles.addMore} onPress={() => router.replace('/tabs/address')}>
           <Text style={styles.addMoreText}>Add More</Text>
         </TouchableOpacity>
       </View>

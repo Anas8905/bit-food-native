@@ -1,53 +1,22 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { KEYS } from '@/constants/Keys';
+import { getData, saveData } from '@/services/asyncStorage';
+import { CartContextType, CartItem } from '@/types/cart';
+import { createContext, useEffect, useState } from 'react';
 
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  size?: string;
-  [key: string]: any; // For other dynamic props
-}
+export const CartContext = createContext<CartContextType | undefined>(undefined);
 
-interface CartContextType {
-  cart: CartItem[];
-  favorites: CartItem[];
-  addToCart: (item: CartItem, quantity?: number) => void;
-  removeFromCart: (itemId: string, size?: string) => void;
-  removeFromFavorites: (itemId: string, size?: string) => void;
-  updateQuantity: (itemId: string, size: string | undefined, quantity: number) => void;
-  clearCart: () => void;
-  clearFavorites: () => void;
-  toggleFavorite: (item: CartItem) => void;
-  getCartTotal: () => number;
-  isFavorite: (id: string) => boolean;
-}
-
-const CartContext = createContext<CartContextType | undefined>(undefined);
-
-export const useCart = (): CartContextType => {
-  const context = useContext(CartContext);
-  if (!context) throw new Error('useCart must be used within a CartProvider');
-  return context;
-};
-
-interface CartProviderProps {
-  children: React.ReactNode;
-}
-
-export const CartProvider = ({ children }: CartProviderProps) => {
+export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [favorites, setFavorites] = useState<CartItem[]>([]);
 
   useEffect(() => {
     const loadCart = async () => {
       try {
-        const cartData = await AsyncStorage.getItem('cart');
-        const favoritesData = await AsyncStorage.getItem('favorites');
+        const cartData = await getData<CartItem[]>(KEYS.CART);
+        const favoritesData = await getData<any>(KEYS.FAVORITES);
 
-        if (cartData) setCart(JSON.parse(cartData));
-        if (favoritesData) setFavorites(JSON.parse(favoritesData));
+        if (cartData) setCart(cartData);
+        if (favoritesData) setFavorites(favoritesData);
       } catch (error) {
         console.log('Error loading cart data', error);
       }
@@ -58,7 +27,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
   const saveCart = async (cartItems: CartItem[]) => {
     try {
-      await AsyncStorage.setItem('cart', JSON.stringify(cartItems));
+      await saveData(KEYS.CART, cartItems);
     } catch (error) {
       console.log('Error saving cart', error);
     }
@@ -66,7 +35,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
   const saveFavorites = async (favItems: CartItem[]) => {
     try {
-      await AsyncStorage.setItem('favorites', JSON.stringify(favItems));
+      await saveData(KEYS.FAVORITES, favItems);
     } catch (error) {
       console.log('Error saving favorites', error);
     }

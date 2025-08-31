@@ -1,3 +1,5 @@
+import { saveData } from "@/services/asyncStorage";
+
 // Mock data
   const pizzas = [
       {
@@ -167,9 +169,11 @@
 
   // Mock API functions
   export const mockAuthAPI = {
-    sendOTP: async (phoneNumber) => {
+
+    sendOTP: async (user) => {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
+      await saveData("tempUser", user);
 
       return {
         success: true,
@@ -186,21 +190,20 @@
         return {
           success: true,
           message: 'OTP verified successfully',
-          user: mockUser,
         };
       } else {
         throw new Error('Invalid OTP');
       }
     },
 
-    updateProfile: async (userData) => {
+    updateProfile: async (toUpdate) => {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
+      await saveData<User>('user', toUpdate);
 
       return {
         success: true,
         message: 'Profile updated successfully',
-        user: { ...mockUser, ...userData },
       };
     },
   };

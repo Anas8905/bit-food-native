@@ -1,4 +1,5 @@
-// components/CustomDrawer.tsx
+import { useAuth } from '@/hooks/useAuth';
+import { useDrawer } from '@/hooks/useDrawer';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
@@ -11,14 +12,12 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import { useDrawer } from '../../context/DrawerContext';
-import { useAuth } from '@/context/AuthContext';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function CustomDrawer() {
   const { isOpen, closeDrawer } = useDrawer();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const translateX = useRef(new Animated.Value(-SCREEN_WIDTH)).current;
   const [visible, setVisible] = useState(isOpen);
 
@@ -36,7 +35,7 @@ export default function CustomDrawer() {
         setVisible(false);
       }
     });
-  }, [isOpen, translateX]);
+  }, [isOpen, translateX, user]);
 
   const handleLogout = async () => {
     await logout();
@@ -59,8 +58,8 @@ export default function CustomDrawer() {
             <Text style={styles.closeIcon}>✕</Text>
           </TouchableOpacity>
           <View style={styles.drawerTitle}>
-            <Text style={styles.userName}>Taimoor Khan</Text>
-            <Text style={styles.phone}>+92 3212033774</Text>
+            <Text style={styles.userName}>{ user?.fullName }</Text>
+            <Text style={styles.phone}>{ user?.phoneNumber }</Text>
           </View>
         </View>
 

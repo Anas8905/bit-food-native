@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, Platform } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
 import * as Location from 'expo-location';
-import { useAddress } from '@/context/AddressContext';
 import { Address } from '@/types/address';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { Dropdown } from 'react-native-element-dropdown';
+import { useAddress } from '@/hooks/useAddress';
 
 const makeId = () => `${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
 
@@ -17,31 +17,43 @@ const LABEL_OPTIONS = [
 ];
 
 export default function AddressScreen() {
-  const { addressId } = useLocalSearchParams<{ addressId: string }>();
+  const router = useRouter();
+  const { addressId } = useLocalSearchParams<{ addressId?: string }>();
   const mapRef = useRef<MapView | null>(null);
   const { addAddress, addresses } = useAddress();
-  const [label, setLabel] = useState('');
   const [address, setAddress] = useState('');
+  const [label, setLabel] = useState('');
   const [pin, setPin] = useState<{ latitude: number; longitude: number } | null>(null);
   const [region, setRegion] = useState<Region>({
     latitude: 24.8607, longitude: 67.0011, latitudeDelta: 0.015, longitudeDelta: 0.015
   });
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => {
-    if (!addressId) {
-      setAddress('');
-      setLabel('');
-      return;
-    }
+  useFocusEffect(
+    useCallback(() => {
+      const editMode = !!addressId;
 
-    const addressObj = addresses.find(i => i.id === addressId)
+      if (!editMode) {
+        setAddress('');
+        setLabel('');
+        return;
+      }
 
-    if (!addressObj) return;
+      const addressObj = addresses.find(i => i.id === addressId);
+      if (!addressObj) {
+        setAddress('');
+        setLabel('');
+        return;
+      }
 
-    setAddress(addressObj?.address ?? '');
-    setLabel(addressObj?.label ?? '');
-  }, [addressId, addresses])
+      setAddress(addressObj.address ?? '');
+      setLabel(addressObj.label ?? '');
+
+      return () => {
+        router.setParams({ addressId: undefined });
+      };
+    }, [addressId, addresses, router])
+  );
 
   const geocodeAndPreview = async () => {
     if (!address.trim()) return Alert.alert('Enter an address', 'Please type the street, area, city, etc.');
@@ -95,7 +107,10 @@ export default function AddressScreen() {
   };
 
   const save = async () => {
-    if (!pin) return Alert.alert('Confirm on map', 'Geocode first, then adjust the pin if needed.');
+    if (!pin) {
+      return Alert.alert('Warning', 'Geocode first, then adjust the pin if needed.');
+    }
+
     const addr: Address = {
       id: makeId(),
       label: label.trim() || 'Other',
@@ -166,8 +181,14 @@ export default function AddressScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  inputs: { padding: 12, paddingTop: Platform.select({ ios: 16, android: 12 }) },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  inputs: {
+    padding: 12,
+    paddingTop: Platform.select({ ios: 16, android: 12 }),
+  },
   input: {
     backgroundColor: '#f0f4f8',
     borderRadius: 10,
@@ -176,12 +197,42 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
-  row: { flexDirection: 'row', gap: 10 },
-  btn: { flex: 1, alignItems: 'center', paddingVertical: 12, borderRadius: 8, backgroundColor: '#FA4A0C' },
-  btnText: { color: '#fff', fontWeight: '700' },
-  ghost: { backgroundColor: '#f1f1f1' },
-  ghostText: { color: '#111' },
-  map: { flex: 1 },
-  save: { position: 'absolute', left: 12, right: 12, bottom: 20, paddingVertical: 14, borderRadius: 10, backgroundColor: '#FA4A0C', alignItems: 'center' },
-  saveText: { color: '#fff', fontWeight: '700' },
+  row: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  btn: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderRadius: 8,
+    backgroundColor: '#FA4A0C',
+  },
+  btnText: {
+    color: '#fff',
+    fontWeight: '700',
+  },
+  ghost: {
+    backgroundColor: '#f1f1f1',
+  },
+  ghostText: {
+    color: '#111',
+  },
+  map: {
+    flex: 1,
+  },
+  save: {
+    position: 'absolute',
+    left: 12,
+    right: 12,
+    bottom: 20,
+    paddingVertical: 14,
+    borderRadius: 10,
+    backgroundColor: '#FA4A0C',
+    alignItems: 'center',
+  },
+  saveText: {
+    color: '#fff',
+    fontWeight: '700',
+  },
 });

@@ -1,25 +1,10 @@
+import { NetworkContextType } from '@/types/network';
 import NetInfo from '@react-native-community/netinfo';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
-interface NetworkContextType {
-  isConnected: boolean;
-}
+export const NetworkContext = createContext<NetworkContextType | undefined>(undefined);
 
-const NetworkContext = createContext<NetworkContextType | undefined>(undefined);
-
-export const useNetwork = (): NetworkContextType => {
-  const context = useContext(NetworkContext);
-  if (!context) {
-    throw new Error('useNetwork must be used within a NetworkProvider');
-  }
-  return context;
-};
-
-interface NetworkProviderProps {
-  children: React.ReactNode;
-}
-
-export const NetworkProvider = ({ children }: NetworkProviderProps) => {
+export const NetworkProvider = ({ children }: { children: React.ReactNode }) => {
   const [isConnected, setIsConnected] = useState<boolean>(true);
 
   useEffect(() => {

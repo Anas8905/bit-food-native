@@ -14,7 +14,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { mockPizzaAPI } from '../../api/mockApi';
 import BackButton from '../../components/BackButton';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '@/hooks/useCart';
 
 const PizzaDetailScreen = () => {
   const { id } = useLocalSearchParams();

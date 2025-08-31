@@ -1,6 +1,6 @@
 import BackButton from "@/components/BackButton";
 import EmptyState from "@/components/EmptyState";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/hooks/useCart";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";

@@ -1,7 +1,7 @@
 import BackButton from '@/components/BackButton';
 import SwipableModal from '@/components/SwipableModal';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Button, Text, StyleSheet, Dimensions, ScrollView, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 

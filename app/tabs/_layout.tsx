@@ -1,10 +1,11 @@
+import { useCart } from '@/hooks/useCart';
 import { AntDesign, Feather, Fontisto, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
-import { useCart } from '../../context/CartContext';
 
 export default function TabLayout() {
   const { cart, favorites } = useCart();
+  const router = useRouter();
   const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
   const favItemsCount = favorites.length;
 

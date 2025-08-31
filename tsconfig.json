@@ -3,6 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "noImplicitAny": false,
+    "exactOptionalPropertyTypes": true,
     "allowJs": true,
     "checkJs": false,
     "paths": {

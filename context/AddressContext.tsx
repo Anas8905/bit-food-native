@@ -1,32 +1,21 @@
 import React, {
     createContext,
     useCallback,
-    useContext,
     useEffect,
     useMemo,
     useState,
     PropsWithChildren,
   } from 'react';
-  import type { Address } from '../types/address';
+  import type { Address, AddressContextValue } from '../types/address';
   import {
     getAddresses,
     removeAddressById,
     getSelectedAddressId,
     setSelectedAddressId,
     saveAddress,
-  } from '../services/addressStorage';
+  } from '../services/addressService';
 
-  type AddressContextValue = {
-    loading: boolean;
-    addresses: Address[];
-    selectedAddress: Address | null;
-    addAddress: (addr: Address, selectAfter?: boolean) => Promise<void>;
-    selectAddress: (id: string | null) => Promise<void>;
-    removeAddress: (id: string) => Promise<void>;
-    refresh: () => Promise<void>;
-  };
-
-  const AddressContext = createContext<AddressContextValue | null>(null);
+  export const AddressContext = createContext<AddressContextValue | null>(null);
 
   export function AddressProvider({ children }: PropsWithChildren) {
     const [loading, setLoading] = useState(true);
@@ -39,7 +28,7 @@ import React, {
         const [list, selectedId] = await Promise.all([getAddresses(), getSelectedAddressId()]);
         setAddresses(list);
         const current = list.find(a => a.id === selectedId) ?? list[0] ?? null;
-        setSelectedAddress(current ?? null);
+        setSelectedAddress(current);
         await setSelectedAddressId(current ? current.id : null);
       } finally {
         setLoading(false);
@@ -93,8 +82,3 @@ import React, {
     return <AddressContext.Provider value={value}>{children}</AddressContext.Provider>;
   }
 
-  export function useAddress() {
-    const ctx = useContext(AddressContext);
-    if (!ctx) throw new Error('useAddress must be used inside <AddressProvider>');
-    return ctx;
-  }

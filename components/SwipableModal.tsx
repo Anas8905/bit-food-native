@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { View, StyleSheet, Dimensions, ViewStyle } from 'react-native';
 import Modal, { ModalProps } from 'react-native-modal';
 

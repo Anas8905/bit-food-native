@@ -1,6 +1,6 @@
 import { Checkbox } from 'expo-checkbox';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
@@ -9,50 +9,50 @@ const TermsScreen = () => {
   const router = useRouter();
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
-  
+
   const handleSubmit = () => {
     if (!termsAccepted || !privacyAccepted) {
       Alert.alert('Error', 'Please accept all terms to continue');
       return;
     }
-    router.push('/tabs/home');
+    router.push('/tabs/address');
   };
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <BackButton onPress={() => router.back()} />
       </View>
-      
+
       <View style={styles.content}>
         <Text style={styles.title}>Terms and Conditions</Text>
-        
+
         <View style={styles.checkboxContainer}>
           <Checkbox
             value={termsAccepted}
             onValueChange={setTermsAccepted}
-            color={termsAccepted ? '#FA4A0C' : undefined}
+            color={termsAccepted ? '#FA4A0C' : ''}
             style={styles.checkbox}
           />
           <Text style={styles.checkboxLabel}>
             I accept the Terms and Conditions
           </Text>
         </View>
-        
+
         <View style={styles.checkboxContainer}>
           <Checkbox
             value={privacyAccepted}
             onValueChange={setPrivacyAccepted}
-            color={privacyAccepted ? '#FA4A0C' : undefined}
+            color={privacyAccepted ? '#FA4A0C' : ''}
             style={styles.checkbox}
           />
           <Text style={styles.checkboxLabel}>
             I accept the Privacy notice & information. Use policy & cookies policy
           </Text>
         </View>
-        
+
         <View style={styles.buttonContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.button}
             onPress={handleSubmit}
           >

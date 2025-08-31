@@ -1,19 +1,19 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 
 
 const LoginScreen = () => {
   const router = useRouter()
+  const { login } = useAuth();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
 
   const handleSendCode = async () => {
     if (!fullName.trim()) {
@@ -33,7 +33,7 @@ const LoginScreen = () => {
 
     try {
       setLoading(true);
-      await login(phoneNumber);
+      await login({ fullName, email, phoneNumber });
       router.push('/otp')
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to send OTP');

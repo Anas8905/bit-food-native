@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -14,17 +14,17 @@ import { mockPizzaAPI } from '../../api/mockApi';
 import NoInternet from '../../components/NoInternet';
 import PizzaCard from '../../components/PizzaCard';
 import Navbar from '../../components/ui/Navbar';
-import { useNetwork } from '../../context/NetworkContext';
-import { useCart } from '@/context/CartContext';
+import { useCart } from '@/hooks/useCart';
+import { useNetwork } from '@/hooks/useNetwork';
 
 const HomeScreen: React.FC = () => {
   const router = useRouter();
+  const { isConnected } = useNetwork();
   const { cart } = useCart();
   const [categories, setCategories] = useState<string[]>([]);
   const [pizzas, setPizzas] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const { isConnected } = useNetwork();
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   const fetchData = async () => {

@@ -1,13 +1,10 @@
-// context/DrawerContext.tsx
-import React, { createContext, useContext, useState } from 'react';
+import { createContext, useState } from 'react';
 
-const DrawerContext = createContext({
+export const DrawerContext = createContext({
   isOpen: false,
   openDrawer: () => {},
   closeDrawer: () => {},
 });
-
-export const useDrawer = () => useContext(DrawerContext);
 
 export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);

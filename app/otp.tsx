@@ -4,14 +4,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 
 const OTPScreen = () => {
-  const reouter = useRouter()
+  const router = useRouter();
+  const { user, verifyOTP } = useAuth();
   const [otp, setOtp] = useState(['', '', '', '']);
   const [timer, setTimer] = useState(60);
   const [loading, setLoading] = useState(false);
-  const { verifyOTP, tempPhone } = useAuth();
 
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
@@ -58,7 +58,7 @@ const OTPScreen = () => {
     try {
       setLoading(true);
       await verifyOTP(otpString);
-      reouter.push('/terms')
+      router.push('/terms')
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to verify OTP');
     } finally {
@@ -75,7 +75,7 @@ const OTPScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <BackButton onPress={() => reouter.back()} />
+        <BackButton onPress={() => router.back()} />
         <TouchableOpacity style={styles.supportButton}>
           <Ionicons name="headset-outline" size={24} color="black" />
         </TouchableOpacity>
@@ -83,7 +83,7 @@ const OTPScreen = () => {
 
       <View style={styles.content}>
         <Text style={styles.title}>
-          Enter the 4-digit code sent to you at {tempPhone}
+          Enter the 4-digit code sent to you at {user?.phoneNumber}
         </Text>
 
         <View style={styles.otpContainer}>

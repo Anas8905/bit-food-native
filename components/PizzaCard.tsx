@@ -1,32 +1,31 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const PizzaCard = ({ pizza, onPress }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image source={{ uri: pizza.image }} style={styles.image} />
-      
+
       <View style={styles.infoContainer}>
         <View style={styles.timeContainer}>
           <Ionicons name="time-outline" size={14} color="#666" />
           <Text style={styles.timeText}>{pizza.deliveryTime} min</Text>
         </View>
-        
+
         <View style={styles.deliveryContainer}>
           <Ionicons name="bicycle-outline" size={14} color="#FA4A0C" />
           <Text style={styles.deliveryText}>{pizza.deliveryFee}</Text>
         </View>
       </View>
-      
+
       <Text style={styles.name}>{pizza.name}</Text>
-      
+
       {pizza.description && (
         <Text style={styles.description} numberOfLines={2}>
           {pizza.description}
         </Text>
       )}
-      
+
       <Text style={styles.price}>PKR {pizza.price || pizza.variations[1].price}</Text>
     </TouchableOpacity>
   );

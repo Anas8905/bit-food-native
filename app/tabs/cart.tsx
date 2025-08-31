@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React from 'react';
 import {
   Alert,
   FlatList,
@@ -12,7 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import EmptyState from '../../components/EmptyState';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '@/hooks/useCart';
 
 const CartScreen = () => {
   const router = useRouter();
