@@ -1,7 +1,23 @@
-import { Fontisto, Ionicons } from '@expo/vector-icons';
+import { FontAwesome5, Fontisto, Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const EmptyState = ({ icon, title, message, buttonText, onButtonPress }) => {
+type EmptyStateProps = {
+  icon: string;
+  title: string;
+  message: string;
+  buttonText?: string;
+  onButtonPress?: () => void;
+  isAddrScrn? : boolean;
+};
+
+export default function EmptyState({
+  icon,
+  title,
+  message,
+  buttonText,
+  onButtonPress,
+  isAddrScrn,
+}: EmptyStateProps) {
   const getIcon = () => {
     switch (icon) {
       case 'cart':
@@ -14,18 +30,20 @@ const EmptyState = ({ icon, title, message, buttonText, onButtonPress }) => {
         return <Ionicons name="wifi-outline" size={60} color="#FA4A0C" />;
       case 'receipt':
         return <Ionicons name="receipt-outline" size={60} color="#FA4A0C" />;
+      case 'address':
+        return <FontAwesome5 name="map-marker-alt" size={60} color="#ddd" />;
       default:
         return <Ionicons name="alert-circle-outline" size={60} color="#FA4A0C" />;
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isAddrScrn ? styles.addrScrn : styles.noAddrScrn]}>
       <View style={styles.iconContainer}>
         {getIcon()}
       </View>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.message}>{message}</Text>
+      <Text style={[styles.title, isAddrScrn && styles.addrTitle]}>{title}</Text>
+      <Text style={[styles.message, isAddrScrn && styles.addrMsg]}>{message}</Text>
       {buttonText && (
         <TouchableOpacity
           style={styles.button}
@@ -40,11 +58,16 @@ const EmptyState = ({ icon, title, message, buttonText, onButtonPress }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
     backgroundColor: 'white',
+  },
+  addrScrn: {
+    marginTop: 20,
+  },
+  noAddrScrn: {
+    flex: 1,
+    justifyContent: 'center',
   },
   iconContainer: {
     marginBottom: 20,
@@ -54,6 +77,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
+  },
+  addrTitle: {
+    color: "#bbb",
+  },
+  addrMsg: {
+    color: "#aaa",
   },
   message: {
     fontSize: 16,
@@ -73,5 +102,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-export default EmptyState;

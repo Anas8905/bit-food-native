@@ -1,11 +1,14 @@
 import BackButton from '@/components/BackButton';
+import EmptyState from '@/components/EmptyState';
 import { useAddress } from '@/hooks/useAddress';
 import { useAuth } from '@/hooks/useAuth';
+import { User } from '@/types/auth';
 import { norm } from '@/utils/common.utils';
 import { AntDesign, Feather, FontAwesome5, FontAwesome6 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Dimensions,
   ScrollView,
@@ -18,14 +21,14 @@ import {
 
 const screenWidth = Dimensions.get('window').width;
 
-const EditProfileScreen = () => {
+export default function EditProfileScreen() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
   const { addresses, removeAddress } = useAddress();
-
-  const editAddress = (addressId: string) => {
-    router.push(`/address/${addressId}`);
-  }
+  const [fullName, setFullName] = useState(user?.fullName);
+  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber);
+  const [email, setEmail] = useState(user?.email);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const AddressIcon = ({ label }: { label?: string }) => {
     const l = norm(label);
@@ -39,31 +42,42 @@ const EditProfileScreen = () => {
     return <FontAwesome5 name="map-marker-alt" size={20} color="red" />;
   }
 
-  const [fullName, setFullName] = useState('Mike P Sullivan');
-  const [phoneNumber, setPhoneNumber] = useState('+92 321 2033774');
-  const [email, setEmail] = useState('mikepsully@gmail.com');
+  const saveProfile = async () => {
+    if (!fullName || !email || !phoneNumber) {
+      Alert.alert('Missing fields', 'Please fill all fields.');
+      return;
+    }
 
-  const handleSave = () => {
-    Alert.alert('Profile Saved', `Name: ${fullName}\nPhone: ${phoneNumber}\nEmail: ${email}`);
-  };
+    setIsUpdating(true);
 
-  const handleCancel = () => {
-    router.replace('/tabs' as any)
+    const updatedUser: User = { fullName, email, phoneNumber };
+
+    try {
+      const response = await updateProfile(updatedUser);
+
+      if (response.success) {
+        Alert.alert('Profile Updated', `Name: ${fullName}\nPhone: ${phoneNumber}\nEmail: ${email}`);
+      }
+    } catch (error) {
+      Alert.alert('Update Failed', 'Profile is not updated.');
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <BackButton onPress={() => router.replace('/tabs/home')} />
         <Text style={styles.title}>EDIT PROFILE</Text>
       </View>
 
-      {/* Fields */}
+      {/* Form Fields */}
       <View style={styles.fieldGroup}>
         <Text style={styles.label}>FULL NAME</Text>
         <TextInput
-          value={user?.fullName}
+          value={fullName}
           onChangeText={setFullName}
           style={styles.input}
           placeholder="Full Name"
@@ -71,7 +85,7 @@ const EditProfileScreen = () => {
 
         <Text style={styles.label}>PHONE NUMBER</Text>
         <TextInput
-          value={user?.phoneNumber}
+          value={phoneNumber}
           onChangeText={setPhoneNumber}
           style={styles.input}
           keyboardType="phone-pad"
@@ -79,196 +93,230 @@ const EditProfileScreen = () => {
 
         <Text style={styles.label}>EMAIL</Text>
         <TextInput
-          value={user?.email}
+          value={email}
           onChangeText={setEmail}
           style={styles.input}
           keyboardType="email-address"
+          autoCapitalize="none"
         />
       </View>
 
-      {/* Addresses */}
+      {/* Addresses Header */}
       <View style={styles.addressHeader}>
         <Text style={styles.label}>Addresses</Text>
         <TouchableOpacity style={styles.addMore} onPress={() => router.replace('/tabs/address')}>
-          <Text style={styles.addMoreText}>Add More</Text>
+          <Text style={styles.addMoreText}>
+            { addresses.length > 0 ? "Add More" : "+ Add New" }
+          </Text>
         </TouchableOpacity>
       </View>
 
-      {addresses.map((addr) => (
-        <View key={addr.id} style={styles.addressCard}>
-          <View style={styles.iconBox}>
-            <AddressIcon label={addr.label} />
-          </View>
+      {/* Addresses List */}
+      {addresses.length > 0 ? (
+      <ScrollView
+        style={styles.addressesScrollView}
+        contentContainerStyle={{ paddingBottom: 10 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {addresses.map((addr) => (
+          <View key={addr.id} style={styles.addressCard}>
+            <View style={styles.iconBox}>
+              <AddressIcon label={addr.label} />
+            </View>
 
-          <View style={styles.addressInfo}>
-            <Text style={styles.addressType}>{addr.label.toUpperCase()}</Text>
-            <Text style={styles.addressText}>{addr.address}</Text>
+            <View style={styles.addressInfo}>
+              <Text style={styles.addressType}>{addr.label.toUpperCase()}</Text>
+              <Text style={styles.addressText}>{addr.address}</Text>
+            </View>
+            <View style={styles.actions}>
+              <TouchableOpacity style={styles.iconBtn}>
+                <FontAwesome6
+                  name="edit"
+                  size={15}
+                  color="#FF4D00"
+                  onPress={() => router.push(`/address/${addr.id}`)}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.iconBtn}>
+                <Feather
+                  name="trash-2"
+                  size={16}
+                  color="#FF4D00"
+                  onPress={() => removeAddress(addr.id)}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.actions}>
-            <TouchableOpacity style={styles.iconBtn}>
-              <FontAwesome6
-                name="edit"
-                size={15}
-                color="#FF4D00"
-                onPress={() => editAddress(addr.id)}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconBtn}>
-              <Feather
-                name="trash-2"
-                size={16}
-                color="#FF4D00"
-                onPress={() => removeAddress(addr.id)}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-      ))}
+        ))}
+      </ScrollView>
+    ) : (
+        <EmptyState
+          icon="address"
+          title="No Address"
+          message="Click the add new button to add your address."
+          isAddrScrn={true}
+        />
+    )}
 
       {/* Footer Buttons */}
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.cancelBtn} onPress={handleCancel}>
-          <Text style={styles.cancelText}>CANCEL</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
-          <Text style={styles.saveText}>SAVE</Text>
-        </TouchableOpacity>
+      <View style={styles.footerContainer}>
+        <View style={styles.buttonRow}>
+          <TouchableOpacity style={styles.cancelBtn} onPress={() => router.back()}>
+            <Text style={styles.cancelText}>CANCEL</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.saveBtn} onPress={saveProfile} disabled={isUpdating}>
+            {isUpdating ? (
+                <ActivityIndicator color="white" size={16} />
+              ) : (
+                <Text style={styles.saveText}>Save</Text>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
-    </ScrollView>
+    </View>
   );
-};
+}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    paddingTop: 40,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginTop: 20,
-  },
-  backButton: {
-    backgroundColor: '#f0f2f5',
-    padding: 8,
-    borderRadius: 20,
-    marginRight: 12,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  avatarCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#ffeaea',
-  },
-  cameraIcon: {
-    position: 'absolute',
-    right: screenWidth / 2 - 30,
-    bottom: 0,
-    backgroundColor: '#FF2D2D',
-    borderRadius: 20,
-    padding: 6,
-  },
-  fieldGroup: {
-    marginVertical: 24,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '600',
-    marginBottom: 6,
-    marginTop: 10,
-  },
-  input: {
-    backgroundColor: '#f0f4f8',
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 14,
-    color: '#333',
-  },
-  addressHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  addMore: {
-    borderWidth: 1,
-    borderColor: '#FF2D2D',
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderRadius: 20,
-  },
-  addMoreText: {
-    color: '#FF2D2D',
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  addressCard: {
-    backgroundColor: '#f0f4f8',
-    borderRadius: 12,
-    padding: 14,
-    marginTop: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconBox: {
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 8,
-    marginRight: 12,
-  },
-  addressInfo: {
-    flex: 1,
-  },
-  addressType: {
-    fontWeight: '700',
-    marginBottom: 4,
-  },
-  addressText: {
-    fontSize: 13,
-    color: '#555',
-  },
-  actions: {
-    flexDirection: 'row',
-  },
-  iconBtn: {
-    marginLeft: 10,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 30,
-  },
-  cancelBtn: {
-    backgroundColor: '#f0f2f5',
-    paddingVertical: 14,
-    borderRadius: 30,
-    flex: 1,
-    alignItems: 'center',
-    marginRight: 8,
-  },
-  saveBtn: {
-    backgroundColor: '#FF4D00',
-    paddingVertical: 14,
-    borderRadius: 30,
-    flex: 1,
-    alignItems: 'center',
-    marginLeft: 8,
-  },
-  cancelText: {
-    fontWeight: '600',
-    color: '#000',
-  },
-  saveText: {
-    fontWeight: '600',
-    color: '#fff',
-  },
-});
-
-export default EditProfileScreen;
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      paddingHorizontal: 20,
+      paddingTop: 40,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+      marginTop: 20,
+    },
+    addressesScrollView: {
+      maxHeight: 350,
+      marginTop: 10,
+      flexGrow: 0,
+    },
+    footerContainer: {
+      backgroundColor: '#fff',
+      paddingTop: 15,
+      paddingBottom: 20,
+      borderTopWidth: 1,
+      borderTopColor: '#f0f0f0',
+    },
+    backButton: {
+      backgroundColor: '#f0f2f5',
+      padding: 8,
+      borderRadius: 20,
+      marginRight: 12,
+    },
+    title: {
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    avatarCircle: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      backgroundColor: '#ffeaea',
+    },
+    cameraIcon: {
+      position: 'absolute',
+      right: screenWidth / 2 - 30,
+      bottom: 0,
+      backgroundColor: '#FF2D2D',
+      borderRadius: 20,
+      padding: 6,
+    },
+    fieldGroup: {
+      marginVertical: 24,
+    },
+    label: {
+      fontSize: 13,
+      fontWeight: '600',
+      marginBottom: 6,
+      marginTop: 10,
+    },
+    input: {
+      backgroundColor: '#f0f4f8',
+      borderRadius: 10,
+      padding: 12,
+      fontSize: 14,
+      color: '#333',
+    },
+    addressHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginTop: 10,
+    },
+    addMore: {
+      borderWidth: 1,
+      borderColor: '#FF2D2D',
+      paddingVertical: 4,
+      paddingHorizontal: 10,
+      borderRadius: 20,
+    },
+    addMoreText: {
+      color: '#FF2D2D',
+      fontSize: 13,
+      fontWeight: '500',
+    },
+    addressCard: {
+      backgroundColor: '#f0f4f8',
+      borderRadius: 12,
+      padding: 14,
+      marginTop: 12,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    iconBox: {
+      backgroundColor: '#fff',
+      borderRadius: 20,
+      padding: 8,
+      marginRight: 12,
+    },
+    addressInfo: {
+      flex: 1,
+    },
+    addressType: {
+      fontWeight: '700',
+      marginBottom: 4,
+    },
+    addressText: {
+      fontSize: 13,
+      color: '#555',
+    },
+    actions: {
+      flexDirection: 'row',
+    },
+    iconBtn: {
+      marginLeft: 10,
+    },
+    buttonRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    cancelBtn: {
+      backgroundColor: '#f0f2f5',
+      paddingVertical: 14,
+      borderRadius: 30,
+      flex: 1,
+      alignItems: 'center',
+      marginRight: 8,
+    },
+    saveBtn: {
+      backgroundColor: '#FF4D00',
+      paddingVertical: 14,
+      borderRadius: 30,
+      flex: 1,
+      alignItems: 'center',
+      marginLeft: 8,
+    },
+    cancelText: {
+      fontWeight: '600',
+      color: '#000',
+    },
+    saveText: {
+      fontWeight: '600',
+      color: '#fff',
+    },
+  });

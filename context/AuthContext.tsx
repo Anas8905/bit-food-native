@@ -1,4 +1,4 @@
-import { getData, removeData, resetAsyncStorage, saveData } from '@/services/asyncStorage';
+import { getData, removeData, saveData } from '@/services/asyncStorage';
 import { AuthContextType, AuthResponse, User } from '@/types/auth';
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { mockAuthAPI } from '../api/mockApi';
@@ -91,21 +91,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  const updateProfile = useCallback(async (userData: Partial<User>): Promise<AuthResponse> => {
+  const updateProfile = useCallback(async (userData: User): Promise<AuthResponse> => {
     try {
-      const toUpdate = { ...user, ...userData };
       // Mock API call to update profile
-      const response = await mockAuthAPI.updateProfile(toUpdate);
-
-      if (response.success) {
-        setUser(toUpdate as User);
-      }
-
-      return response;
+      return await mockAuthAPI.updateProfile(userData);
     } catch (error) {
       throw error;
     }
-  }, [user]);
+  }, []);
 
   const value = useMemo(
     () => ({

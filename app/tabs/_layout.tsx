@@ -1,5 +1,5 @@
 import { useCart } from '@/hooks/useCart';
-import { AntDesign, Feather, Fontisto, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather, Fontisto, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -45,7 +45,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => (
-            <AntDesign name="home" size={24} color={color}  />
+            <Feather name="home" size={24} color={color}  />
           ),
         }}
       />

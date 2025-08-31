@@ -38,6 +38,7 @@ import React, {
     useEffect(() => { void hydrate(); }, [hydrate]);
 
     const addAddress = useCallback(async (addr: Address, selectAfter = true) => {
+      await new Promise(resolve => setTimeout(resolve, 1000));
       await saveAddress(addr);
       const list = await getAddresses();
       setAddresses(list);
@@ -53,8 +54,10 @@ import React, {
         await setSelectedAddressId(null);
         return;
       }
+
       const found = addresses.find(a => a.id === id) ?? null;
       setSelectedAddress(found);
+      await new Promise(resolve => setTimeout(resolve, 1000));
       await setSelectedAddressId(found ? found.id : null);
     }, [addresses]);
 

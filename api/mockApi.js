@@ -199,8 +199,7 @@ import { saveData } from "@/services/asyncStorage";
     updateProfile: async (toUpdate) => {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
-      await saveData<User>('user', toUpdate);
-
+      await saveData('user', toUpdate);
       return {
         success: true,
         message: 'Profile updated successfully',

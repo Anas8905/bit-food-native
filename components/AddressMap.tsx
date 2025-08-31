@@ -17,6 +17,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
   const [pin, setPin] = useState<{ latitude: number; longitude: number } | null>(null);
   const [region, setRegion] = useState<Region>(DEFAULT_REGION);
   const [busy, setBusy] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [isEditMode, setIsEditMode] = useState(!!addressId)
 
   const editMode = !!addressId;
@@ -120,10 +121,12 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
     }
   };
 
-  const handleSave = async () => {
+  const saveAddress = async () => {
     if (!pin) {
       return Alert.alert('Warning', 'Geocode first, then adjust the pin if needed.');
     }
+
+    setIsSaving(true);
 
     const addr: Address = {
       id: editMode ? addressId! : makeId(),
@@ -138,6 +141,8 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
       Alert.alert('✅ Saved', 'This address is now selected for delivery.');
     } catch (error) {
       Alert.alert('Error', 'Failed to save address. Please try again.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -215,12 +220,13 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
       )}
 
         <TouchableOpacity
-          onPress={handleSave}
+          onPress={saveAddress}
           style={styles.save}
-          disabled={!pin || busy}
+          disabled={!pin || isSaving}
+          activeOpacity={0.7}
         >
-          {busy ? (
-            <ActivityIndicator />
+          {isSaving ? (
+            <ActivityIndicator color="white" size={16} />
           ) : (
             <Text style={styles.saveText}>{saveButtonText}</Text>
           )}
