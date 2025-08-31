@@ -5,5 +5,5 @@ export const KEYS = {
     SELECTED_ADDRESS_ID: 'selectedAddressId',
     CART: 'cart',
     FAVORITES: 'favorites',
-    
 }
+

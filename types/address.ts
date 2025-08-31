@@ -16,4 +16,9 @@ export type Address = {
     address: string;
     latitude: number;
     longitude: number;
-  };
+};
+
+export interface AddressFormProps {
+  addressId?: string;
+  saveButtonText?: string;
+}

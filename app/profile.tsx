@@ -24,10 +24,7 @@ const EditProfileScreen = () => {
   const { addresses, removeAddress } = useAddress();
 
   const editAddress = (addressId: string) => {
-    router.push({
-      pathname: '/tabs/address',
-      params: { addressId },
-    });
+    router.push(`/address/${addressId}`);
   }
 
   const AddressIcon = ({ label }: { label?: string }) => {

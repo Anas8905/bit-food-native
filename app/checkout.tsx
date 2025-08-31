@@ -84,10 +84,7 @@ const CheckoutScreen = () => {
             <Text style={styles.sectionTitle}>Delivery Address</Text>
             <TouchableOpacity
               style={styles.changeButton}
-              onPress={() => router.push({
-                pathname: '/tabs/address',
-                params: { addressId: selectedAddress?.id },
-              })}
+              onPress={() => router.push(`/address/${selectedAddress?.id}`)}
             >
               <Text style={styles.changeButtonText}>Change</Text>
             </TouchableOpacity>
