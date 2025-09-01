@@ -4,9 +4,58 @@ import { saveData } from "@/services/asyncStorage";
   const pizzas = [
       {
         id: '1',
+        name: 'Pepperoni Feast',
+        description: 'Classic pepperoni, mozzarella cheese, tomato sauce on a hand-tossed crust',
+        image: require('../assets/images/pizza_pepperoni.png'),
+        category: 'Popular',
+        rating: 4.5,
+        reviewCount: '1.5k+',
+        deliveryTime: 25,
+        deliveryFee: 'Free',
+        variations: [
+          { size: '6" - Small (1)', price: 510 },
+          { size: '9" - Medium (2)', price: 1100 },
+          { size: '12" - Large (2-3)', price: 1600 },
+          { size: '15" - Party (3-4)', price: 2100 },
+        ]
+      },
+      {
+        id: '2',
+        name: 'Meat Lovers',
+        description: 'Pepperoni, ham, bacon, sausage, beef on a hand-tossed crust',
+        image: require('../assets/images/pizza_italian.png'),
+        category: 'Popular',
+        rating: 4.7,
+        reviewCount: '1.8k+',
+        deliveryTime: 30,
+        deliveryFee: 'Free',
+        variations: [
+          { size: '9" - Medium (2)', price: 1200 },
+          { size: '12" - Large (2-3)', price: 1700 },
+          { size: '15" - Party (3-4)', price: 2300 },
+        ]
+      },
+      {
+        id: '3',
+        name: 'BBQ Chicken',
+        description: 'Grilled chicken, BBQ sauce, red onions, cilantro on a hand-tossed crust',
+        image: require('../assets/images/pizza_special.png'),
+        category: 'Popular',
+        rating: 4.6,
+        reviewCount: '1.2k+',
+        deliveryTime: 25,
+        deliveryFee: 'Free',
+        variations: [
+          { size: '9" - Medium (2)', price: 1100 },
+          { size: '12" - Large (2-3)', price: 1600 },
+          { size: '15" - Party (3-4)', price: 2200 },
+        ]
+      },
+      {
+        id: '4',
         name: 'Chicago Bold',
         description: 'Crispy golden crust, Spicy BBQ Chicken, Tomato Sauce, Onions, Chillies & Coriander.',
-        image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-23%20at%201.10.31%E2%80%AFPM-Xs1nnWF4TV21kTGdbK12Orgff3GWct.png',
+        image: require('../assets/images/pizza_dark.png'),
         category: 'Popular',
         rating: 4.8,
         reviewCount: '2k+',
@@ -21,27 +70,10 @@ import { saveData } from "@/services/asyncStorage";
         ]
       },
       {
-        id: '2',
-        name: 'Pepperoni Feast',
-        description: 'Classic pepperoni, mozzarella cheese, tomato sauce on a hand-tossed crust',
-        image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-23%20at%201.10.43%E2%80%AFPM-tYHy0saIpWiSMA4D69obC1yxt0varp.png',
-        category: 'Popular',
-        rating: 4.5,
-        reviewCount: '1.5k+',
-        deliveryTime: 25,
-        deliveryFee: 'Free',
-        variations: [
-          { size: '6" - Small (1)', price: 510 },
-          { size: '9" - Medium (2)', price: 1100 },
-          { size: '12" - Large (2-3)', price: 1600 },
-          { size: '15" - Party (3-4)', price: 2100 },
-        ]
-      },
-      {
-        id: '3',
+        id: '5',
         name: 'Veggie Supreme',
         description: 'Bell peppers, mushrooms, onions, black olives, tomatoes on a thin crust',
-        image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-23%20at%201.10.43%E2%80%AFPM-tYHy0saIpWiSMA4D69obC1yxt0varp.png',
+        image: require('../assets/images/pizza_dark.png'),
         category: 'Classics',
         rating: 4.3,
         reviewCount: '1k+',
@@ -54,26 +86,10 @@ import { saveData } from "@/services/asyncStorage";
         ]
       },
       {
-        id: '4',
-        name: 'Meat Lovers',
-        description: 'Pepperoni, ham, bacon, sausage, beef on a hand-tossed crust',
-        image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-23%20at%201.10.43%E2%80%AFPM-tYHy0saIpWiSMA4D69obC1yxt0varp.png',
-        category: 'Popular',
-        rating: 4.7,
-        reviewCount: '1.8k+',
-        deliveryTime: 30,
-        deliveryFee: 'Free',
-        variations: [
-          { size: '9" - Medium (2)', price: 1200 },
-          { size: '12" - Large (2-3)', price: 1700 },
-          { size: '15" - Party (3-4)', price: 2300 },
-        ]
-      },
-      {
-        id: '5',
+        id: '6',
         name: 'Hawaiian',
         description: 'Ham, pineapple, mozzarella cheese on a hand-tossed crust',
-        image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-23%20at%201.10.43%E2%80%AFPM-tYHy0saIpWiSMA4D69obC1yxt0varp.png',
+        image: require('../assets/images/pizza_special.png'),
         category: 'Classics',
         rating: 4.2,
         reviewCount: '900+',
@@ -86,84 +102,46 @@ import { saveData } from "@/services/asyncStorage";
         ]
       },
       {
-        id: '6',
-        name: 'BBQ Chicken',
-        description: 'Grilled chicken, BBQ sauce, red onions, cilantro on a hand-tossed crust',
-        image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-23%20at%201.10.43%E2%80%AFPM-tYHy0saIpWiSMA4D69obC1yxt0varp.png',
-        category: 'Popular',
-        rating: 4.6,
-        reviewCount: '1.2k+',
-        deliveryTime: 25,
+        id: 'd1',
+        name: 'Deal 1',
+        description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
+        image: require('../assets/images/pizza_pepperoni.png'),
+        price: 1100,
+        deliveryTime: 40,
         deliveryFee: 'Free',
-        variations: [
-          { size: '9" - Medium (2)', price: 1100 },
-          { size: '12" - Large (2-3)', price: 1600 },
-          { size: '15" - Party (3-4)', price: 2200 },
-        ]
-      },
-  ];
-
-  const deals = [
-    {
-      id: 'd1',
-      name: 'Deal 1',
-      description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
-      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-23%20at%201.10.43%E2%80%AFPM-tYHy0saIpWiSMA4D69obC1yxt0varp.png',
-      price: 1100,
-      deliveryTime: 40,
-      deliveryFee: 'Free',
-      category: 'Deals',
-    },
-    {
-      id: 'd2',
-      name: 'Deal 2',
-      description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
-      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-23%20at%201.10.43%E2%80%AFPM-tYHy0saIpWiSMA4D69obC1yxt0varp.png',
-      price: 4300,
-      deliveryTime: 35,
-      deliveryFee: 'Free',
-      category: 'Deals',
-    },
-    {
-      id: 'd3',
-      name: 'Deal 3',
-      description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
-      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-23%20at%201.10.43%E2%80%AFPM-tYHy0saIpWiSMA4D69obC1yxt0varp.png',
-      price: 5100,
-      deliveryTime: 70,
-      deliveryFee: 'Free',
-      category: 'Deals',
-    },
-    {
-      id: 'd4',
-      name: 'Deal 4',
-      description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
-      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-05-23%20at%201.10.43%E2%80%AFPM-tYHy0saIpWiSMA4D69obC1yxt0varp.png',
-      price: 7600,
-      deliveryTime: 80,
-      deliveryFee: 'Free',
-      category: 'Deals',
-    },
-  ];
-
-  const mockUser = {
-    id: '1',
-    fullName: 'Taimoor Khan',
-    phoneNumber: '+92 3212033774',
-    email: 'mikepsully@gmail.com',
-    addresses: [
-      {
-        id: 'a1',
-        type: 'HOME',
-        address: 'E-23/12-Z, Al-Rehman Street, Abid Road, Walton',
+        category: 'Deals',
       },
       {
-        id: 'a2',
-        type: 'OFFICE',
-        address: '23 A Khayaban-e-Iqbal, Sector XX DHA Phase 3, Lahore',
+        id: 'd2',
+        name: 'Deal 2',
+        description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
+        image: require('../assets/images/pizza_italian.png'),
+        price: 4300,
+        deliveryTime: 35,
+        deliveryFee: 'Free',
+        category: 'Deals',
       },
-    ],
-  };
+      {
+        id: 'd3',
+        name: 'Deal 3',
+        description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
+        image: require('../assets/images/pizza_special.png'),
+        price: 5100,
+        deliveryTime: 70,
+        deliveryFee: 'Free',
+        category: 'Deals',
+      },
+      {
+        id: 'd4',
+        name: 'Deal 4',
+        description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
+        image: require('../assets/images/pizza_dark.png'),
+        price: 7600,
+        deliveryTime: 80,
+        deliveryFee: 'Free',
+        category: 'Deals',
+      },
+  ];
 
   const mockOrders = [];
 
@@ -212,24 +190,26 @@ import { saveData } from "@/services/asyncStorage";
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      return {
-        success: true,
-        categories: ['Popular', 'Deals', 'Classics'],
-      };
+      const seen = new Set();
+      pizzas.forEach(p => {
+        if (p?.category) seen.add(p.category);
+      });
+
+      const categories = [...seen];
+
+      return { success: true, categories };
     },
 
-    getPizzas: async (category = null) => {
+    getPizzas: async (category) => {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 800));
 
       let result;
 
-      if (category === 'Deals') {
-        result = deals;
-      } else if (category) {
+      if (category) {
         result = pizzas.filter(pizza => pizza.category === category);
       } else {
-        result = [...pizzas, ...deals];
+        result = pizzas;
       }
 
       return {
@@ -242,7 +222,7 @@ import { saveData } from "@/services/asyncStorage";
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      const pizza = pizzas.find(p => p.id === id) || deals.find(d => d.id === id);
+      const pizza = pizzas.find(p => p.id === id);
 
       if (pizza) {
         return {
@@ -252,21 +232,6 @@ import { saveData } from "@/services/asyncStorage";
       } else {
         throw new Error('Pizza not found');
       }
-    },
-
-    searchPizzas: async (query) => {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 700));
-
-      const results = pizzas.filter(
-        pizza => pizza.name.toLowerCase().includes(query.toLowerCase()) ||
-                 pizza.description.toLowerCase().includes(query.toLowerCase())
-      );
-
-      return {
-        success: true,
-        pizzas: results,
-      };
     },
   };
 

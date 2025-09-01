@@ -12,22 +12,28 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import EmptyState from '../../components/EmptyState';
 import { useCart } from '@/hooks/useCart';
+import { useAddress } from '@/hooks/useAddress';
 
-const CartScreen = () => {
+export default function CartScreen() {
   const router = useRouter();
   const { cart, removeFromCart, updateQuantity, getCartTotal } = useCart();
+  const { selectedAddress } = useAddress();
+
 
   const handleCheckout = () => {
     if (cart.length === 0) {
       Alert.alert('Error', 'Your cart is empty');
       return;
     }
-    router.push(`/checkout`)
+
+    if (!selectedAddress) {
+      router.push(`/tabs/address`)
+    } else router.push(`/checkout`)
   };
 
   const renderItem = ({ item }) => (
     <View style={styles.cartItem}>
-      <Image source={{ uri: item.image }} style={styles.itemImage} />
+      <Image source={item.image} style={styles.itemImage} />
 
       <View style={styles.itemDetails}>
         <Text style={styles.itemName}>{item.name}</Text>
@@ -212,5 +218,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-export default CartScreen;

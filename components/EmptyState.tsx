@@ -31,7 +31,7 @@ export default function EmptyState({
       case 'receipt':
         return <Ionicons name="receipt-outline" size={60} color="#FA4A0C" />;
       case 'address':
-        return <FontAwesome5 name="map-marker-alt" size={60} color="#ddd" />;
+        return <FontAwesome5 name="map-marker-alt" size={50} color="#ddd" />;
       default:
         return <Ionicons name="alert-circle-outline" size={60} color="#FA4A0C" />;
     }

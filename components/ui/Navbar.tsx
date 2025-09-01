@@ -15,7 +15,7 @@ type NavbarProps = {
   cartCount?: number;
 };
 
-const Navbar: React.FC<NavbarProps> = ({ location = 'Home', cartCount = 0 }) => {
+const Navbar = ({ location, cartCount = 0 }: NavbarProps) => {
   const { openDrawer } = useDrawer();
   const router = useRouter();
 
@@ -60,9 +60,6 @@ const styles = StyleSheet.create({
     height: Platform.OS === 'ios' ? 60 : 70,
     paddingTop: Platform.OS === 'ios' ? 10 : 20,
     paddingHorizontal: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
   },
   circleButton: {
     width: 40,

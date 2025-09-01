@@ -18,7 +18,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         if (cartData) setCart(cartData);
         if (favoritesData) setFavorites(favoritesData);
       } catch (error) {
-        console.log('Error loading cart data', error);
+        console.error('Error loading cart data', error);
       }
     };
 
@@ -29,7 +29,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await saveData(KEYS.CART, cartItems);
     } catch (error) {
-      console.log('Error saving cart', error);
+      console.error('Error saving cart', error);
     }
   };
 
@@ -37,7 +37,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await saveData(KEYS.FAVORITES, favItems);
     } catch (error) {
-      console.log('Error saving favorites', error);
+      console.error('Error saving favorites', error);
     }
   };
 

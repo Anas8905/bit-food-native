@@ -13,13 +13,14 @@ const WelcomeScreen = () => {
           resizeMode="contain"
         />
         <View style={styles.textContainer}>
-          <Text style={styles.title}>Hey there!!, feeling hungry for some pizza?</Text>
+          <Text style={styles.title}>Hey, there !!</Text>
+          <Text style={styles.title}>Feeling hungry for some pizza?</Text>
         </View>
         <TouchableOpacity
           style={styles.button}
           onPress={() => router.push('/login')}
         >
-          <Text style={styles.buttonText}>Let&apos;s Eat!!</Text>
+          <Text style={styles.buttonText}>Let&apos;s Eat !!</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

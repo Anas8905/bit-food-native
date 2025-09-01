@@ -1,6 +1,6 @@
 import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -24,7 +24,6 @@ const CheckoutScreen = () => {
   const { user } = useAuth();
   const { cart, getCartTotal, clearCart } = useCart();
   const { selectedAddress: selectedAddr } = useAddress();
-
   const [selectedAddress, setSelectedAddress] = useState(selectedAddr);
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [deliveryInstructions, setDeliveryInstructions] = useState('');
@@ -72,7 +71,7 @@ const CheckoutScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <BackButton onPress={() => router.back()} />
+        <BackButton onPress={() => router.replace('/tabs/cart')} />
         <Text style={styles.headerTitle}>Checkout</Text>
         <View style={{ width: 40 }} />
       </View>
@@ -102,7 +101,7 @@ const CheckoutScreen = () => {
             <Text style={styles.sectionTitle}>Customer Details</Text>
             <TouchableOpacity
               style={styles.changeButton}
-              onPress={() => {}}
+              onPress={() => router.push('/profile')}
             >
               <Text style={styles.changeButtonText}>Edit</Text>
             </TouchableOpacity>

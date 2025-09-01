@@ -39,6 +39,7 @@ export default function CustomDrawer() {
 
   const handleLogout = async () => {
     await logout();
+    closeDrawer();
     router.push('/login');
   }
 

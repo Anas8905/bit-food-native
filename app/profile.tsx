@@ -36,7 +36,7 @@ export default function EditProfileScreen() {
     if (l === 'home') {
       return <AntDesign name="home" size={20} color="#009DFF" />;
     }
-    if (l === 'office') {
+    if (l === 'work') {
       return <FontAwesome5 name="building" size={20} color="orange" />;
     }
     return <FontAwesome5 name="map-marker-alt" size={20} color="red" />;
@@ -69,7 +69,7 @@ export default function EditProfileScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <BackButton onPress={() => router.replace('/tabs/home')} />
+        <BackButton onPress={() => router.back()} />
         <Text style={styles.title}>EDIT PROFILE</Text>
       </View>
 

@@ -4,7 +4,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 const PizzaCard = ({ pizza, onPress }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image source={{ uri: pizza.image }} style={styles.image} />
+      <Image source={pizza.image} style={styles.image} />
 
       <View style={styles.infoContainer}>
         <View style={styles.timeContainer}>
@@ -18,37 +18,37 @@ const PizzaCard = ({ pizza, onPress }) => {
         </View>
       </View>
 
-      <Text style={styles.name}>{pizza.name}</Text>
-
-      {pizza.description && (
-        <Text style={styles.description} numberOfLines={2}>
-          {pizza.description}
-        </Text>
-      )}
-
-      <Text style={styles.price}>PKR {pizza.price || pizza.variations[1].price}</Text>
+      <View style={styles.textInfo}>
+        <Text style={styles.name}>{pizza.name}</Text>
+        {pizza.description && (
+          <Text style={styles.description} numberOfLines={2}>
+            {pizza.description}
+          </Text>
+        )}
+        <Text style={styles.price}>PKR {pizza.price || pizza.variations[1].price}</Text>
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: 160,
+    width: 150,
     marginHorizontal: 8,
     marginBottom: 15,
     borderRadius: 12,
-    backgroundColor: 'white',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 2,
+    elevation: 4,
     overflow: 'hidden',
   },
   image: {
     width: '100%',
-    height: 120,
+    height: 160,
     resizeMode: 'cover',
+    borderRadius: 12,
   },
   infoContainer: {
     flexDirection: 'row',
@@ -73,14 +73,17 @@ const styles = StyleSheet.create({
     color: '#FA4A0C',
     marginLeft: 4,
   },
+  textInfo: {
+    gap: 5,
+  },
   name: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: 500,
     paddingHorizontal: 8,
     marginBottom: 4,
   },
   description: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#666',
     paddingHorizontal: 8,
     marginBottom: 4,

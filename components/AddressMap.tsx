@@ -138,8 +138,8 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
 
     try {
       await addAddress(addr, true);
-      Alert.alert('✅ Saved', 'This address is now selected for delivery.');
-    } catch (error) {
+      Alert.alert('Success', 'This address is now saved and selected for delivery.');
+    } catch {
       Alert.alert('Error', 'Failed to save address. Please try again.');
     } finally {
       setIsSaving(false);

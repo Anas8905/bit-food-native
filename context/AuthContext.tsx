@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           router.push('/welcome');
         }
       } catch (error) {
-        console.log('Error logging out', error);
+        console.error('Error logging out', error);
       }
     },
     [router, refresh]

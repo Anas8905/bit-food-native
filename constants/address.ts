@@ -11,6 +11,6 @@ export const makeId = (): string => `${Date.now()}-${Math.random().toString(36).
 
 export const LABEL_OPTIONS = [
   { label: 'Home' },
-  { label: 'Office' },
+  { label: 'Work' },
   { label: 'Other' },
 ];

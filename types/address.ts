@@ -8,7 +8,7 @@ export type AddressContextValue = {
   refresh: () => Promise<void>;
 };
 
-export type AddressLabel = 'Home' | 'Office' | 'Other';
+export type AddressLabel = 'Home' | 'Work' | 'Other';
 
 export type Address = {
     id: string;

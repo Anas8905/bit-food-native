@@ -11,8 +11,8 @@ export default function Favorites() {
   const { favorites, removeFromFavorites } = useCart();
 
   const renderItem = ({ item }) => (
-    <View style={styles.favItem}>
-      <Image source={{ uri: item.image }} style={styles.itemImage} />
+    <TouchableOpacity style={styles.favItem} onPress={() => router.push(`/pizza/${item.id}`)}>
+      <Image source={item.image} style={styles.itemImage} />
 
       <View style={styles.itemDetails}>
         <Text style={styles.itemName}>{item.name}</Text>
@@ -35,7 +35,7 @@ export default function Favorites() {
           <Ionicons name="trash-outline" size={20} color="#FA4A0C" />
         </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   if (favorites.length === 0) {
