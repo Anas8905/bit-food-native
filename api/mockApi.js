@@ -1,6 +1,9 @@
 import { saveData } from "@/services/asyncStorage";
 
 // Mock data
+
+  export const DIP_OPTIONS = ["BBQ Sauce", "Garlic Mayo", "Anyone can cook"];
+
   const pizzas = [
       {
         id: '1',
@@ -142,6 +145,7 @@ import { saveData } from "@/services/asyncStorage";
         category: 'Deals',
       },
   ];
+
 
   const mockOrders = [];
 
