@@ -1,7 +1,8 @@
+import { useAddress } from '@/hooks/useAddress';
 import { useDrawer } from '@/hooks/useDrawer';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import { useMemo } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -9,15 +10,21 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Dropdown } from 'react-native-element-dropdown';
 
 type NavbarProps = {
-  location?: string;
   cartCount?: number;
 };
 
-const Navbar = ({ location, cartCount = 0 }: NavbarProps) => {
-  const { openDrawer } = useDrawer();
+export default function Navbar({ cartCount = 0 }: NavbarProps) {
   const router = useRouter();
+  const { openDrawer } = useDrawer();
+  const { addresses, selectedAddress, selectAddress } = useAddress();
+
+  const labels = useMemo(
+    () => (addresses ?? []).map(({ id, label }) => ({ label, value: id })),
+    [addresses]
+  );
 
   return (
     <View style={styles.navbar}>
@@ -31,10 +38,23 @@ const Navbar = ({ location, cartCount = 0 }: NavbarProps) => {
       {/* Center Text */}
       <View style={styles.centerText}>
         <Text style={styles.label}>DELIVER TO</Text>
-        <View style={styles.locationRow}>
-          <Text style={styles.location}>{location}</Text>
-          <Ionicons name="chevron-down" size={16} color="black" />
-        </View>
+        {labels.length > 0 ? (
+          <Dropdown
+            data={labels}
+            labelField="label"
+            valueField="value"
+            value={selectedAddress?.id ?? null}
+            onChange={(item) => {
+              selectAddress(item.value);
+            }}
+            style={styles.input}
+          />
+        ) : (
+          <TouchableOpacity style={styles.locationRow} onPress={() => router.push('/tabs/address')}>
+            <Text style={styles.location}>Select location</Text>
+            <Ionicons name="chevron-down" size={12} color="black" />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Cart Button */}
@@ -60,6 +80,12 @@ const styles = StyleSheet.create({
     height: Platform.OS === 'ios' ? 60 : 70,
     paddingTop: Platform.OS === 'ios' ? 10 : 20,
     paddingHorizontal: 16,
+  },
+  input: {
+    width: '100%',
+    paddingHorizontal: 14,
+    paddingVertical: 2,
+    marginBottom: 10,
   },
   circleButton: {
     width: 40,
@@ -89,6 +115,7 @@ const styles = StyleSheet.create({
   },
   centerText: {
     alignItems: 'center',
+    width: '25%'
   },
   label: {
     fontSize: 10,
@@ -97,15 +124,14 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   locationRow: {
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
   },
   location: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginRight: 4,
+    fontSize: 12,
     color: '#333',
   },
 });
 
-export default Navbar;

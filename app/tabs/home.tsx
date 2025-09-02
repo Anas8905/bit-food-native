@@ -1,5 +1,6 @@
+import { Feather, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -16,16 +17,14 @@ import { mockPizzaAPI } from '../../api/mockApi';
 import NoInternet from '../../components/NoInternet';
 import PizzaCard from '../../components/PizzaCard';
 import Navbar from '../../components/ui/Navbar';
+import DrawerBase from '@/components/DrawBase';
 import { useCart } from '@/hooks/useCart';
 import { useNetwork } from '@/hooks/useNetwork';
-import { useAddress } from '@/hooks/useAddress';
-import { Feather } from '@expo/vector-icons';
 
-const HomeScreen = () => {
+export default function HomeScreen() {
   const router = useRouter();
   const { isConnected } = useNetwork();
   const { cart } = useCart();
-  const { selectedAddress } = useAddress();
   const [categories, setCategories] = useState<string[]>([]);
   const [pizzas, setPizzas] = useState<Record<string, any[]>>({});
   const [selectedCategories, setSelectedCategories] = useState(['All']);
@@ -33,6 +32,22 @@ const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const outerInputRef = useRef<TextInput>(null);
+  const innerInputRef = useRef<TextInput>(null);
+
+  const openDrawerFromSearch = () => {
+    setIsDrawerOpen(true);
+    requestAnimationFrame(() => outerInputRef.current?.blur());
+  };
+
+  useEffect(() => {
+    if (isDrawerOpen) {
+      const t = setTimeout(() => innerInputRef.current?.focus(), 320);
+      return () => clearTimeout(t);
+    }
+  }, [isDrawerOpen]);
 
   const fetchData = async () => {
     try {
@@ -57,19 +72,16 @@ const HomeScreen = () => {
   const getFilteredData = () => {
     let filteredData: Record<string, any[]> = {};
 
-    // Determine which categories to show
     const categoriesToShow = selectedCategories.includes('All')
       ? categories
       : selectedCategories;
 
-    // Filter by categories first
     categoriesToShow.forEach(category => {
       if (pizzas[category]) {
         filteredData[category] = pizzas[category];
       }
     });
 
-    // If there's a search query, filter pizzas by name
     if (searchQuery.trim()) {
       const searchLower = searchQuery.toLowerCase().trim();
       Object.keys(filteredData).forEach(category => {
@@ -78,7 +90,6 @@ const HomeScreen = () => {
           pizza.description?.toLowerCase().includes(searchLower)
         );
 
-        // Remove empty categories
         if (filteredData[category].length === 0) {
           delete filteredData[category];
         }
@@ -89,6 +100,10 @@ const HomeScreen = () => {
   };
 
   const filteredPizzas = getFilteredData();
+
+  const hasQuery = searchQuery.trim().length > 0;
+  const hasResults = hasQuery && Object.keys(filteredPizzas).length > 0;
+  const popularPizzas = pizzas['Popular'] ?? [];
 
   const toggleCategory = (category: string) => {
     setSelectedCategories(prev => {
@@ -105,6 +120,16 @@ const HomeScreen = () => {
       }
     });
   };
+
+  const seePizza = (id: number | string) => {
+    setSearchQuery("");
+    router.push(`/pizza/${id}`);
+  }
+
+  const closeSlider = (closeFn) => {
+    setSearchQuery("");
+    closeFn();
+  }
 
   useEffect(() => {
     if (isConnected) {
@@ -132,21 +157,22 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Navbar location={selectedAddress?.label ?? "Home"} cartCount={cartItemCount} />
+      <Navbar cartCount={cartItemCount}
+      />
         <View style={styles.inputs}>
           <Feather
             name="search"
             size={18}
             color="#bbb"
-            style={styles.searchIcon}
+            style={[styles.searchIcon, styles.DrawerSearchIcon]}
           />
           <TextInput
+            ref={outerInputRef}
             placeholder="Search pizza"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
             style={[styles.input, { textAlignVertical: 'top' }]}
             spellCheck={false}
             autoCorrect={false}
+            onFocus={openDrawerFromSearch}
           />
         </View>
       <ScrollView
@@ -207,7 +233,7 @@ const HomeScreen = () => {
                 renderItem={({ item }) => (
                   <PizzaCard
                     pizza={item}
-                    onPress={() => router.push(`/pizza/${item.id}`)}
+                    onPress={() => seePizza(item.id)}
                   />
                 )}
                 contentContainerStyle={styles.pizzaList}
@@ -222,6 +248,94 @@ const HomeScreen = () => {
           </View>
         )}
       </ScrollView>
+
+      <DrawerBase
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        side="right"
+        width="100%"
+        renderHeader={({ close }) => (
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => closeSlider(close)} style={styles.closeBtn}>
+              <Text style={styles.closeIcon}>✕</Text>
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Search</Text>
+          </View>
+        )}
+      >
+        <View style={styles.drawerContent}>
+          <TextInput
+            ref={innerInputRef}
+            placeholder="Search pizza"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            autoFocus
+            returnKeyType="search"
+            style={[styles.input, styles.drawerInput]}
+            spellCheck={false}
+            autoCorrect={false}
+          />
+
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.dataContainer}
+          >
+            {hasQuery ? (
+              <>
+                <View style={styles.resultContainer}>
+                  <Text style={styles.resultTitle}>Results</Text>
+                </View>
+
+                {hasResults ? (
+                  Object.keys(filteredPizzas).map((category) => (
+                    <View key={category}>
+                      {filteredPizzas[category].map((item) => (
+                        <TouchableOpacity
+                          key={item.id}
+                          onPress={() => seePizza(item.id)}
+                          style={styles.resultItem}
+                        >
+                          <Ionicons name="restaurant-outline" size={20} color="orange" />
+                          <Text style={styles.itemName}>{item.name}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  ))
+                ) : (
+                  <View>
+                    <Text style={styles.notFoundText}>
+                      No pizzas found matching your search
+                    </Text>
+                  </View>
+                )}
+              </>
+            ) : null}
+
+            <View style={[hasQuery ? styles.lowMargin : styles.highMargin]}>
+              <Text style={styles.popularTitle}>Popular Searches</Text>
+
+              {popularPizzas.length ? (
+                <View style={styles.pillsWrap}>
+                  {popularPizzas.map((item) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      onPress={() => seePizza(item.id)}
+                      style={styles.pill}
+                      accessibilityRole="button"
+                      accessibilityLabel={`View ${item.name}`}
+                    >
+                      <Text>{item.name}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              ) : (
+                <Text style={styles.notFoundText}>No popular pizzas available</Text>
+              )}
+            </View>
+          </ScrollView>
+
+        </View>
+      </DrawerBase>
     </SafeAreaView>
   );
 };
@@ -237,18 +351,62 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     position: 'absolute',
-    left: 12,
     top: 11,
     zIndex: 1,
+  },
+  DrawerSearchIcon: {
+    left: 20,
   },
   input: {
     backgroundColor: '#F6F6F6',
     borderRadius: 10,
     padding: 12,
-    paddingLeft: 40,
+    paddingLeft: 46,
     marginBottom: 10,
     fontSize: 14,
     color: '#333',
+  },
+  header: {
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  closeBtn: {
+    padding: 6,
+     marginRight: 8
+    },
+  closeIcon: {
+    fontSize: 18,
+   },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 500,
+  },
+  resultTitle: {
+    fontSize: 18,
+    fontWeight: 600,
+  },
+  drawerContent: {
+    flex: 1
+  },
+  drawerInput: {
+    paddingLeft: 40,
+  },
+  dataContainer: {
+    paddingBottom: 20,
+  },
+  resultContainer: {
+    marginVertical: 20,
+  },
+  resultItem: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 6,
+    marginBottom: 20,
+  },
+  itemName: {
+    fontSize: 16,
+    color: '#555'
   },
   loadingContainer: {
     flex: 1,
@@ -295,6 +453,30 @@ const styles = StyleSheet.create({
   pizzaList: {
     paddingHorizontal: 10,
   },
+  highMargin: {
+    marginTop: 20,
+  },
+  lowMargin: {
+    marginTop: 10,
+  },
+  popularTitle: {
+    fontSize: 18,
+    fontWeight: 600,
+    marginBottom: 10,
+  },
+  pillsWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginLeft: -6,
+  },
+  pill: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: '#f2f2f2',
+    marginHorizontal: 6,
+    marginTop: 6,
+  },
   noResultsContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -306,6 +488,9 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
   },
+  notFoundText: {
+    fontSize: 16,
+    color: '#666',
+  },
 });
 
-export default HomeScreen;
