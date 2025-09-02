@@ -1,10 +1,13 @@
+import { useSearch } from '@/context/SearchContext';
 import { useCart } from '@/hooks/useCart';
 import { Feather, Fontisto, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { Tabs, useRouter } from 'expo-router';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function TabLayout() {
   const { cart, favorites } = useCart();
+  const { navigateToHomeAndSearch } = useSearch();
+  const router = useRouter();
   const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
   const favItemsCount = favorites.length;
 
@@ -36,7 +39,23 @@ export default function TabLayout() {
         options={{
           title: 'Search',
           tabBarIcon: ({ color }) => (
-            <Feather name="search" size={20} color={color} />
+            <Feather name="search" size={22} color={color} />
+          ),
+          tabBarButton: (props) => (
+            <TouchableOpacity
+              style={[props.style, { 
+                justifyContent: 'center', 
+                paddingBottom: 10
+              }]}
+              onPress={() => {
+                router.push('/tabs/home');
+                setTimeout(() => {
+                  navigateToHomeAndSearch();
+                }, 100);
+              }}
+            >
+              <Feather name="search" size={22} color={props.accessibilityState?.selected ? '#FA4A0C' : '#8E8E93'} />
+            </TouchableOpacity>
           ),
         }}
       />

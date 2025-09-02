@@ -1,3 +1,7 @@
+import DrawerBase from '@/components/DrawBase';
+import { useSearch } from '@/context/SearchContext';
+import { useCart } from '@/hooks/useCart';
+import { useNetwork } from '@/hooks/useNetwork';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
@@ -17,14 +21,12 @@ import { mockPizzaAPI } from '../../api/mockApi';
 import NoInternet from '../../components/NoInternet';
 import PizzaCard from '../../components/PizzaCard';
 import Navbar from '../../components/ui/Navbar';
-import DrawerBase from '@/components/DrawBase';
-import { useCart } from '@/hooks/useCart';
-import { useNetwork } from '@/hooks/useNetwork';
 
 export default function HomeScreen() {
   const router = useRouter();
   const { isConnected } = useNetwork();
   const { cart } = useCart();
+  const { onSearchTrigger } = useSearch();
   const [categories, setCategories] = useState<string[]>([]);
   const [pizzas, setPizzas] = useState<Record<string, any[]>>({});
   const [selectedCategories, setSelectedCategories] = useState(['All']);
@@ -136,6 +138,13 @@ export default function HomeScreen() {
       fetchData();
     }
   }, [isConnected]);
+
+  // Register search callback for the search tab button
+  useEffect(() => {
+    onSearchTrigger(() => {
+      setIsDrawerOpen(true);
+    });
+  }, [onSearchTrigger]);
 
   if (!isConnected) {
     return <NoInternet onRetry={fetchData} />;
