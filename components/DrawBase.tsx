@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -37,6 +37,9 @@ type DrawerBaseProps = {
   /** If true, tapping backdrop closes. Default true. */
   closeOnBackdropPress?: boolean;
 
+  /** If true, prevents state updates during navigation. Default false. */
+  preventUpdates?: boolean;
+
   /** Optional slot renderers OR use children. */
   renderHeader?: (ctx: DrawerBaseContext) => React.ReactNode;
   renderContent?: (ctx: DrawerBaseContext) => React.ReactNode;
@@ -71,6 +74,7 @@ export default function DrawerBase({
   duration = 300,
   backdropColor = 'rgba(0,0,0,0.3)',
   closeOnBackdropPress = true,
+  preventUpdates = false,
   renderHeader,
   renderContent,
   renderFooter,
@@ -80,25 +84,95 @@ export default function DrawerBase({
   const drawerWidth = useMemo(() => parseWidth(width), [width]);
   const offscreenX = side === 'left' ? -drawerWidth : drawerWidth;
 
-  const translateX = useRef(new Animated.Value(isOpen ? 0 : offscreenX)).current;
-  const [mounted, setMounted] = useState(isOpen);
+  const translateX = useRef(new Animated.Value(offscreenX)).current;
+  const backdropOpacity = useRef(new Animated.Value(0)).current;
+  const [mounted, setMounted] = useState(false);
+
+  // Track if component is mounted to prevent state updates after unmount
+  const isMountedRef = useRef(true);
+
+  // Animation callback to avoid useInsertionEffect warnings
+  const handleAnimationComplete = useCallback(() => {
+    // Only update state if component is still mounted and animation is still relevant
+    if (!isOpen && isMountedRef.current && !preventUpdates) {
+      setMounted(false);
+    }
+  }, [isOpen, preventUpdates]);
 
   // Mount/unmount with animation
   useEffect(() => {
-    if (isOpen) setMounted(true);
+    // Skip updates if preventUpdates is true
+    if (preventUpdates) return;
 
-    Animated.timing(translateX, {
-      toValue: isOpen ? 0 : offscreenX,
-      duration,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start(() => {
-      if (!isOpen) setMounted(false);
-    });
-    // NOTE: depends only on isOpen/offscreenX/duration, *not* on arbitrary app state
-  }, [isOpen, offscreenX, duration, translateX]);
+    let translateAnimation: Animated.CompositeAnimation | null = null;
+    let opacityAnimation: Animated.CompositeAnimation | null = null;
+
+    if (isOpen) {
+      setMounted(true);
+      // Start from offscreen position and animate to center
+      translateX.setValue(offscreenX);
+      backdropOpacity.setValue(0);
+      
+      requestAnimationFrame(() => {
+        // Animate both translateX and backdrop opacity
+        translateAnimation = Animated.timing(translateX, {
+          toValue: 0,
+          duration,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        });
+        
+        opacityAnimation = Animated.timing(backdropOpacity, {
+          toValue: 1,
+          duration,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: false,
+        });
+
+        // Run both animations in parallel
+        Animated.parallel([translateAnimation, opacityAnimation]).start();
+      });
+    } else if (mounted) {
+      // Animate to offscreen position
+      translateAnimation = Animated.timing(translateX, {
+        toValue: offscreenX,
+        duration,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      });
+      
+      opacityAnimation = Animated.timing(backdropOpacity, {
+        toValue: 0,
+        duration,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: false,
+      });
+
+      // Run both animations in parallel
+      Animated.parallel([translateAnimation, opacityAnimation]).start(handleAnimationComplete);
+    }
+
+    // Cleanup animations on unmount or dependency change
+    return () => {
+      if (translateAnimation) {
+        translateAnimation.stop();
+      }
+      if (opacityAnimation) {
+        opacityAnimation.stop();
+      }
+    };
+  }, [isOpen, offscreenX, duration, translateX, backdropOpacity, handleAnimationComplete, preventUpdates, mounted]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const ctx: DrawerBaseContext = { close: onClose, isOpen };
+  
+  if (preventUpdates) return null;
 
   if (!mounted) return null;
 
@@ -108,10 +182,13 @@ export default function DrawerBase({
       <TouchableWithoutFeedback
         onPress={closeOnBackdropPress ? onClose : undefined}
       >
-        <View
+        <Animated.View
           style={[
             styles.backdrop,
-            { backgroundColor: backdropColor },
+            { 
+              backgroundColor: backdropColor,
+              opacity: backdropOpacity,
+            },
             stylesOverride.backdrop,
           ]}
           // Accessibility: treat as modal scrim

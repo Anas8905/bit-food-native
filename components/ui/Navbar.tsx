@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import {
+  Alert,
   Platform,
   StyleSheet,
   Text,
@@ -26,10 +27,18 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
     [addresses]
   );
 
+    const updateDeliveryAddress = async (id: string) => {
+      try {
+        await selectAddress(id);
+        Alert.alert('Success', 'Your delivery address is updated.');
+      } catch {
+        Alert.alert('Failed to update delivery address.');
+      }
+    }
+
   return (
     <View style={styles.navbar}>
       {/* Menu Button */}
-
       <TouchableOpacity onPress={openDrawer}>
         <Ionicons name="menu" size={24} color="black" />
       </TouchableOpacity>
@@ -45,7 +54,7 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
             valueField="value"
             value={selectedAddress?.id ?? null}
             onChange={(item) => {
-              selectAddress(item.value);
+              updateDeliveryAddress(item.value);
             }}
             style={styles.input}
           />

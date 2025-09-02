@@ -24,7 +24,7 @@ const screenWidth = Dimensions.get('window').width;
 export default function EditProfileScreen() {
   const router = useRouter();
   const { user, updateProfile } = useAuth();
-  const { addresses, removeAddress } = useAddress();
+  const { addresses, selectAddress, selectedAddress, removeAddress } = useAddress();
   const [fullName, setFullName] = useState(user?.fullName);
   const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber);
   const [email, setEmail] = useState(user?.email);
@@ -42,6 +42,15 @@ export default function EditProfileScreen() {
     return <FontAwesome5 name="map-marker-alt" size={20} color="red" />;
   }
 
+  const updateSelectedAddress = async (id: string) => {
+    try {
+      await selectAddress(id);
+      Alert.alert('Success', 'Your selected address is updated.');
+    } catch {
+      Alert.alert('Failed to update selected address.');
+    }
+  }
+
   const saveProfile = async () => {
     if (!fullName || !email || !phoneNumber) {
       Alert.alert('Missing fields', 'Please fill all fields.');
@@ -49,7 +58,6 @@ export default function EditProfileScreen() {
     }
 
     setIsUpdating(true);
-
     const updatedUser: User = { fullName, email, phoneNumber };
 
     try {
@@ -58,7 +66,7 @@ export default function EditProfileScreen() {
       if (response.success) {
         Alert.alert('Profile Updated', `Name: ${fullName}\nPhone: ${phoneNumber}\nEmail: ${email}`);
       }
-    } catch (error) {
+    } catch {
       Alert.alert('Update Failed', 'Profile is not updated.');
     } finally {
       setIsUpdating(false);
@@ -119,7 +127,11 @@ export default function EditProfileScreen() {
         showsVerticalScrollIndicator={false}
       >
         {addresses.map((addr) => (
-          <View key={addr.id} style={styles.addressCard}>
+          <TouchableOpacity
+            key={addr.id}
+            onPress={() => updateSelectedAddress(addr.id)}
+            style={[styles.addressCard, selectedAddress?.id === addr.id && styles.selectedCard]}
+          >
             <View style={styles.iconBox}>
               <AddressIcon label={addr.label} />
             </View>
@@ -146,7 +158,7 @@ export default function EditProfileScreen() {
                 />
               </TouchableOpacity>
             </View>
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
     ) : (
@@ -162,13 +174,13 @@ export default function EditProfileScreen() {
       <View style={styles.footerContainer}>
         <View style={styles.buttonRow}>
           <TouchableOpacity style={styles.cancelBtn} onPress={() => router.back()}>
-            <Text style={styles.cancelText}>CANCEL</Text>
+            <Text style={styles.cancelText}>Discard Changes</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.saveBtn} onPress={saveProfile} disabled={isUpdating}>
             {isUpdating ? (
                 <ActivityIndicator color="white" size={16} />
               ) : (
-                <Text style={styles.saveText}>Save</Text>
+                <Text style={styles.saveText}>SAVE</Text>
             )}
           </TouchableOpacity>
         </View>
@@ -265,8 +277,13 @@ export default function EditProfileScreen() {
       borderRadius: 12,
       padding: 14,
       marginTop: 12,
+      display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
+    },
+    selectedCard: {
+      borderColor: '#FFB89F',
+      borderWidth: 3,
     },
     iconBox: {
       backgroundColor: '#fff',

@@ -133,12 +133,12 @@ const CheckoutScreen = () => {
           <View style={styles.summaryContainer}>
             <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>Sub Total</Text>
-              <Text style={styles.summaryValue}>Rs. {subtotal}</Text>
+              <Text style={styles.summaryValue}>PKR {subtotal}</Text>
             </View>
 
             <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>GST (16%)</Text>
-              <Text style={styles.summaryValue}>Rs. {gst}</Text>
+              <Text style={styles.summaryValue}>PKR {gst}</Text>
             </View>
 
             <View style={styles.summaryRow}>
@@ -155,7 +155,7 @@ const CheckoutScreen = () => {
 
             <View style={styles.summaryRow}>
               <Text style={styles.totalLabel}>Grand Total</Text>
-              <Text style={styles.totalValue}>Rs. {total}</Text>
+              <Text style={styles.totalValue}>PKR {total}</Text>
             </View>
           </View>
         </View>
@@ -264,7 +264,8 @@ const styles = StyleSheet.create({
   summaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 5,
   },
   summaryLabel: {
     fontSize: 14,

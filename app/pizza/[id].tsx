@@ -6,10 +6,10 @@ import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Image,
   Animated,
-  ScrollView,
+  Image,
   ImageSourcePropType,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -48,6 +48,8 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
   const [isExpanded, setIsExpanded] = useState(false);
   const [animatedHeight] = useState(new Animated.Value(420));
 
+  const hasVariations = Array.isArray(pizza?.variations);
+
   useEffect(() => {
     const fetchPizza = async () => {
       try {
@@ -74,7 +76,8 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
     if (!pizza) {
       return;
     }
-    if (!selectedSize) {
+
+    if (hasVariations && !selectedSize) {
       Alert.alert('Error', 'Please select a size');
       return;
     }
@@ -83,8 +86,8 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
       id: pizza.id,
       name: pizza.name,
       image: pizza.image,
-      size: selectedSize.size,
-      price: selectedSize.price,
+      size: selectedSize?.size || 'Regular',
+      price: selectedSize?.price || pizza.price || 0,
       quantity,
       dips: selectedDips,
     };
@@ -175,15 +178,20 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
         style={styles.scrollContent}
       >
         {/* Swipe Section */}
-        <TouchableOpacity
-          style={styles.swipeContainer}
-          onPress={toggleModal}
-        >
-          <View style={styles.swipeBtn}>
-          </View>
-        </TouchableOpacity>
+        {hasVariations && (
+          <TouchableOpacity
+            style={styles.swipeContainer}
+            onPress={toggleModal}
+          >
+            <View style={styles.swipeBtn}>
+            </View>
+          </TouchableOpacity>
+        )}
 
-        {/* Variation Section */}
+        {!hasVariations && (
+          <View style={styles.topSpacing} />
+        )}
+
         <View>
           <View style={styles.titleRow}>
             <View>
@@ -192,47 +200,59 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
               </View>
               <Text style={styles.title}>{pizza.name}</Text>
             </View>
-            <View style={styles.ratingContainer}>
-              <Ionicons name="star" size={16} color="#FFD700" />
-              <Text style={styles.rating}>{pizza.rating} ({pizza.reviewCount})</Text>
-            </View>
+            {pizza?.rating != null && pizza?.reviewCount != null && (
+              <View style={styles.ratingContainer}>
+                <Ionicons name="star" size={16} color="#FFD700" />
+                <Text style={styles.rating}>
+                  {pizza.rating} ({pizza.reviewCount})
+                </Text>
+              </View>
+            )}
           </View>
 
           <Text style={styles.description}>{pizza.description}</Text>
 
-          <View style={styles.variationContainer}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.variationTitle}>Variation</Text>
-              <Text style={styles.variationSubtitle}>Please select one</Text>
-            </View>
-            <View style={styles.radioGroup}>
-              {pizza.variations && pizza.variations.map((variation, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.variationOption}
-                  onPress={() => setSelectedSize(variation)}
-                >
-                  <View style={styles.radioContainer}>
-                    <View
-                      style={[
-                        styles.radioOuter,
-                        selectedSize && selectedSize.size === variation.size && styles.radioOuterSelected,
-                      ]}
-                    >
-                      {selectedSize && selectedSize.size === variation.size && (
-                        <View style={styles.radioInner} />
-                      )}
+          {/* Variation Section */}
+          {hasVariations ? (
+            <View style={styles.variationContainer}>
+              <View style={styles.titleContainer}>
+                <Text style={styles.variationTitle}>Variation</Text>
+                <Text style={styles.variationSubtitle}>Please select one</Text>
+              </View>
+
+              <View style={styles.radioGroup}>
+                {pizza.variations?.map((variation, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.variationOption}
+                    onPress={() => setSelectedSize(variation)}
+                  >
+                    <View style={styles.radioContainer}>
+                      <View
+                        style={[
+                          styles.radioOuter,
+                          selectedSize && selectedSize.size === variation.size && styles.radioOuterSelected,
+                        ]}
+                      >
+                        {selectedSize && selectedSize.size === variation.size && (
+                          <View style={styles.radioInner} />
+                        )}
+                      </View>
+                      <Text style={styles.variationText}>{variation.size}</Text>
                     </View>
-                    <Text style={styles.variationText}>{variation.size}</Text>
-                  </View>
-                  <Text style={styles.variationPrice}>Rs. {variation.price}</Text>
-                </TouchableOpacity>
-              ))}
+                    <Text style={styles.variationPrice}>PKR {variation.price}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
             </View>
-          </View>
+          ) : (
+            <Text style={styles.priceText}>PKR {pizza?.price}</Text>
+          )}
+
         </View>
 
-        {isExpanded && (
+        {/* Dip and Footer Sections */}
+        {(isExpanded || !hasVariations) && (
           <>
             {/* Dip Section */}
             <View style={styles.dipContainer}>
@@ -279,7 +299,7 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
                 onPress={handleAddToCart}
               >
                 <Text style={styles.addToCartText}>
-                  Add to Cart - {selectedSize ? `${selectedSize.price * quantity}` : ''}
+                  Add to Cart — {selectedSize ? `PKR ${selectedSize.price * quantity}` : `PKR ${(pizza?.price || 0) * quantity}`}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -352,7 +372,9 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     paddingVertical: 10,
-    // backgroundColor: 'gray'
+  },
+  topSpacing: {
+    height: 20,
   },
   swipeBtn: {
     width: 50,
@@ -457,6 +479,11 @@ const styles = StyleSheet.create({
   },
   variationPrice: {
     fontSize: 16,
+  },
+  priceText: {
+    fontSize: 16,
+    fontWeight: 700,
+    color: '#FA4A0C',
   },
   dipContainer: {
     marginTop: 10,

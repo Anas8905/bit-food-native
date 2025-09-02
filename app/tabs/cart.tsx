@@ -38,7 +38,7 @@ export default function CartScreen() {
       <View style={styles.itemDetails}>
         <Text style={styles.itemName}>{item.name}</Text>
         <Text style={styles.itemSize}>{item.size}</Text>
-        <Text style={styles.itemPrice}>Rs. {item.price}</Text>
+        <Text style={styles.itemPrice}>PKR {item.price}</Text>
       </View>
 
       <View style={styles.itemActions}>
@@ -102,7 +102,7 @@ export default function CartScreen() {
       <View style={styles.footer}>
         <View style={styles.totalContainer}>
           <Text style={styles.totalLabel}>Total</Text>
-          <Text style={styles.totalAmount}>Rs. {getCartTotal()}</Text>
+          <Text style={styles.totalAmount}>PKR {getCartTotal()}</Text>
         </View>
 
         <TouchableOpacity
@@ -188,7 +188,8 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   footer: {
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingTop: 15,
     borderTopWidth: 1,
     borderTopColor: '#F0F0F0',
   },

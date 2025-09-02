@@ -3,7 +3,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import AppDrawer from '@/components/AppDrawer';
 import { AddressProvider } from '@/context/AddressContext';
-import { SearchProvider } from '@/context/SearchContext';
 import { AuthProvider } from '../context/AuthContext';
 import { CartProvider } from '../context/CartContext';
 import { DrawerProvider } from '../context/DrawerContext';
@@ -17,10 +16,8 @@ export default function RootLayout() {
           <CartProvider>
             <AuthProvider>
               <DrawerProvider>
-                <SearchProvider>
                   <Slot />
                   <AppDrawer />
-                </SearchProvider>
               </DrawerProvider>
             </AuthProvider>
           </CartProvider>

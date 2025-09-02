@@ -1,9 +1,6 @@
-import DrawerBase from '@/components/DrawBase';
-import { useSearch } from '@/context/SearchContext';
 import { useCart } from '@/hooks/useCart';
 import { useNetwork } from '@/hooks/useNetwork';
-import { Feather, Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -17,24 +14,30 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { mockPizzaAPI } from '../../api/mockApi';
 import NoInternet from '../../components/NoInternet';
 import PizzaCard from '../../components/PizzaCard';
+import SearchDrawer from '../../components/SearchDrawer';
 import Navbar from '../../components/ui/Navbar';
+import { Pizza, usePizzaData } from '../../hooks/usePizzaData';
 
 export default function HomeScreen() {
-  const router = useRouter();
   const { isConnected } = useNetwork();
   const { cart } = useCart();
-  const { onSearchTrigger } = useSearch();
-  const [categories, setCategories] = useState<string[]>([]);
-  const [pizzas, setPizzas] = useState<Record<string, any[]>>({});
   const [selectedCategories, setSelectedCategories] = useState(['All']);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const {
+    categories,
+    pizzas,
+    loading,
+    refreshing,
+    searchQuery,
+    setSearchQuery,
+    filteredPizzas,
+    popularPizzas,
+    seePizza,
+    handleRefresh,
+  } = usePizzaData();
 
   const outerInputRef = useRef<TextInput>(null);
   const innerInputRef = useRef<TextInput>(null);
@@ -51,28 +54,8 @@ export default function HomeScreen() {
     }
   }, [isDrawerOpen]);
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const { categories } = await mockPizzaAPI.getCategories();
-
-      const pizzasByCategory: Record<string, any[]> = {};
-      for (const category of categories) {
-        const { pizzas } = await mockPizzaAPI.getPizzas(category);
-        pizzasByCategory[category] = pizzas;
-      }
-
-      setCategories(categories);
-      setPizzas(pizzasByCategory);
-    } catch (error) {
-      console.error('Error fetching data', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getFilteredData = () => {
-    let filteredData: Record<string, any[]> = {};
+  const getFilteredByCategory = () => {
+    let filteredData: Record<string, Pizza[]> = {};
 
     const categoriesToShow = selectedCategories.includes('All')
       ? categories
@@ -84,28 +67,11 @@ export default function HomeScreen() {
       }
     });
 
-    if (searchQuery.trim()) {
-      const searchLower = searchQuery.toLowerCase().trim();
-      Object.keys(filteredData).forEach(category => {
-        filteredData[category] = filteredData[category].filter(pizza =>
-          pizza.name.toLowerCase().includes(searchLower) ||
-          pizza.description?.toLowerCase().includes(searchLower)
-        );
-
-        if (filteredData[category].length === 0) {
-          delete filteredData[category];
-        }
-      });
-    }
-
     return filteredData;
   };
 
-  const filteredPizzas = getFilteredData();
 
-  const hasQuery = searchQuery.trim().length > 0;
-  const hasResults = hasQuery && Object.keys(filteredPizzas).length > 0;
-  const popularPizzas = pizzas['Popular'] ?? [];
+  const catFilteredPizzas = getFilteredByCategory();
 
   const toggleCategory = (category: string) => {
     setSelectedCategories(prev => {
@@ -123,38 +89,9 @@ export default function HomeScreen() {
     });
   };
 
-  const seePizza = (id: number | string) => {
-    setSearchQuery("");
-    router.push(`/pizza/${id}`);
-  }
-
-  const closeSlider = (closeFn) => {
-    setSearchQuery("");
-    closeFn();
-  }
-
-  useEffect(() => {
-    if (isConnected) {
-      fetchData();
-    }
-  }, [isConnected]);
-
-  // Register search callback for the search tab button
-  useEffect(() => {
-    onSearchTrigger(() => {
-      setIsDrawerOpen(true);
-    });
-  }, [onSearchTrigger]);
-
   if (!isConnected) {
-    return <NoInternet onRetry={fetchData} />;
+    return <NoInternet onRetry={handleRefresh} />;
   }
-
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await fetchData();
-    setRefreshing(false);
-  };
 
   if (loading) {
     return (
@@ -230,12 +167,12 @@ export default function HomeScreen() {
             ))}
           </ScrollView>
         </View>
-        {Object.keys(filteredPizzas).length > 0 ? (
-          Object.keys(filteredPizzas).map((category) => (
+        {Object.keys(catFilteredPizzas).length > 0 ? (
+          Object.keys(catFilteredPizzas).map((category) => (
             <View key={category}>
               <Text style={styles.categoryTitle}>{category}</Text>
               <FlatList
-                data={filteredPizzas[category]}
+                data={catFilteredPizzas[category]}
                 keyExtractor={(item) => item.id.toString()}
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -251,100 +188,20 @@ export default function HomeScreen() {
           ))
         ) : (
           <View style={styles.noResultsContainer}>
-            <Text style={styles.noResultsText}>
-              {searchQuery.trim() ? 'No pizzas found matching your search' : 'No pizzas available'}
-            </Text>
+            <Text style={styles.noResultsText}>No pizzas available</Text>
           </View>
         )}
       </ScrollView>
 
-      <DrawerBase
+      <SearchDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        side="right"
-        width="100%"
-        renderHeader={({ close }) => (
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => closeSlider(close)} style={styles.closeBtn}>
-              <Text style={styles.closeIcon}>✕</Text>
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Search</Text>
-          </View>
-        )}
-      >
-        <View style={styles.drawerContent}>
-          <TextInput
-            ref={innerInputRef}
-            placeholder="Search pizza"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            autoFocus
-            returnKeyType="search"
-            style={[styles.input, styles.drawerInput]}
-            spellCheck={false}
-            autoCorrect={false}
-          />
-
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.dataContainer}
-          >
-            {hasQuery ? (
-              <>
-                <View style={styles.resultContainer}>
-                  <Text style={styles.resultTitle}>Results</Text>
-                </View>
-
-                {hasResults ? (
-                  Object.keys(filteredPizzas).map((category) => (
-                    <View key={category}>
-                      {filteredPizzas[category].map((item) => (
-                        <TouchableOpacity
-                          key={item.id}
-                          onPress={() => seePizza(item.id)}
-                          style={styles.resultItem}
-                        >
-                          <Ionicons name="restaurant-outline" size={20} color="orange" />
-                          <Text style={styles.itemName}>{item.name}</Text>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  ))
-                ) : (
-                  <View>
-                    <Text style={styles.notFoundText}>
-                      No pizzas found matching your search
-                    </Text>
-                  </View>
-                )}
-              </>
-            ) : null}
-
-            <View style={[hasQuery ? styles.lowMargin : styles.highMargin]}>
-              <Text style={styles.popularTitle}>Popular Searches</Text>
-
-              {popularPizzas.length ? (
-                <View style={styles.pillsWrap}>
-                  {popularPizzas.map((item) => (
-                    <TouchableOpacity
-                      key={item.id}
-                      onPress={() => seePizza(item.id)}
-                      style={styles.pill}
-                      accessibilityRole="button"
-                      accessibilityLabel={`View ${item.name}`}
-                    >
-                      <Text>{item.name}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              ) : (
-                <Text style={styles.notFoundText}>No popular pizzas available</Text>
-              )}
-            </View>
-          </ScrollView>
-
-        </View>
-      </DrawerBase>
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
+        onPizzaSelect={seePizza}
+        popularPizzas={popularPizzas}
+        filteredPizzas={filteredPizzas}
+      />
     </SafeAreaView>
   );
 };
@@ -375,48 +232,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
-  header: {
-    marginBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  closeBtn: {
-    padding: 6,
-     marginRight: 8
-    },
-  closeIcon: {
-    fontSize: 18,
-   },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 500,
-  },
-  resultTitle: {
-    fontSize: 18,
-    fontWeight: 600,
-  },
-  drawerContent: {
-    flex: 1
-  },
-  drawerInput: {
-    paddingLeft: 40,
-  },
-  dataContainer: {
-    paddingBottom: 20,
-  },
-  resultContainer: {
-    marginVertical: 20,
-  },
-  resultItem: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 6,
-    marginBottom: 20,
-  },
-  itemName: {
-    fontSize: 16,
-    color: '#555'
-  },
+
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -462,30 +278,6 @@ const styles = StyleSheet.create({
   pizzaList: {
     paddingHorizontal: 10,
   },
-  highMargin: {
-    marginTop: 20,
-  },
-  lowMargin: {
-    marginTop: 10,
-  },
-  popularTitle: {
-    fontSize: 18,
-    fontWeight: 600,
-    marginBottom: 10,
-  },
-  pillsWrap: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginLeft: -6,
-  },
-  pill: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 999,
-    backgroundColor: '#f2f2f2',
-    marginHorizontal: 6,
-    marginTop: 6,
-  },
   noResultsContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -496,10 +288,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
-  },
-  notFoundText: {
-    fontSize: 16,
-    color: '#666',
   },
 });
 
