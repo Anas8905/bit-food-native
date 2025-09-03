@@ -7,8 +7,8 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 type Direction = 'up' | 'down' | 'left' | 'right';
 
 interface SwipableModalProps {
-  isVisible: boolean;
-  onClose: () => void;
+  isVisible?: boolean;
+  onClose?: () => void;
   children: ReactNode;
   height?: number;
   onBackdropPress?: () => void;
@@ -22,8 +22,8 @@ interface SwipableModalProps {
 type SwipableModalPropsWithModal = SwipableModalProps & Partial<Omit<ModalProps, keyof SwipableModalProps>>;
 
 export default function SwipableModal({
-  isVisible,
-  onClose,
+  isVisible = true,
+  onClose = () => {},
   children,
   height = SCREEN_HEIGHT * 0.9,
   onBackdropPress,
@@ -34,6 +34,7 @@ export default function SwipableModal({
   contentStyle,
   ...modalProps
 }: SwipableModalPropsWithModal) {
+
   const createHandler = (customHandler?: () => void) => () => {
     customHandler ? customHandler() : onClose();
   };

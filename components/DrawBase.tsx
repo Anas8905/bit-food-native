@@ -1,3 +1,4 @@
+import { isAndroid } from '@/utils/common.utils';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
@@ -112,7 +113,7 @@ export default function DrawerBase({
       // Start from offscreen position and animate to center
       translateX.setValue(offscreenX);
       backdropOpacity.setValue(0);
-      
+
       requestAnimationFrame(() => {
         // Animate both translateX and backdrop opacity
         translateAnimation = Animated.timing(translateX, {
@@ -121,7 +122,7 @@ export default function DrawerBase({
           easing: Easing.out(Easing.cubic),
           useNativeDriver: true,
         });
-        
+
         opacityAnimation = Animated.timing(backdropOpacity, {
           toValue: 1,
           duration,
@@ -140,7 +141,7 @@ export default function DrawerBase({
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       });
-      
+
       opacityAnimation = Animated.timing(backdropOpacity, {
         toValue: 0,
         duration,
@@ -171,7 +172,7 @@ export default function DrawerBase({
   }, []);
 
   const ctx: DrawerBaseContext = { close: onClose, isOpen };
-  
+
   if (preventUpdates) return null;
 
   if (!mounted) return null;
@@ -185,7 +186,7 @@ export default function DrawerBase({
         <Animated.View
           style={[
             styles.backdrop,
-            { 
+            {
               backgroundColor: backdropColor,
               opacity: backdropOpacity,
             },
@@ -240,8 +241,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     bottom: 0,
+    zIndex: 2,
     backgroundColor: '#fff',
-    paddingTop: 60,
+    paddingTop: isAndroid ? 30 : 60,
     paddingHorizontal: 20,
     // shadow for iOS
     shadowColor: '#000',

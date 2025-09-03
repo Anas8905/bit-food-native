@@ -148,6 +148,51 @@ import { saveData } from "@/services/asyncStorage";
 
   const mockOrders = [];
 
+  export const orders = [
+    {
+      id: '162432',
+      image: require('../assets/images/pizza_pepperoni.png'),
+      name: 'Peri Peri Pizza',
+      description: 'Classic pepperoni, mozzarella cheese, tomato sauce on a hand-tossed crust',
+      category: "Ordered",
+      price: '1400',
+      size: 'small',
+      quantity: 1,
+      total: 1100,
+      deliveryAddress: "439-A, Rt. Street, Model Town, LHR",
+      estimatedDeliveryTime: 30,
+      time: 'Jun 17 · 12:30 am',
+    },
+    {
+      id: '323790',
+      image: require('../assets/images/pizza_special.png'),
+      name: 'Peri Pizza, Stuff Crust',
+      description: 'Classic pepperoni, mozzarella cheese, tomato sauce on a hand-tossed crust',
+      category: "Ordered",
+      price: '3736',
+      size: 'medium',
+      quantity: 2,
+      total: 2000,
+      deliveryAddress: "312-D, Rt. Street, Johar Town, LHR",
+      estimatedDeliveryTime: 45,
+      time: 'Jun 17 · 12:30 am',
+    },
+    {
+      id: '435701',
+      image: require('../assets/images/pizza_dark.png'),
+      name: 'Hot & Spicy, Thin Crust',
+      description: 'Classic pepperoni, mozzarella cheese, tomato sauce on a hand-tossed crust',
+      category: "Ordered",
+      price: '5736',
+      size: 'large',
+      quantity: 3,
+      total: 3000,
+      deliveryAddress: "991-B, Rt. Street, Wapda Town, LHR",
+      estimatedDeliveryTime: 60,
+      time: 'Jun 17 · 12:30 am',
+    },
+  ];
+
   // Mock API functions
   export const mockAuthAPI = {
 
@@ -225,7 +270,11 @@ import { saveData } from "@/services/asyncStorage";
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      const pizza = pizzas.find(p => p.id === id);
+      let pizza = pizzas.find(p => p.id === id);
+
+      if (!pizza) {
+        pizza = orders.find(p => p.id === id);
+      }
 
       if (pizza) {
         return {
@@ -250,7 +299,7 @@ import { saveData } from "@/services/asyncStorage";
         createdAt: new Date().toISOString(),
         estimatedDeliveryTime: 45, // minutes
         courier: {
-          name: 'I am Batman',
+          name: 'Batman',
           phone: '+92 300 1234567',
           image: 'https://i.pravatar.cc/150?img=8',
         },
@@ -281,7 +330,11 @@ import { saveData } from "@/services/asyncStorage";
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      const order = mockOrders.find(order => order.id === orderId);
+      let order = mockOrders.find(order => order.id === orderId);
+
+      if (!order) {
+        order = orders.find(order => order.id === orderId);
+      }
 
       if (order) {
         return {

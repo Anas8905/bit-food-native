@@ -1,7 +1,10 @@
 import { useCart } from '@/hooks/useCart';
-import { Feather, Fontisto, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Fontisto, Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
+import MapIcon from '../../assets/images/map.svg';
+import HomeIcon from '../../assets/images/home.svg';
+import SearchIcon from '../../assets/images/search.svg';
 
 export default function TabLayout() {
   const { cart, favorites } = useCart();
@@ -14,7 +17,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarActiveTintColor: '#FA4A0C',
-        tabBarInactiveTintColor: '#8E8E93',
+        tabBarInactiveTintColor: '#101010',
         tabBarStyle: {
           height: 60,
           paddingBottom: 10,
@@ -27,7 +30,7 @@ export default function TabLayout() {
         options={{
           title: 'Address',
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="go-kart-track" size={22} color={color} />
+            <MapIcon width={22} height={22} color={color} />
           ),
         }}
       />
@@ -36,9 +39,8 @@ export default function TabLayout() {
         options={{
           title: 'Search',
           tabBarIcon: ({ color }) => (
-            <Feather name="search" size={22} color={color} />
+            <SearchIcon width={20} height={20} color={color} />
           ),
-
         }}
       />
       <Tabs.Screen
@@ -46,7 +48,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => (
-            <Feather name="home" size={24} color={color}  />
+            <HomeIcon width={26} height={26} color={color} />
           ),
         }}
       />

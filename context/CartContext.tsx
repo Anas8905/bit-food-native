@@ -121,6 +121,10 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     return favorites.some(item => item.id === id);
   };
 
+  const isInCart = (id: string) => {
+    return cart.some(item => item.id === id);
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -134,6 +138,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         clearFavorites,
         toggleFavorite,
         getCartTotal,
+        isInCart,
         isFavorite,
       }}
     >

@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -6,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
 import { useAuth } from '@/hooks/useAuth';
 
-const OTPScreen = () => {
+export default function OTPScreen() {
   const router = useRouter();
   const { user, verifyOTP } = useAuth();
   const [otp, setOtp] = useState(['', '', '', '']);
@@ -76,9 +75,6 @@ const OTPScreen = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <BackButton onPress={() => router.back()} />
-        <TouchableOpacity style={styles.supportButton}>
-          <Ionicons name="headset-outline" size={24} color="black" />
-        </TouchableOpacity>
       </View>
 
       <View style={styles.content}>
@@ -135,9 +131,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
@@ -190,5 +183,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-export default OTPScreen;

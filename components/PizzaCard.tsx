@@ -1,3 +1,4 @@
+import { isAndroid } from '@/utils/common.utils';
 import { Ionicons } from '@expo/vector-icons';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -32,17 +33,18 @@ const PizzaCard = ({ pizza, onPress }) => {
 };
 
 const styles = StyleSheet.create({
+
   container: {
-    width: 150,
+    width: isAndroid ? 180 : 176,
     marginHorizontal: 8,
     marginBottom: 15,
     borderRadius: 12,
+    backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 4,
-    elevation: 4,
-    overflow: 'hidden',
+    elevation: 2,
   },
   image: {
     width: '100%',

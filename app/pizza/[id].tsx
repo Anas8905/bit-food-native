@@ -1,23 +1,24 @@
 import { useCart } from '@/hooks/useCart';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, Octicons } from '@expo/vector-icons';
 import { Checkbox } from 'expo-checkbox';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Animated,
   Image,
   ImageSourcePropType,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  useWindowDimensions,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DIP_OPTIONS, mockPizzaAPI } from '../../api/mockApi';
 import BackButton from '../../components/BackButton';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import { CartItem } from '@/types/cart';
 interface Variation {
   size: string;
   price: number;
@@ -45,10 +46,22 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [selectedDips, setSelectedDips] = useState<string[]>([]);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [animatedHeight] = useState(new Animated.Value(420));
+  const insets = useSafeAreaInsets();
+  const { height: screenH } = useWindowDimensions();
 
   const hasVariations = Array.isArray(pizza?.variations);
+  const imageHeight = useMemo(() => (hasVariations ? 400 : 500), [hasVariations]);
+  const OVERLAP = 32;
+  const sheetTop = imageHeight - OVERLAP;
+  const HEADER_HEIGHT = 110;
+  const collapsedSnap = useMemo(() => screenH - sheetTop, [screenH, sheetTop]);
+  const expandedSnap = useMemo(
+    () => screenH - (insets.top + HEADER_HEIGHT + 12),
+    [screenH, insets.top]
+  );
+
+  const snapPoints = useMemo(() => [collapsedSnap, expandedSnap], [collapsedSnap, expandedSnap]);
+  const sheetRef = useRef<BottomSheet>(null);
 
   useEffect(() => {
     const fetchPizza = async () => {
@@ -82,7 +95,7 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
       return;
     }
 
-    const cartItem = {
+    const cartItem: CartItem = {
       id: pizza.id,
       name: pizza.name,
       image: pizza.image,
@@ -119,18 +132,6 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
     );
   };
 
-  const toggleModal = () => {
-    const toValue = isExpanded ? 420 : 610;
-
-    Animated.timing(animatedHeight, {
-      toValue,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-
-    setIsExpanded(!isExpanded);
-  };
-
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -145,7 +146,8 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      {/* Header Section */}
+      <View style={[styles.header, { top: insets.top + 12 }]}>
         <View style={styles.innerHeader}>
           <BackButton onPress={() => router.back()} />
           <TouchableOpacity
@@ -154,6 +156,9 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
               toggleFavorite({
                 id: pizza.id,
                 name: pizza.name,
+                description: pizza.description,
+                rating: pizza.rating,
+                reviewCount: pizza.reviewCount,
                 price: selectedSize?.price ?? pizza.price ?? 0,
                 quantity: 1,
                 image: pizza.image,
@@ -161,152 +166,142 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
               })
             }
           >
-            <Ionicons
-              name={isFavorite(pizza.id) ? "heart" : "heart-outline"}
+            <Octicons
+              name={isFavorite(pizza.id) ? "heart-fill" : "heart"}
               size={24}
               color="#FA4A0C"
             />
           </TouchableOpacity>
         </View>
       </View>
-      <Image source={pizza.image} style={styles.image} />
 
-    {/* Info Section */}
-    <Animated.View style={[styles.infoContainer, { height: animatedHeight }]}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={styles.scrollContent}
+      {/* Image Section */}
+      <Image source={pizza.image} style={[styles.image, !hasVariations && styles.incrHeight]} />
+
+      {/* Sheet Section */}
+      <BottomSheet
+        ref={sheetRef}
+        index={0}
+        snapPoints={snapPoints}
+        enablePanDownToClose={false}
+        handleIndicatorStyle={{ backgroundColor: '#ddd' }}
+        backgroundStyle={bottomSheetStyles.background}
       >
-        {/* Swipe Section */}
-        {hasVariations && (
-          <TouchableOpacity
-            style={styles.swipeContainer}
-            onPress={toggleModal}
-          >
-            <View style={styles.swipeBtn}>
-            </View>
-          </TouchableOpacity>
-        )}
-
-        {!hasVariations && (
-          <View style={styles.topSpacing} />
-        )}
-
-        <View>
-          <View style={styles.titleRow}>
-            <View>
-              <View style={styles.catBadge}>
-                <Text style={styles.category}>{pizza.category}</Text>
+        <BottomSheetView style={bottomSheetStyles.content}>
+          {/* Important Details Section */}
+          <View>
+            <View style={styles.titleRow}>
+              <View>
+                <View style={styles.catBadge}>
+                  <Text style={styles.category}>{pizza.category}</Text>
+                </View>
+                <Text style={styles.title}>{pizza.name}</Text>
               </View>
-              <Text style={styles.title}>{pizza.name}</Text>
+              {pizza?.rating != null && pizza?.reviewCount != null && (
+                <View style={styles.ratingContainer}>
+                  <Ionicons name="star" size={16} color="#FFD700" />
+                  <Text style={styles.rating}>
+                    {pizza.rating} ({pizza.reviewCount})
+                  </Text>
+                </View>
+              )}
             </View>
-            {pizza?.rating != null && pizza?.reviewCount != null && (
-              <View style={styles.ratingContainer}>
-                <Ionicons name="star" size={16} color="#FFD700" />
-                <Text style={styles.rating}>
-                  {pizza.rating} ({pizza.reviewCount})
-                </Text>
+
+            <Text style={styles.description}>{pizza.description}</Text>
+
+            {/* Variation Section */}
+            {hasVariations ? (
+              <View style={styles.variationContainer}>
+                <View style={styles.titleContainer}>
+                  <Text style={styles.variationTitle}>Variation</Text>
+                  <Text style={styles.variationSubtitle}>Please select one</Text>
+                </View>
+
+                <View style={styles.radioGroup}>
+                  {pizza.variations?.map((variation, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={styles.variationOption}
+                      onPress={() => setSelectedSize(variation)}
+                    >
+                      <View style={styles.radioContainer}>
+                        <View
+                          style={[
+                            styles.radioOuter,
+                            selectedSize && selectedSize.size === variation.size && styles.radioOuterSelected,
+                          ]}
+                        >
+                          {selectedSize && selectedSize.size === variation.size && (
+                            <View style={styles.radioInner} />
+                          )}
+                        </View>
+                        <Text style={styles.variationText}>{variation.size}</Text>
+                      </View>
+                      <Text style={styles.variationPrice}>PKR {variation.price}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
+            ) : (
+              <Text style={styles.priceText}>PKR {pizza?.price}</Text>
             )}
           </View>
 
-          <Text style={styles.description}>{pizza.description}</Text>
-
-          {/* Variation Section */}
-          {hasVariations ? (
-            <View style={styles.variationContainer}>
-              <View style={styles.titleContainer}>
-                <Text style={styles.variationTitle}>Variation</Text>
-                <Text style={styles.variationSubtitle}>Please select one</Text>
-              </View>
-
-              <View style={styles.radioGroup}>
-                {pizza.variations?.map((variation, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={styles.variationOption}
-                    onPress={() => setSelectedSize(variation)}
-                  >
-                    <View style={styles.radioContainer}>
-                      <View
-                        style={[
-                          styles.radioOuter,
-                          selectedSize && selectedSize.size === variation.size && styles.radioOuterSelected,
-                        ]}
-                      >
-                        {selectedSize && selectedSize.size === variation.size && (
-                          <View style={styles.radioInner} />
-                        )}
-                      </View>
-                      <Text style={styles.variationText}>{variation.size}</Text>
-                    </View>
-                    <Text style={styles.variationPrice}>PKR {variation.price}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+          {/* Dip Section */}
+          <View style={styles.dipContainer}>
+            <Text style={styles.variationTitle}>Choose Dip</Text>
+            <View style={styles.checkboxGroup}>
+              {DIP_OPTIONS.map((dip) => (
+                <TouchableOpacity
+                  key={dip}
+                  style={styles.checkboxRow}
+                  onPress={() => toggleDip(dip)}
+                  activeOpacity={0.7}
+                >
+                  <Checkbox
+                    value={selectedDips.includes(dip)}
+                    onValueChange={() => toggleDip(dip)}
+                    color="#FA4A0C"
+                  />
+                  <Text style={styles.checkboxLabel}>{dip}</Text>
+                </TouchableOpacity>
+              ))}
             </View>
-          ) : (
-            <Text style={styles.priceText}>PKR {pizza?.price}</Text>
-          )}
+          </View>
 
+          {/* <View style={{ height: footerHeight + insets.bottom + 8 }} /> */}
+        </BottomSheetView>
+      </BottomSheet>
+
+      {/* Footer Section */}
+      <View style={[styles.footerWrap, { paddingBottom: insets.bottom + 8 }]}>
+        <View style={styles.footer}>
+          <View style={styles.quantityContainer}>
+            <TouchableOpacity
+              style={styles.quantityButton}
+              onPress={decrementQuantity}
+            >
+              <Ionicons name="remove" size={20} color="#FA4A0C" />
+            </TouchableOpacity>
+            <Text style={styles.quantityText}>{quantity}</Text>
+            <TouchableOpacity
+              style={styles.quantityButton}
+              onPress={incrementQuantity}
+            >
+              <Ionicons name="add" size={20} color="#FA4A0C" />
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity
+            style={styles.addToCartButton}
+            onPress={handleAddToCart}
+          >
+            <Text style={styles.addToCartText}>
+              Add to Cart — {selectedSize ? `PKR ${selectedSize.price * quantity}` : `PKR ${(pizza?.price || 0) * quantity}`}
+            </Text>
+          </TouchableOpacity>
         </View>
-
-        {/* Dip and Footer Sections */}
-        {(isExpanded || !hasVariations) && (
-          <>
-            {/* Dip Section */}
-            <View style={styles.dipContainer}>
-              <Text style={styles.variationTitle}>Choose Dip</Text>
-              <View style={styles.checkboxGroup}>
-                {DIP_OPTIONS.map((dip) => (
-                  <TouchableOpacity
-                    key={dip}
-                    style={styles.checkboxRow}
-                    onPress={() => toggleDip(dip)}
-                    activeOpacity={0.7}
-                  >
-                    <Checkbox
-                      value={selectedDips.includes(dip)}
-                      onValueChange={() => toggleDip(dip)}
-                      color="#FA4A0C"
-                    />
-                    <Text style={styles.checkboxLabel}>{dip}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-
-            {/* Footer Section */}
-            <View style={styles.footer}>
-              <View style={styles.quantityContainer}>
-                <TouchableOpacity
-                  style={styles.quantityButton}
-                  onPress={decrementQuantity}
-                >
-                  <Ionicons name="remove" size={20} color="#FA4A0C" />
-                </TouchableOpacity>
-                <Text style={styles.quantityText}>{quantity}</Text>
-                <TouchableOpacity
-                  style={styles.quantityButton}
-                  onPress={incrementQuantity}
-                >
-                  <Ionicons name="add" size={20} color="#FA4A0C" />
-                </TouchableOpacity>
-              </View>
-
-              <TouchableOpacity
-                style={styles.addToCartButton}
-                onPress={handleAddToCart}
-              >
-                <Text style={styles.addToCartText}>
-                  Add to Cart — {selectedSize ? `PKR ${selectedSize.price * quantity}` : `PKR ${(pizza?.price || 0) * quantity}`}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
-      </ScrollView>
-    </Animated.View>
+      </View>
     </SafeAreaView>
   );
 };
@@ -353,34 +348,24 @@ const styles = StyleSheet.create({
     height: 400,
     resizeMode: 'cover',
   },
-  infoContainer: {
+  incrHeight: {
+    height: 500,
+  },
+  sheet: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    marginTop: -20,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  scrollContent: {
-    padding: 20,
-    paddingTop: 0,
-  },
-  swipeContainer: {
-    width: '100%',
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  topSpacing: {
-    height: 20,
-  },
-  swipeBtn: {
-    width: 50,
-    height: 4,
-    backgroundColor: '#FFD5C7',
-    borderRadius: 2,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 8,
   },
   titleRow: {
     flexDirection: 'row',
@@ -492,10 +477,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFD5C7',
     borderRadius: 8,
   },
+  footerWrap: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    borderTopColor: '#eee',
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
   },
   quantityContainer: {
     flexDirection: 'row',
@@ -538,5 +533,17 @@ const styles = StyleSheet.create({
   checkboxLabel: {
     fontSize: 15,
     marginLeft: 10,
+  },
+});
+
+const bottomSheetStyles = StyleSheet.create({
+  background: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  content: {
+    paddingHorizontal: 20,
+    paddingTop: 12,
   },
 });

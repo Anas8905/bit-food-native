@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const WelcomeScreen = () => {
+export default function WelcomeScreen() {
   const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
@@ -65,5 +65,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-export default WelcomeScreen;

@@ -19,6 +19,7 @@ import PizzaCard from '../../components/PizzaCard';
 import SearchDrawer from '../../components/SearchDrawer';
 import Navbar from '../../components/ui/Navbar';
 import { Pizza, usePizzaData } from '../../hooks/usePizzaData';
+import { isAndroid } from '@/utils/common.utils';
 
 export default function HomeScreen() {
   const { isConnected } = useNetwork();
@@ -73,6 +74,14 @@ export default function HomeScreen() {
 
   const catFilteredPizzas = getFilteredByCategory();
 
+  const getAllPizzas = () => {
+    let allPizzas: Pizza[] = [];
+    Object.values(pizzas).forEach(categoryPizzas => {
+      allPizzas.push(...categoryPizzas);
+    });
+    return allPizzas;
+  };
+
   const toggleCategory = (category: string) => {
     setSelectedCategories(prev => {
       if (category === 'All') {
@@ -110,21 +119,20 @@ export default function HomeScreen() {
             name="search"
             size={18}
             color="#bbb"
-            style={[styles.searchIcon, styles.DrawerSearchIcon]}
+            style={styles.searchIcon}
           />
           <TextInput
             ref={outerInputRef}
             placeholder="Search pizza"
-            style={[styles.input, { textAlignVertical: 'top' }]}
+            style={styles.input}
             spellCheck={false}
             autoCorrect={false}
             onFocus={openDrawerFromSearch}
           />
         </View>
       <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
+        showsVerticalScrollIndicator={false}
       >
         <View style={styles.categorySection}>
           <Text style={styles.allCatTitle}>All Categories</Text>
@@ -191,6 +199,26 @@ export default function HomeScreen() {
             <Text style={styles.noResultsText}>No pizzas available</Text>
           </View>
         )}
+
+        {/* All Pizzas Section */}
+        {getAllPizzas().length > 0 && (
+          <View style={styles.allPizzasSection}>
+            <Text style={styles.allPizzasTitle}>All Pizzas</Text>
+            <FlatList
+              data={getAllPizzas()}
+              keyExtractor={(item) => item.id.toString()}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <PizzaCard
+                  pizza={item}
+                  onPress={() => seePizza(item.id)}
+                />
+              )}
+              contentContainerStyle={styles.pizzaList}
+            />
+          </View>
+        )}
       </ScrollView>
 
       <SearchDrawer
@@ -217,11 +245,9 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     position: 'absolute',
-    top: 11,
-    zIndex: 1,
-  },
-  DrawerSearchIcon: {
+    top: isAndroid ? 12 : 11,
     left: 20,
+    zIndex: 1,
   },
   input: {
     backgroundColor: '#F6F6F6',
@@ -288,6 +314,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
+  },
+  allPizzasSection: {
+    marginTop: 20,
+  },
+  allPizzasTitle: {
+    fontSize: 18,
+    fontWeight: 600,
+    marginHorizontal: 20,
+    marginBottom: 10,
   },
 });
 

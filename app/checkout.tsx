@@ -19,7 +19,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCart } from '@/hooks/useCart';
 import { useAddress } from '@/hooks/useAddress';
 
-const CheckoutScreen = () => {
+export default function CheckoutScreen() {
   const router = useRouter();
   const { user } = useAuth();
   const { cart, getCartTotal, clearCart } = useCart();
@@ -52,7 +52,7 @@ const CheckoutScreen = () => {
         deliveryFee,
         discount,
         total,
-        address: selectedAddress,
+        deliveryAddress: selectedAddress,
         paymentMethod,
         deliveryInstructions,
       };
@@ -316,5 +316,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-export default CheckoutScreen;

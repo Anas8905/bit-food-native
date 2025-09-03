@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import MapView, { Marker, Region } from 'react-native-maps';
+import MapView, { Marker, MarkerDragStartEndEvent, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import { useAddress } from '../hooks/useAddress';
 
 export default function AddressMap({ addressId, saveButtonText = 'Save Address' }: AddressFormProps) {
@@ -18,7 +18,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
   const [region, setRegion] = useState<Region>(DEFAULT_REGION);
   const [busy, setBusy] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(!!addressId)
+  const [isEditMode, setIsEditMode] = useState(!!addressId);
 
   const editMode = !!addressId;
 
@@ -50,6 +50,10 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
     });
   }, [addressId, addresses, editMode]);
 
+  const focusRegion = (latitude: number, longitude: number) => ({
+    latitude, longitude, latitudeDelta: 0.012, longitudeDelta: 0.012,
+  });
+
   const geocodeAndPreview = async () => {
     if (!address.trim()) {
       return Alert.alert('Enter an address', 'Please type the street, area, city, etc.');
@@ -57,23 +61,17 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
 
     setBusy(true);
     try {
-      const results = await Location.geocodeAsync(address.trim());
-      if (!results?.length) {
-        Alert.alert('Not found', 'Could not locate that address. Please refine it.');
-        return;
+      const [result] = await Location.geocodeAsync(address.trim());
+      if (!result) {
+        return Alert.alert('Not found', 'Could not locate that address. Please refine it.');
       }
 
-      const { latitude, longitude } = results[0];
-      const next: Region = {
-        latitude,
-        longitude,
-        latitudeDelta: 0.012,
-        longitudeDelta: 0.012
-      };
+      const { latitude, longitude } = result;
       setPin({ latitude, longitude });
+      const next: Region = focusRegion(latitude, longitude);
       setRegion(next);
       mapRef.current?.animateToRegion(next, 600);
-    } catch (err) {
+    } catch {
       Alert.alert('Error', 'Geocoding failed. Check your connection and try again.');
     } finally {
       setBusy(false);
@@ -85,41 +83,39 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('Permission needed', 'We need location permission to use your current position.');
+        Alert.alert('Permission Denied', 'We need location permission to use your current position.');
         return;
       }
 
-      const loc = await Location.getCurrentPositionAsync({
+      const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({
         accuracy: Location.LocationAccuracy.Balanced
       });
-      const { latitude, longitude } = loc.coords;
+
       setPin({ latitude, longitude });
 
-      const next: Region = {
-        latitude,
-        longitude,
-        latitudeDelta: 0.012,
-        longitudeDelta: 0.012
-      };
+      const next: Region = focusRegion(latitude, longitude);
       setRegion(next);
       mapRef.current?.animateToRegion(next, 600);
-
-      try {
-        const r = await Location.reverseGeocodeAsync({ latitude, longitude });
-        if (r?.[0]) {
-          const a = r[0];
-          const line = [a.name, a.street, a.city, a.region, a.postalCode, a.country]
-            .filter(Boolean)
-            .join(', ');
-          setAddress(line);
-        }
-      } catch {}
+      await reverseGeocode(latitude, longitude);
     } catch {
       Alert.alert('Error', 'Could not get your current location.');
     } finally {
       setBusy(false);
     }
   };
+
+  const reverseGeocode = async (latitude: number, longitude: number) => {
+    try {
+      const results = await Location.reverseGeocodeAsync({ latitude, longitude });
+      if (results?.length) {
+        const r = results[0];
+        const parts = [r.name, r.street, r.city, r.region, r.postalCode, r.country]
+          .filter(Boolean)
+          .join(', ');
+        setAddress(parts);
+      }
+    } catch {}
+  }
 
   const saveAddress = async () => {
     if (!pin) {
@@ -153,7 +149,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
           placeholder="Address (street, area, city or nearby landmark)"
           value={address}
           onChangeText={setAddress}
-          style={[styles.input, { textAlignVertical: 'top' }]}
+          style={[styles.input]}
           autoCapitalize="words"
           spellCheck={false}
           autoCorrect={false}
@@ -196,10 +192,11 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
 
       <MapView
         ref={mapRef}
+        provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={region}
         region={region}
-        onRegionChangeComplete={(r) => setRegion(r)}
+        onRegionChangeComplete={(r: Region) => setRegion(r)}
       >
         {pin && (
           <Marker
@@ -207,7 +204,11 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
             draggable
             title={label || 'Delivery location'}
             description={address}
-            onDragEnd={(e) => setPin(e.nativeEvent.coordinate)}
+            onDragEnd={async (e: MarkerDragStartEndEvent) => {
+              const { latitude, longitude } = e.nativeEvent.coordinate;
+              setPin({ latitude, longitude });
+              await reverseGeocode(latitude, longitude);
+            }}
           />
         )}
       </MapView>
@@ -289,6 +290,12 @@ const styles = StyleSheet.create({
   },
   actionEdit: {
     bottom: 45,
+  },
+  autocomplete: {
+    flex: 0,
+  },
+  listView: {
+    backgroundColor: '#fff',
   },
   save: {
     paddingVertical: 14,

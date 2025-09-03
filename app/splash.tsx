@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-const SplashScreen = () => {
+export default function SplashScreen() {
   const { user, loading } = useAuth();
   const router = useRouter()
 
@@ -46,5 +46,3 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
 });
-
-export default SplashScreen;

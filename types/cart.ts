@@ -20,5 +20,6 @@ export interface CartContextType {
     clearFavorites: () => void;
     toggleFavorite: (item: CartItem) => void;
     getCartTotal: () => number;
+    isInCart: (id: string) => boolean;
     isFavorite: (id: string) => boolean;
 }

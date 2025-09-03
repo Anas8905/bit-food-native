@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePizzaData } from '../../hooks/usePizzaData';
 import BackButton from '@/components/BackButton';
 import { useRouter } from 'expo-router';
+import { isAndroid } from '@/utils/common.utils';
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -71,7 +72,7 @@ export default function SearchScreen() {
                       style={styles.resultItem}
                       onPress={() => seePizza(item.id)}
                     >
-                      <Ionicons name="restaurant-outline" size={20} color="orange" />
+                      <Ionicons name="restaurant-outline" size={20} color="#FA4A0C" />
                       <Text style={styles.itemName}>{item.name}</Text>
                     </TouchableOpacity>
                   ))}
@@ -138,6 +139,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: '#333',
+    paddingVertical: isAndroid ? 0 : 'auto',
   },
   content: {
     flex: 1,

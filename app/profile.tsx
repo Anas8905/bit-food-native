@@ -29,6 +29,7 @@ export default function EditProfileScreen() {
   const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber);
   const [email, setEmail] = useState(user?.email);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>("");
 
   const AddressIcon = ({ label }: { label?: string }) => {
     const l = norm(label);
@@ -44,10 +45,13 @@ export default function EditProfileScreen() {
 
   const updateSelectedAddress = async (id: string) => {
     try {
+      setSelectedId(id);
       await selectAddress(id);
       Alert.alert('Success', 'Your selected address is updated.');
     } catch {
       Alert.alert('Failed to update selected address.');
+    } finally {
+      setSelectedId(null);
     }
   }
 
@@ -89,6 +93,7 @@ export default function EditProfileScreen() {
           onChangeText={setFullName}
           style={styles.input}
           placeholder="Full Name"
+          editable={!isUpdating}
         />
 
         <Text style={styles.label}>PHONE NUMBER</Text>
@@ -97,6 +102,7 @@ export default function EditProfileScreen() {
           onChangeText={setPhoneNumber}
           style={styles.input}
           keyboardType="phone-pad"
+          editable={!isUpdating}
         />
 
         <Text style={styles.label}>EMAIL</Text>
@@ -106,15 +112,20 @@ export default function EditProfileScreen() {
           style={styles.input}
           keyboardType="email-address"
           autoCapitalize="none"
+          editable={!isUpdating}
         />
       </View>
 
       {/* Addresses Header */}
       <View style={styles.addressHeader}>
         <Text style={styles.label}>Addresses</Text>
-        <TouchableOpacity style={styles.addMore} onPress={() => router.replace('/tabs/address')}>
+        <TouchableOpacity
+          style={styles.addMore}
+          onPress={() => router.replace('/tabs/address')}
+          disabled={isUpdating || !!selectedId}
+        >
           <Text style={styles.addMoreText}>
-            { addresses.length > 0 ? "Add More" : "+ Add New" }
+            { addresses.length > 0 ? "+ Add More" : "+ Add New" }
           </Text>
         </TouchableOpacity>
       </View>
@@ -130,7 +141,12 @@ export default function EditProfileScreen() {
           <TouchableOpacity
             key={addr.id}
             onPress={() => updateSelectedAddress(addr.id)}
-            style={[styles.addressCard, selectedAddress?.id === addr.id && styles.selectedCard]}
+            disabled={isUpdating || !!selectedId}
+            style={[
+              styles.addressCard,
+              selectedId === addr.id && styles.disableAddress,
+              selectedAddress?.id === addr.id && styles.selectedCard,
+            ]}
           >
             <View style={styles.iconBox}>
               <AddressIcon label={addr.label} />
@@ -147,6 +163,7 @@ export default function EditProfileScreen() {
                   size={15}
                   color="#FF4D00"
                   onPress={() => router.push(`/address/${addr.id}`)}
+                  disabled={isUpdating || !!selectedId}
                 />
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconBtn}>
@@ -155,6 +172,7 @@ export default function EditProfileScreen() {
                   size={16}
                   color="#FF4D00"
                   onPress={() => removeAddress(addr.id)}
+                  disabled={isUpdating || !!selectedId}
                 />
               </TouchableOpacity>
             </View>
@@ -173,10 +191,18 @@ export default function EditProfileScreen() {
       {/* Footer Buttons */}
       <View style={styles.footerContainer}>
         <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.cancelBtn} onPress={() => router.back()}>
+          <TouchableOpacity
+            style={styles.cancelBtn}
+            onPress={() => router.back()}
+            disabled={isUpdating || !!selectedId}
+          >
             <Text style={styles.cancelText}>Discard Changes</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.saveBtn} onPress={saveProfile} disabled={isUpdating}>
+          <TouchableOpacity
+            style={styles.saveBtn}
+            onPress={saveProfile}
+            disabled={isUpdating || !!selectedId}
+          >
             {isUpdating ? (
                 <ActivityIndicator color="white" size={16} />
               ) : (
@@ -281,9 +307,13 @@ export default function EditProfileScreen() {
       flexDirection: 'row',
       alignItems: 'center',
     },
+    disableAddress: {
+      opacity: 0.5,
+    },
     selectedCard: {
-      borderColor: '#FFB89F',
-      borderWidth: 3,
+      borderColor: '#ff6534',
+      borderWidth: 2,
+      backgroundColor: '#fff',
     },
     iconBox: {
       backgroundColor: '#fff',
@@ -329,11 +359,11 @@ export default function EditProfileScreen() {
       marginLeft: 8,
     },
     cancelText: {
-      fontWeight: '600',
+      fontWeight: 600,
       color: '#000',
     },
     saveText: {
-      fontWeight: '600',
       color: '#fff',
+      fontWeight: 700,
     },
   });

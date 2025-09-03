@@ -9,6 +9,9 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
+      "config": {
+        "googleMapsApiKey": "AIzaSyDjCwhtNWHjtGmNbeJ6I86uc80VBSqsqOQ"
+      },
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.bitfoodnative",
       "infoPlist": {
@@ -16,6 +19,11 @@
       }
     },
     "android": {
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDjCwhtNWHjtGmNbeJ6I86uc80VBSqsqOQ"
+        }
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import React, { useRef } from 'react';
 import {
     ScrollView,
@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import DrawerBase from './DrawBase';
 import { Pizza } from '@/hooks/usePizzaData';
+import { isAndroid } from '@/utils/common.utils';
 
 interface SearchDrawerProps {
   isOpen: boolean;
@@ -70,6 +71,12 @@ export default function SearchDrawer({
       )}
     >
       <View style={styles.drawerContent}>
+        <Feather
+          name="search"
+          size={18}
+          color="#bbb"
+          style={styles.searchIcon}
+        />
         <TextInput
           ref={innerInputRef}
           placeholder="Search pizza"
@@ -102,7 +109,7 @@ export default function SearchDrawer({
                         style={styles.resultItem}
                         disabled={isNavigatingRef.current}
                       >
-                        <Ionicons name="restaurant-outline" size={20} color="orange" />
+                        <Ionicons name="restaurant-outline" size={20} color="#FA4A0C" />
                         <Text style={styles.itemName}>{item.name}</Text>
                       </TouchableOpacity>
                     ))}
@@ -130,7 +137,7 @@ export default function SearchDrawer({
                     accessibilityLabel={`View ${item.name}`}
                     disabled={isNavigatingRef.current}
                   >
-                    <Text>{item.name}</Text>
+                    <Text style={styles.name}>{item.name}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -167,6 +174,12 @@ const styles = StyleSheet.create({
   },
   drawerContent: {
     flex: 1,
+  },
+  searchIcon: {
+    position: 'absolute',
+    top: isAndroid ? 12 : 11,
+    left: 16,
+    zIndex: 1,
   },
   input: {
     backgroundColor: '#F6F6F6',
@@ -210,15 +223,19 @@ const styles = StyleSheet.create({
   pillsWrap: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginLeft: -6,
+    marginHorizontal: 2,
+    marginTop: 6,
+    gap: 8,
   },
   pill: {
     paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 999,
-    backgroundColor: '#f2f2f2',
-    marginHorizontal: 6,
-    marginTop: 6,
+    paddingHorizontal: 20,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: '#32343E4D',
+  },
+  name: {
+    color: '#32343E',
   },
   notFound: {
     marginTop: -10,

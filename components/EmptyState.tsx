@@ -1,5 +1,6 @@
 import { FontAwesome5, Fontisto, Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import OrderIcon from "../assets/images/order.svg"
 
 type EmptyStateProps = {
   icon: string;
@@ -32,6 +33,8 @@ export default function EmptyState({
         return <Ionicons name="receipt-outline" size={60} color="#FA4A0C" />;
       case 'address':
         return <FontAwesome5 name="map-marker-alt" size={50} color="#ddd" />;
+      case 'order':
+        return <OrderIcon width={70} height={70} />;
       default:
         return <Ionicons name="alert-circle-outline" size={60} color="#FA4A0C" />;
     }

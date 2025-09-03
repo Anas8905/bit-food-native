@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -7,15 +6,19 @@ import BackButton from '../components/BackButton';
 import { useAuth } from '@/hooks/useAuth';
 
 
-const LoginScreen = () => {
+export default function LoginScreen() {
   const router = useRouter()
   const { login } = useAuth();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [national, setNational] = useState('');
   const [loading, setLoading] = useState(false);
+  const MAX_E164 = 15;
+  const countryCode = "+92";
+  const maxNationalDigits = Math.max(0, MAX_E164 - countryCode.length);
+  const phoneNumber = `${countryCode}${national}`;
 
-  const handleSendCode = async () => {
+  const sendOTP = async () => {
     if (!fullName.trim()) {
       Alert.alert('Error', 'Please enter your full name');
       return;
@@ -26,7 +29,7 @@ const LoginScreen = () => {
       return;
     }
 
-    if (!phoneNumber.trim()) {
+    if (!national) {
       Alert.alert('Error', 'Please enter your phone number');
       return;
     }
@@ -46,9 +49,6 @@ const LoginScreen = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <BackButton onPress={() => router.replace('/welcome')} />
-        <TouchableOpacity style={styles.supportButton}>
-          <Ionicons name="headset-outline" size={24} color="black" />
-        </TouchableOpacity>
       </View>
 
       <View style={styles.content}>
@@ -61,6 +61,7 @@ const LoginScreen = () => {
             placeholder="Type here"
             value={fullName}
             onChangeText={setFullName}
+            autoCorrect={false}
           />
         </View>
 
@@ -73,6 +74,7 @@ const LoginScreen = () => {
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
+            autoCorrect={false}
           />
         </View>
 
@@ -83,14 +85,15 @@ const LoginScreen = () => {
               <View style={styles.flag}>
                 <Text>🇵🇰</Text>
               </View>
-              <Text style={styles.countryCodeText}>+92</Text>
-              <Ionicons name="chevron-down" size={16} color="black" />
+              <Text style={styles.prefix}>{countryCode}</Text>
+              {/* <Ionicons name="chevron-down" size={16} color="black" /> */}
             </View>
             <TextInput
               style={styles.phoneInput}
               placeholder="Type here"
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
+              value={national}
+              maxLength={maxNationalDigits}
+              onChangeText={(t) => setNational(t.replace(/[^\d]/g, ''))}
               keyboardType="phone-pad"
             />
           </View>
@@ -98,7 +101,7 @@ const LoginScreen = () => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={handleSendCode}
+          onPress={sendOTP}
           disabled={loading}
         >
           {loading ? (
@@ -118,18 +121,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 10,
-  },
-  supportButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   content: {
     flex: 1,
@@ -169,7 +162,7 @@ const styles = StyleSheet.create({
   flag: {
     marginRight: 5,
   },
-  countryCodeText: {
+  prefix: {
     marginRight: 5,
   },
   phoneInput: {
@@ -192,5 +185,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-export default LoginScreen;

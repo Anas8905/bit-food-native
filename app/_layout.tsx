@@ -1,5 +1,6 @@
 import { Slot } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import AppDrawer from '@/components/AppDrawer';
 import { AddressProvider } from '@/context/AddressContext';
@@ -15,10 +16,12 @@ export default function RootLayout() {
         <AddressProvider>
           <CartProvider>
             <AuthProvider>
-              <DrawerProvider>
-                  <Slot />
-                  <AppDrawer />
-              </DrawerProvider>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <DrawerProvider>
+                    <Slot />
+                    <AppDrawer />
+                </DrawerProvider>
+              </GestureHandlerRootView>
             </AuthProvider>
           </CartProvider>
         </AddressProvider>
