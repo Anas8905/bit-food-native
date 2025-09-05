@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   inputs: {
-    padding: 12,
+    padding: 13,
     paddingTop: Platform.select({ ios: 16, android: 12 }),
   },
   input: {
