@@ -1,348 +1,371 @@
 import { saveData } from "@/services/asyncStorage";
 
-// Mock data
+const delay = (ms) => new Promise(res => setTimeout(res, ms));
 
-  export const DIP_OPTIONS = ["BBQ Sauce", "Garlic Mayo", "Anyone can cook"];
+  // Mock data
+export const DIP_OPTIONS = ["BBQ Sauce", "Garlic Mayo", "Anyone can cook"];
 
-  const pizzas = [
-      {
-        id: '1',
-        name: 'Pepperoni Feast',
-        description: 'Classic pepperoni, mozzarella cheese, tomato sauce on a hand-tossed crust',
-        image: require('../assets/images/pizza_pepperoni.png'),
-        category: 'Popular',
-        rating: 4.5,
-        reviewCount: '1.5k+',
-        deliveryTime: 25,
-        deliveryFee: 'Free',
-        variations: [
-          { size: '6" - Small (1)', price: 510 },
-          { size: '9" - Medium (2)', price: 1100 },
-          { size: '12" - Large (2-3)', price: 1600 },
-          { size: '15" - Party (3-4)', price: 2100 },
-        ]
-      },
-      {
-        id: '2',
-        name: 'Meat Lovers',
-        description: 'Pepperoni, ham, bacon, sausage, beef on a hand-tossed crust',
-        image: require('../assets/images/pizza_italian.png'),
-        category: 'Popular',
-        rating: 4.7,
-        reviewCount: '1.8k+',
-        deliveryTime: 30,
-        deliveryFee: 'Free',
-        variations: [
-          { size: '9" - Medium (2)', price: 1200 },
-          { size: '12" - Large (2-3)', price: 1700 },
-          { size: '15" - Party (3-4)', price: 2300 },
-        ]
-      },
-      {
-        id: '3',
-        name: 'BBQ Chicken',
-        description: 'Grilled chicken, BBQ sauce, red onions, cilantro on a hand-tossed crust',
-        image: require('../assets/images/pizza_special.png'),
-        category: 'Popular',
-        rating: 4.6,
-        reviewCount: '1.2k+',
-        deliveryTime: 25,
-        deliveryFee: 'Free',
-        variations: [
-          { size: '9" - Medium (2)', price: 1100 },
-          { size: '12" - Large (2-3)', price: 1600 },
-          { size: '15" - Party (3-4)', price: 2200 },
-        ]
-      },
-      {
-        id: '4',
-        name: 'Chicago Bold',
-        description: 'Crispy golden crust, Spicy BBQ Chicken, Tomato Sauce, Onions, Chillies & Coriander.',
-        image: require('../assets/images/pizza_dark.png'),
-        category: 'Popular',
-        rating: 4.8,
-        reviewCount: '2k+',
-        deliveryTime: 20,
-        deliveryFee: 'Free',
-        variations: [
-          { size: '6" - Small (1)', price: 510 },
-          { size: '9" - Medium (2)', price: 1100 },
-          { size: '12" - Large (2-3)', price: 1600 },
-          { size: '15" - Party (3-4)', price: 2100 },
-          { size: '21" - Humangasor (4-6)', price: 3700 },
-        ]
-      },
-      {
-        id: '5',
-        name: 'Veggie Supreme',
-        description: 'Bell peppers, mushrooms, onions, black olives, tomatoes on a thin crust',
-        image: require('../assets/images/pizza_dark.png'),
-        category: 'Classics',
-        rating: 4.3,
-        reviewCount: '1k+',
-        deliveryTime: 20,
-        deliveryFee: 'Free',
-        variations: [
-          { size: '6" - Small (1)', price: 450 },
-          { size: '9" - Medium (2)', price: 950 },
-          { size: '12" - Large (2-3)', price: 1400 },
-        ]
-      },
-      {
-        id: '6',
-        name: 'Hawaiian',
-        description: 'Ham, pineapple, mozzarella cheese on a hand-tossed crust',
-        image: require('../assets/images/pizza_special.png'),
-        category: 'Classics',
-        rating: 4.2,
-        reviewCount: '900+',
-        deliveryTime: 20,
-        deliveryFee: 'Free',
-        variations: [
-          { size: '6" - Small (1)', price: 480 },
-          { size: '9" - Medium (2)', price: 1000 },
-          { size: '12" - Large (2-3)', price: 1500 },
-        ]
-      },
-      {
-        id: 'd1',
-        name: 'Deal 1',
-        description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
-        image: require('../assets/images/pizza_pepperoni.png'),
-        category: 'Deals',
-        deliveryTime: 40,
-        deliveryFee: 'Free',
-        price: 1100,
-      },
-      {
-        id: 'd2',
-        name: 'Deal 2',
-        description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
-        image: require('../assets/images/pizza_italian.png'),
-        category: 'Deals',
-        deliveryTime: 35,
-        deliveryFee: 'Free',
-        price: 4300,
-      },
-      {
-        id: 'd3',
-        name: 'Deal 3',
-        description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
-        image: require('../assets/images/pizza_special.png'),
-        category: 'Deals',
-        deliveryTime: 70,
-        deliveryFee: 'Free',
-        price: 5100,
-      },
-      {
-        id: 'd4',
-        name: 'Deal 4',
-        description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
-        image: require('../assets/images/pizza_dark.png'),
-        category: 'Deals',
-        deliveryTime: 80,
-        deliveryFee: 'Free',
-        price: 7600,
-      },
-  ];
-
-  const mockOrders = [];
-
-  export const orders = [
+const pizzas = [
     {
-      id: '162432',
+      id: '1',
+      name: 'Pepperoni Feast',
+      description: 'Classic pepperoni, mozzarella cheese, tomato sauce on a hand-tossed crust',
       image: require('../assets/images/pizza_pepperoni.png'),
-      name: 'Peri Peri Pizza',
-      description: 'Classic pepperoni, mozzarella cheese, tomato sauce on a hand-tossed crust',
-      category: "Ordered",
-      price: '1400',
-      size: 'small',
-      quantity: 1,
-      total: 1100,
-      deliveryAddress: "439-A, Rt. Street, Model Town, LHR",
-      estimatedDeliveryTime: 30,
-      time: 'Jun 17 · 12:30 am',
+      category: 'Popular',
+      rating: 4.5,
+      reviewCount: '1.5k+',
+      deliveryTime: 25,
+      deliveryFee: 'Free',
+      variations: [
+        { size: '6" - Small (1)', price: 510 },
+        { size: '9" - Medium (2)', price: 1100 },
+        { size: '12" - Large (2-3)', price: 1600 },
+        { size: '15" - Party (3-4)', price: 2100 },
+      ]
     },
     {
-      id: '323790',
+      id: '2',
+      name: 'Meat Lovers',
+      description: 'Pepperoni, ham, bacon, sausage, beef on a hand-tossed crust',
+      image: require('../assets/images/pizza_italian.png'),
+      category: 'Popular',
+      rating: 4.7,
+      reviewCount: '1.8k+',
+      deliveryTime: 30,
+      deliveryFee: 'Free',
+      variations: [
+        { size: '9" - Medium (2)', price: 1200 },
+        { size: '12" - Large (2-3)', price: 1700 },
+        { size: '15" - Party (3-4)', price: 2300 },
+      ]
+    },
+    {
+      id: '3',
+      name: 'BBQ Chicken',
+      description: 'Grilled chicken, BBQ sauce, red onions, cilantro on a hand-tossed crust',
       image: require('../assets/images/pizza_special.png'),
-      name: 'Peri Pizza, Stuff Crust',
-      description: 'Classic pepperoni, mozzarella cheese, tomato sauce on a hand-tossed crust',
-      category: "Ordered",
-      price: '3736',
-      size: 'medium',
-      quantity: 2,
-      total: 2000,
-      deliveryAddress: "312-D, Rt. Street, Johar Town, LHR",
-      estimatedDeliveryTime: 45,
-      time: 'Jun 17 · 12:30 am',
+      category: 'Popular',
+      rating: 4.6,
+      reviewCount: '1.2k+',
+      deliveryTime: 25,
+      deliveryFee: 'Free',
+      variations: [
+        { size: '9" - Medium (2)', price: 1100 },
+        { size: '12" - Large (2-3)', price: 1600 },
+        { size: '15" - Party (3-4)', price: 2200 },
+      ]
     },
     {
-      id: '435701',
+      id: '4',
+      name: 'Chicago Bold',
+      description: 'Crispy golden crust, Spicy BBQ Chicken, Tomato Sauce, Onions, Chillies & Coriander.',
       image: require('../assets/images/pizza_dark.png'),
-      name: 'Hot & Spicy, Thin Crust',
-      description: 'Classic pepperoni, mozzarella cheese, tomato sauce on a hand-tossed crust',
-      category: "Ordered",
-      price: '5736',
-      size: 'large',
-      quantity: 3,
-      total: 3000,
-      deliveryAddress: "991-B, Rt. Street, Wapda Town, LHR",
-      estimatedDeliveryTime: 60,
-      time: 'Jun 17 · 12:30 am',
+      category: 'Popular',
+      rating: 4.8,
+      reviewCount: '2k+',
+      deliveryTime: 20,
+      deliveryFee: 'Free',
+      variations: [
+        { size: '6" - Small (1)', price: 510 },
+        { size: '9" - Medium (2)', price: 1100 },
+        { size: '12" - Large (2-3)', price: 1600 },
+        { size: '15" - Party (3-4)', price: 2100 },
+        { size: '21" - Humangasor (4-6)', price: 3700 },
+      ]
     },
-  ];
+    {
+      id: '5',
+      name: 'Veggie Supreme',
+      description: 'Bell peppers, mushrooms, onions, black olives, tomatoes on a thin crust',
+      image: require('../assets/images/pizza_dark.png'),
+      category: 'Classics',
+      rating: 4.3,
+      reviewCount: '1k+',
+      deliveryTime: 20,
+      deliveryFee: 'Free',
+      variations: [
+        { size: '6" - Small (1)', price: 450 },
+        { size: '9" - Medium (2)', price: 950 },
+        { size: '12" - Large (2-3)', price: 1400 },
+      ]
+    },
+    {
+      id: '6',
+      name: 'Hawaiian',
+      description: 'Ham, pineapple, mozzarella cheese on a hand-tossed crust',
+      image: require('../assets/images/pizza_special.png'),
+      category: 'Classics',
+      rating: 4.2,
+      reviewCount: '900+',
+      deliveryTime: 20,
+      deliveryFee: 'Free',
+      variations: [
+        { size: '6" - Small (1)', price: 480 },
+        { size: '9" - Medium (2)', price: 1000 },
+        { size: '12" - Large (2-3)', price: 1500 },
+      ]
+    },
+    {
+      id: 'd1',
+      name: 'Deal 1',
+      description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
+      image: require('../assets/images/pizza_pepperoni.png'),
+      category: 'Deals',
+      deliveryTime: 40,
+      deliveryFee: 'Free',
+      price: 1100,
+    },
+    {
+      id: 'd2',
+      name: 'Deal 2',
+      description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
+      image: require('../assets/images/pizza_italian.png'),
+      category: 'Deals',
+      deliveryTime: 35,
+      deliveryFee: 'Free',
+      price: 4300,
+    },
+    {
+      id: 'd3',
+      name: 'Deal 3',
+      description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
+      image: require('../assets/images/pizza_special.png'),
+      category: 'Deals',
+      deliveryTime: 70,
+      deliveryFee: 'Free',
+      price: 5100,
+    },
+    {
+      id: 'd4',
+      name: 'Deal 4',
+      description: 'Chicago Bold 9" Special or Chicken Supreme 2"',
+      image: require('../assets/images/pizza_dark.png'),
+      category: 'Deals',
+      deliveryTime: 80,
+      deliveryFee: 'Free',
+      price: 7600,
+    },
+];
 
-  // Mock API functions
-  export const mockAuthAPI = {
+const mockOrders = [];
 
-    sendOTP: async (user) => {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      await saveData("tempUser", user);
+export const orders = [
+  {
+    id: '162432',
+    image: require('../assets/images/pizza_pepperoni.png'),
+    name: 'Peri Peri Pizza',
+    description: 'Classic pepperoni, mozzarella cheese, tomato sauce on a hand-tossed crust',
+    category: "Ordered",
+    price: '1400',
+    size: 'small',
+    quantity: 1,
+    total: 1100,
+    deliveryAddress: "439-A, Rt. Street, Model Town, LHR",
+    estimatedDeliveryTime: 30,
+    time: 'Jun 17 · 12:30 am',
+  },
+  {
+    id: '323790',
+    image: require('../assets/images/pizza_special.png'),
+    name: 'Peri Pizza, Stuff Crust',
+    description: 'Classic pepperoni, mozzarella cheese, tomato sauce on a hand-tossed crust',
+    category: "Ordered",
+    price: '3736',
+    size: 'medium',
+    quantity: 2,
+    total: 2000,
+    deliveryAddress: "312-D, Rt. Street, Johar Town, LHR",
+    estimatedDeliveryTime: 45,
+    time: 'Jun 17 · 12:30 am',
+  },
+  {
+    id: '435701',
+    image: require('../assets/images/pizza_dark.png'),
+    name: 'Hot & Spicy, Thin Crust',
+    description: 'Classic pepperoni, mozzarella cheese, tomato sauce on a hand-tossed crust',
+    category: "Ordered",
+    price: '5736',
+    size: 'large',
+    quantity: 3,
+    total: 3000,
+    deliveryAddress: "991-B, Rt. Street, Wapda Town, LHR",
+    estimatedDeliveryTime: 60,
+    time: 'Jun 17 · 12:30 am',
+  },
+];
 
+// Mock API functions
+export const mockAuthAPI = {
+
+  sendOTP: async (user) => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    await saveData("tempUser", user);
+
+    return {
+      success: true,
+      message: 'OTP sent successfully',
+    };
+  },
+
+  verifyOTP: async (otp) => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // For demo purposes, any 4-digit OTP is valid
+    if (otp.length === 4) {
       return {
         success: true,
-        message: 'OTP sent successfully',
+        message: 'OTP verified successfully',
       };
-    },
+    } else {
+      throw new Error('Invalid OTP');
+    }
+  },
 
-    verifyOTP: async (phoneNumber, otp) => {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+  updateProfile: async (toUpdate) => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    await saveData('user', toUpdate);
+    return {
+      success: true,
+      message: 'Profile updated successfully',
+    };
+  },
+};
 
-      // For demo purposes, any 4-digit OTP is valid
-      if (otp.length === 4) {
-        return {
-          success: true,
-          message: 'OTP verified successfully',
-        };
-      } else {
-        throw new Error('Invalid OTP');
-      }
-    },
+export const mockPizzaAPI = {
+  getCategories: async () => {
+    await delay(300);
+    const { categories } = await mockPizzaAPI.searchCatalog({});
+    return { success: true, categories };
+  },
 
-    updateProfile: async (toUpdate) => {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      await saveData('user', toUpdate);
+  getPizzas: async (category, query) => {
+    await delay(300);
+    const { allPizzas } = await mockPizzaAPI.searchCatalog({
+      query,
+      categories: category ? [category] : [],
+      groupByCategory: false,
+    });
+    return { success: true, pizzas: allPizzas };
+  },
+
+  searchCatalog: async (params) => {
+    const {
+      query = '',
+      categories = [],
+      includeEmptyCategories = false,
+      groupByCategory = true,
+    } = params;
+
+    await delay(500);
+
+    let working = pizzas;
+
+    // Search query filter
+    const q = query.trim().toLowerCase();
+    if (q) {
+      working = working.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q)
+      );
+    }
+
+    // Category filter
+    const hasCategoryFilter = Array.isArray(categories) && categories.length > 0;
+    if (hasCategoryFilter) {
+      const set = new Set(categories);
+      working = working.filter(p => set.has(p.category));
+    }
+
+    // Group by category
+    const grouped = {};
+    for (const p of working) {
+      const key = p.category || 'Uncategorized';
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(p);
+    }
+
+    // Non-empty categories list
+    const categoriesAll = Object.keys(grouped);
+    const categoriesFiltered = includeEmptyCategories
+      ? categoriesAll
+      : categoriesAll.filter(cat => grouped[cat]?.length > 0);
+
+    return {
+      success: true,
+      categories: categoriesFiltered,
+      pizzasByCategory: groupByCategory ? grouped : { All: working },
+      allPizzas: working,
+    };
+  },
+
+  getPizzaById: async (id) => {
+    await delay(300);
+    let pizza = pizzas.find(p => p.id === id);
+    if (!pizza) pizza = orders.find(p => p.id === id);
+    if (pizza) return { success: true, pizza };
+    throw new Error('Pizza not found');
+  },
+};
+
+export const mockOrderAPI = {
+  placeOrder: async (orderData) => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    const newOrder = {
+      id: `ord-${Date.now()}`,
+      ...orderData,
+      status: 'received',
+      createdAt: new Date().toISOString(),
+      estimatedDeliveryTime: 45, // minutes
+      courier: {
+        name: 'Batman',
+        phone: '+92 300 1234567',
+        image: 'https://i.pravatar.cc/150?img=8',
+      },
+    };
+
+    mockOrders.push(newOrder);
+
+    return {
+      success: true,
+      message: 'Order placed successfully',
+      order: newOrder,
+    };
+  },
+
+  getOrders: async (userId) => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    const userOrders = mockOrders.filter(order => order.userId === userId);
+
+    return {
+      success: true,
+      orders: userOrders,
+    };
+  },
+
+  getOrderById: async (orderId) => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    let order = mockOrders.find(order => order.id === orderId);
+
+    if (!order) {
+      order = orders.find(order => order.id === orderId);
+    }
+
+    if (order) {
       return {
         success: true,
-        message: 'Profile updated successfully',
+        order,
       };
-    },
-  };
-
-  export const mockPizzaAPI = {
-    getCategories: async () => {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      const seen = new Set();
-      pizzas.forEach(p => {
-        if (p?.category) seen.add(p.category);
-      });
-
-      const categories = [...seen];
-
-      return { success: true, categories };
-    },
-
-    getPizzas: async (category) => {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-
-      let result;
-
-      if (category) {
-        result = pizzas.filter(pizza => pizza.category === category);
-      } else {
-        result = pizzas;
-      }
-
-      return {
-        success: true,
-        pizzas: result,
-      };
-    },
-
-    getPizzaById: async (id) => {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      let pizza = pizzas.find(p => p.id === id);
-
-      if (!pizza) {
-        pizza = orders.find(p => p.id === id);
-      }
-
-      if (pizza) {
-        return {
-          success: true,
-          pizza,
-        };
-      } else {
-        throw new Error('Pizza not found');
-      }
-    },
-  };
-
-  export const mockOrderAPI = {
-    placeOrder: async (orderData) => {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      const newOrder = {
-        id: `ord-${Date.now()}`,
-        ...orderData,
-        status: 'received',
-        createdAt: new Date().toISOString(),
-        estimatedDeliveryTime: 45, // minutes
-        courier: {
-          name: 'Batman',
-          phone: '+92 300 1234567',
-          image: 'https://i.pravatar.cc/150?img=8',
-        },
-      };
-
-      mockOrders.push(newOrder);
-
-      return {
-        success: true,
-        message: 'Order placed successfully',
-        order: newOrder,
-      };
-    },
-
-    getOrders: async (userId) => {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-
-      const userOrders = mockOrders.filter(order => order.userId === userId);
-
-      return {
-        success: true,
-        orders: userOrders,
-      };
-    },
-
-    getOrderById: async (orderId) => {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      let order = mockOrders.find(order => order.id === orderId);
-
-      if (!order) {
-        order = orders.find(order => order.id === orderId);
-      }
-
-      if (order) {
-        return {
-          success: true,
-          order,
-        };
-      } else {
-        throw new Error('Order not found');
-      }
-    },
-  };
+    } else {
+      throw new Error('Order not found');
+    }
+  },
+};

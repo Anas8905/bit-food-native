@@ -1,6 +1,7 @@
 import { Feather, Ionicons } from '@expo/vector-icons';
 import React, { useRef } from 'react';
 import {
+  ActivityIndicator,
     ScrollView,
     StyleSheet,
     Text,
@@ -9,36 +10,30 @@ import {
     View,
 } from 'react-native';
 import DrawerBase from './DrawBase';
-import { Pizza } from '@/hooks/usePizzaData';
+import { usePizzaData } from '@/hooks/usePizzaData';
 import { isAndroid } from '@/utils/common.utils';
 
 interface SearchDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  searchQuery: string;
-  onSearchQueryChange: (query: string) => void;
-  onPizzaSelect: (id: number | string) => void;
-  popularPizzas: Pizza[];
-  filteredPizzas: Record<string, Pizza[]>;
 }
 
-export default function SearchDrawer({
-  isOpen,
-  onClose,
-  searchQuery,
-  onSearchQueryChange,
-  onPizzaSelect,
-  popularPizzas,
-  filteredPizzas,
-}: SearchDrawerProps) {
+export default function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
   const innerInputRef = useRef<TextInput>(null);
   const isNavigatingRef = useRef(false);
-
-  const hasQuery = searchQuery.trim().length > 0;
-  const hasResults = hasQuery && Object.keys(filteredPizzas).length > 0;
+  const {
+    searchQuery,
+    setSearchQuery,
+    seePizza,
+    popularPizzas,
+    filteredPizzas,
+    isResultsLoading,
+    hasQuery,
+    hasResults
+  } = usePizzaData()
 
   const closeDrawer = () => {
-    onSearchQueryChange('');
+    setSearchQuery('');
     onClose();
   };
 
@@ -47,7 +42,7 @@ export default function SearchDrawer({
     isNavigatingRef.current = true;
     onClose();
     requestAnimationFrame(() => {
-      onPizzaSelect(id);
+      seePizza(id);
       setTimeout(() => {
         isNavigatingRef.current = false;
       }, 100);
@@ -81,7 +76,7 @@ export default function SearchDrawer({
           ref={innerInputRef}
           placeholder="Search pizza"
           value={searchQuery}
-          onChangeText={onSearchQueryChange}
+          onChangeText={setSearchQuery}
           autoFocus
           returnKeyType="search"
           style={[styles.input, styles.drawerInput]}
@@ -95,26 +90,33 @@ export default function SearchDrawer({
         >
           {hasQuery ? (
             <>
-              <View style={styles.resultContainer}>
+              <View style={[styles.resultTop, !isResultsLoading && styles.resultBottom]}>
                 <Text style={styles.resultTitle}>Results</Text>
               </View>
 
-              {hasResults ? (
-                Object.keys(filteredPizzas).map((category) => (
-                  <View key={category}>
-                    {filteredPizzas[category].map((item) => (
-                      <TouchableOpacity
-                        key={item.id}
-                        onPress={() => handlePizzaSelect(item.id)}
-                        style={styles.resultItem}
-                        disabled={isNavigatingRef.current}
-                      >
-                        <Ionicons name="restaurant-outline" size={20} color="#FA4A0C" />
-                        <Text style={styles.itemName}>{item.name}</Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                ))
+              {isResultsLoading ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="small" color="#FA4A0C" />
+                </View>
+              ) : hasResults ? (
+                Object.keys(filteredPizzas).map((category) => {
+                  const items = filteredPizzas[category];
+                  return (
+                    <View key={category}>
+                      {items.map((item) => (
+                        <TouchableOpacity
+                          key={item.id}
+                          onPress={() => handlePizzaSelect(item.id)}
+                          style={styles.resultItem}
+                          disabled={isResultsLoading || isNavigatingRef.current}
+                        >
+                          <Ionicons name="restaurant-outline" size={20} color="#FA4A0C" />
+                          <Text style={styles.itemName}>{item.name}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  );
+                })
               ) : (
                 <View style={styles.notFound}>
                   <Text style={styles.notFoundText}>No pizzas found</Text>
@@ -196,8 +198,11 @@ const styles = StyleSheet.create({
   dataContainer: {
     paddingBottom: 20,
   },
-  resultContainer: {
-    marginVertical: 20,
+  resultTop: {
+    marginTop: 20,
+  },
+  resultBottom: {
+    marginBottom: 20,
   },
   resultItem: {
     display: 'flex',
@@ -245,4 +250,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
   },
+  loadingContainer: {
+    paddingVertical: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });

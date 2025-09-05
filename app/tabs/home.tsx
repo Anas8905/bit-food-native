@@ -24,20 +24,19 @@ import { isAndroid } from '@/utils/common.utils';
 export default function HomeScreen() {
   const { isConnected } = useNetwork();
   const { cart } = useCart();
-  const [selectedCategories, setSelectedCategories] = useState(['All']);
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const {
-    categories,
-    pizzas,
-    loading,
+    allCategories,
+    filteredByCategory,
+    allPizzas,
+    selectedCategories,
+    toggleCategory,
+    isCatalogLoading,
+    isResultsLoading,
     refreshing,
-    searchQuery,
-    setSearchQuery,
-    filteredPizzas,
-    popularPizzas,
-    seePizza,
     handleRefresh,
+    seePizza,
   } = usePizzaData();
 
   const outerInputRef = useRef<TextInput>(null);
@@ -55,54 +54,11 @@ export default function HomeScreen() {
     }
   }, [isDrawerOpen]);
 
-  const getFilteredByCategory = () => {
-    let filteredData: Record<string, Pizza[]> = {};
-
-    const categoriesToShow = selectedCategories.includes('All')
-      ? categories
-      : selectedCategories;
-
-    categoriesToShow.forEach(category => {
-      if (pizzas[category]) {
-        filteredData[category] = pizzas[category];
-      }
-    });
-
-    return filteredData;
-  };
-
-
-  const catFilteredPizzas = getFilteredByCategory();
-
-  const getAllPizzas = () => {
-    let allPizzas: Pizza[] = [];
-    Object.values(pizzas).forEach(categoryPizzas => {
-      allPizzas.push(...categoryPizzas);
-    });
-    return allPizzas;
-  };
-
-  const toggleCategory = (category: string) => {
-    setSelectedCategories(prev => {
-      if (category === 'All') {
-        return ['All'];
-      } else {
-        if (prev.includes(category)) {
-          const newSelection = prev.filter(cat => cat !== category && cat !== 'All');
-          return newSelection.length === 0 ? ['All'] : newSelection;
-        } else {
-          const filteredPrev = prev.filter(cat => cat !== 'All');
-          return [...filteredPrev, category];
-        }
-      }
-    });
-  };
-
   if (!isConnected) {
     return <NoInternet onRetry={handleRefresh} />;
   }
 
-  if (loading) {
+  if (isCatalogLoading && !isDrawerOpen) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#FA4A0C" />
@@ -130,10 +86,8 @@ export default function HomeScreen() {
             onFocus={openDrawerFromSearch}
           />
         </View>
-      <ScrollView
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
-        showsVerticalScrollIndicator={false}
-      >
+
+        {/* Category Pills */}
         <View style={styles.categorySection}>
           <Text style={styles.allCatTitle}>All Categories</Text>
           <ScrollView
@@ -141,94 +95,86 @@ export default function HomeScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.catContainer}
           >
-            <TouchableOpacity
-              style={[
-                styles.catPillBase,
-                selectedCategories.includes('All') && styles.catPill
-              ]}
-              onPress={() => toggleCategory('All')}
-            >
-              <Text style={[
-                styles.pillTextBase,
-                selectedCategories.includes('All') && styles.pillText
-              ]}>
-                All
-              </Text>
-            </TouchableOpacity>
-
-            {categories.map((category) => (
+            {['All', ...allCategories].map(category => (
               <TouchableOpacity
                 key={category}
                 style={[
                   styles.catPillBase,
-                  selectedCategories.includes(category) && styles.catPill
+                  selectedCategories.includes(category) && styles.catPill,
                 ]}
                 onPress={() => toggleCategory(category)}
               >
-                <Text style={[
-                  styles.pillTextBase,
-                  selectedCategories.includes(category) && styles.pillText
-                ]}>
+                <Text
+                  style={[
+                    styles.pillTextBase,
+                    selectedCategories.includes(category) && styles.pillText,
+                  ]}
+                >
                   {category}
                 </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
-        {Object.keys(catFilteredPizzas).length > 0 ? (
-          Object.keys(catFilteredPizzas).map((category) => (
-            <View key={category}>
-              <Text style={styles.categoryTitle}>{category}</Text>
-              <FlatList
-                data={catFilteredPizzas[category]}
-                keyExtractor={(item) => item.id.toString()}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                renderItem={({ item }) => (
-                  <PizzaCard
-                    pizza={item}
-                    onPress={() => seePizza(item.id)}
-                  />
-                )}
-                contentContainerStyle={styles.pizzaList}
-              />
-            </View>
-          ))
+
+      <ScrollView
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
+        showsVerticalScrollIndicator={false}
+      >
+      {/* Categorized pizzas */}
+      <View style={{ position: 'relative' }}>
+        {Object.keys(filteredByCategory).length > 0 ? (
+          Object.keys(filteredByCategory).map((category) => {
+            const items = filteredByCategory[category];
+            return (
+              <View key={category}>
+                <Text style={styles.categoryTitle}>{category}</Text>
+                <FlatList<Pizza>
+                  data={items}
+                  keyExtractor={(item) => String(item.id)}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.pizzaList}
+                  renderItem={({ item }) => (
+                    <PizzaCard pizza={item} onPress={() => seePizza(item.id)} />
+                  )}
+                  // refreshing={refreshing}
+                  // onRefresh={handleRefresh}
+                />
+              </View>
+            );
+          })
         ) : (
           <View style={styles.noResultsContainer}>
             <Text style={styles.noResultsText}>No pizzas available</Text>
           </View>
         )}
 
-        {/* All Pizzas Section */}
-        {getAllPizzas().length > 0 && (
+        {/* All pizzas */}
+        {selectedCategories.length === 1 && selectedCategories[0] === 'All' && allPizzas.length > 0 && (
           <View style={styles.allPizzasSection}>
             <Text style={styles.allPizzasTitle}>All Pizzas</Text>
             <FlatList
-              data={getAllPizzas()}
-              keyExtractor={(item) => item.id.toString()}
+              data={allPizzas}
+              keyExtractor={item => String(item.id)}
               horizontal
               showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <PizzaCard
-                  pizza={item}
-                  onPress={() => seePizza(item.id)}
-                />
-              )}
+              // refreshing={refreshing}
+              // onRefresh={handleRefresh}
               contentContainerStyle={styles.pizzaList}
+              renderItem={({ item }) => (
+                <PizzaCard pizza={item} onPress={() => seePizza(item.id)} />
+              )}
             />
           </View>
         )}
+        {isResultsLoading && <View style={styles.sectionOverlay} />}
+        </View>
       </ScrollView>
 
       <SearchDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        searchQuery={searchQuery}
-        onSearchQueryChange={setSearchQuery}
-        onPizzaSelect={seePizza}
-        popularPizzas={popularPizzas}
-        filteredPizzas={filteredPizzas}
       />
     </SafeAreaView>
   );
@@ -323,6 +269,14 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     marginHorizontal: 20,
     marginBottom: 10,
+  },
+  sectionOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255,255,255,0.45)',
   },
 });
 
