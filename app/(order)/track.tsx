@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react';
-import BackButton from '@/components/BackButton';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
   ActivityIndicator,
   Alert,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { mockOrderAPI } from '../../api/mockApi';
 import CountdownTimer from '@/components/CountDownTimer';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { isAndroid } from '@/utils/common.utils';
+import Navbar from '@/components/ui/Navbar';
 
 
 export default function TrackScreen() {
@@ -48,10 +49,7 @@ export default function TrackScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <BackButton onPress={() => router.back()} />
-        <Text style={styles.headerTitle}>Track</Text>
-      </View>
+      <Navbar />
 
       {/* Success Message */}
       <View style={styles.successContainer}>
@@ -91,9 +89,18 @@ export default function TrackScreen() {
           </View>
         </View>
 
-        <View style={styles.statusIndicator}>
-          <View style={styles.statusDot} />
-          <Text style={styles.statusText}>Preparing your order</Text>
+        <View style={styles.btnContainer}>
+          <View style={[styles.btnShape, styles.statusIndicator]}>
+            <View style={styles.statusDot} />
+            <Text style={styles.statusText}>Preparing your order</Text>
+          </View>
+          <TouchableOpacity
+            style={[styles.btnShape, styles.backBtn]}
+            onPress={() => router.push('/tabs/home')}
+          >
+            <MaterialIcons name="keyboard-backspace" size={20} color="#777" />
+            <Text style={styles.backBtnText}>Back to Home</Text>
+        </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
@@ -103,15 +110,7 @@ export default function TrackScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 15,
     paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
   },
   loadingContainer: {
     flex: 1,
@@ -121,10 +120,6 @@ const styles = StyleSheet.create({
   cardHeader: {
     alignItems: 'center',
     paddingVertical: 20,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
   },
   estimatedTime: {
     fontSize: 70,
@@ -138,8 +133,7 @@ const styles = StyleSheet.create({
   },
   successContainer: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 70,
+    paddingTop: 50,
   },
   successIconContainer: {
     alignItems: 'center',
@@ -181,15 +175,20 @@ const styles = StyleSheet.create({
     color: '#3b5998',
     fontWeight: 400,
   },
-  statusIndicator: {
+  btnContainer: {
+    marginTop: 10,
+    gap: 10,
+  },
+  btnShape: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ffe2d8',
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 25,
-    marginTop: 10,
+  },
+  statusIndicator: {
+    backgroundColor: '#ffe2d8',
   },
   statusDot: {
     width: 8,
@@ -203,4 +202,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#FA4A0C',
   },
+  backBtn: {
+    backgroundColor: '#f1f1f1',
+    gap: 8,
+  },
+  backBtnText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#666',
+  },
+
 });

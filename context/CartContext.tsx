@@ -97,6 +97,9 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     saveFavorites([]);
   };
 
+  const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
+  const favItemsCount = favorites.length;
+
   const toggleFavorite = (item: CartItem) => {
     const isFavorite = favorites.some(fav => fav.id === item.id);
 
@@ -129,6 +132,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     <CartContext.Provider
       value={{
         cart,
+        cartItemsCount,
+        favItemsCount,
         favorites,
         addToCart,
         removeFromCart,

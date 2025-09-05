@@ -1,4 +1,3 @@
-import { useCart } from '@/hooks/useCart';
 import { useNetwork } from '@/hooks/useNetwork';
 import { Feather } from '@expo/vector-icons';
 import React, { useEffect, useRef, useState } from 'react';
@@ -23,8 +22,6 @@ import { isAndroid } from '@/utils/common.utils';
 
 export default function HomeScreen() {
   const { isConnected } = useNetwork();
-  const { cart } = useCart();
-  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const {
     allCategories,
@@ -68,23 +65,24 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Navbar cartCount={cartItemCount}
-      />
+      <Navbar />
+
+      <View style={styles.innerContainer}>
         <View style={styles.inputs}>
-          <Feather
-            name="search"
-            size={18}
-            color="#bbb"
-            style={styles.searchIcon}
-          />
-          <TextInput
-            ref={outerInputRef}
-            placeholder="Search pizza"
-            style={styles.input}
-            spellCheck={false}
-            autoCorrect={false}
-            onFocus={openDrawerFromSearch}
-          />
+            <Feather
+              name="search"
+              size={18}
+              color="#bbb"
+              style={styles.searchIcon}
+            />
+            <TextInput
+              ref={outerInputRef}
+              placeholder="Search pizza"
+              style={styles.input}
+              spellCheck={false}
+              autoCorrect={false}
+              onFocus={openDrawerFromSearch}
+            />
         </View>
 
         {/* Category Pills */}
@@ -117,60 +115,61 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
 
-      <ScrollView
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
-        showsVerticalScrollIndicator={false}
-      >
-      {/* Categorized pizzas */}
-      <View style={{ position: 'relative' }}>
-        {Object.keys(filteredByCategory).length > 0 ? (
-          Object.keys(filteredByCategory).map((category) => {
-            const items = filteredByCategory[category];
-            return (
-              <View key={category}>
-                <Text style={styles.categoryTitle}>{category}</Text>
-                <FlatList<Pizza>
-                  data={items}
-                  keyExtractor={(item) => String(item.id)}
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.pizzaList}
-                  renderItem={({ item }) => (
-                    <PizzaCard pizza={item} onPress={() => seePizza(item.id)} />
-                  )}
-                  // refreshing={refreshing}
-                  // onRefresh={handleRefresh}
-                />
-              </View>
-            );
-          })
-        ) : (
-          <View style={styles.noResultsContainer}>
-            <Text style={styles.noResultsText}>No pizzas available</Text>
-          </View>
-        )}
+        <ScrollView
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
+          showsVerticalScrollIndicator={false}
+        >
+        {/* Categorized pizzas */}
+        <View style={{ position: 'relative' }}>
+          {Object.keys(filteredByCategory).length > 0 ? (
+            Object.keys(filteredByCategory).map((category) => {
+              const items = filteredByCategory[category];
+              return (
+                <View key={category}>
+                  <Text style={styles.categoryTitle}>{category}</Text>
+                  <FlatList<Pizza>
+                    data={items}
+                    keyExtractor={(item) => String(item.id)}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    renderItem={({ item }) => (
+                      <PizzaCard pizza={item} onPress={() => seePizza(item.id)} />
+                    )}
+                    ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
+                    // refreshing={refreshing}
+                    // onRefresh={handleRefresh}
+                  />
+                </View>
+              );
+            })
+          ) : (
+            <View style={styles.noResultsContainer}>
+              <Text style={styles.noResultsText}>No pizzas available</Text>
+            </View>
+          )}
 
-        {/* All pizzas */}
-        {selectedCategories.length === 1 && selectedCategories[0] === 'All' && allPizzas.length > 0 && (
-          <View style={styles.allPizzasSection}>
-            <Text style={styles.allPizzasTitle}>All Pizzas</Text>
-            <FlatList
-              data={allPizzas}
-              keyExtractor={item => String(item.id)}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              // refreshing={refreshing}
-              // onRefresh={handleRefresh}
-              contentContainerStyle={styles.pizzaList}
-              renderItem={({ item }) => (
-                <PizzaCard pizza={item} onPress={() => seePizza(item.id)} />
-              )}
-            />
+          {/* All pizzas */}
+          {selectedCategories.length === 1 && selectedCategories[0] === 'All' && allPizzas.length > 0 && (
+            <View>
+              <Text style={styles.allPizzasTitle}>All Pizzas</Text>
+              <FlatList
+                data={allPizzas}
+                keyExtractor={item => String(item.id)}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                // refreshing={refreshing}
+                // onRefresh={handleRefresh}
+                renderItem={({ item }) => (
+                  <PizzaCard pizza={item} onPress={() => seePizza(item.id)} />
+                )}
+                ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
+              />
+            </View>
+          )}
+          {isResultsLoading && <View style={styles.sectionOverlay} />}
           </View>
-        )}
-        {isResultsLoading && <View style={styles.sectionOverlay} />}
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       <SearchDrawer
         isOpen={isDrawerOpen}
@@ -184,10 +183,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    paddingHorizontal: 20,
+  },
+  innerContainer: {
+    marginTop: isAndroid ? 0 : 6,
   },
   inputs: {
     position: 'relative',
-    marginHorizontal: 12,
   },
   searchIcon: {
     position: 'absolute',
@@ -204,14 +206,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
-
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   categorySection: {
-    marginHorizontal: 20,
     marginVertical: 10,
   },
   allCatTitle: {
@@ -244,11 +244,7 @@ const styles = StyleSheet.create({
   categoryTitle: {
     fontSize: 18,
     fontWeight: 600,
-    marginHorizontal: 20,
     marginBottom: 10,
-  },
-  pizzaList: {
-    paddingHorizontal: 10,
   },
   noResultsContainer: {
     flex: 1,
@@ -261,13 +257,9 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
   },
-  allPizzasSection: {
-    marginTop: 20,
-  },
   allPizzasTitle: {
     fontSize: 18,
     fontWeight: 600,
-    marginHorizontal: 20,
     marginBottom: 10,
   },
   sectionOverlay: {

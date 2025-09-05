@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import EmptyState from '../../components/EmptyState';
 import { useCart } from '@/hooks/useCart';
 import { useAddress } from '@/hooks/useAddress';
+import Navbar from '@/components/ui/Navbar';
 
 export default function CartScreen() {
   const router = useRouter();
@@ -74,44 +75,42 @@ export default function CartScreen() {
     </View>
   );
 
-  if (cart.length === 0) {
-    return (
-      <EmptyState
-        icon="cart"
-        title="No Items Yet"
-        message="Still not hungry? :("
-        buttonText="Order Deliciousness"
-        onButtonPress={() => router.push('/tabs/home')}
-      />
-    );
-  }
-
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>CART</Text>
-      </View>
+      <Navbar />
 
-      <FlatList
-        data={cart}
-        keyExtractor={(item, index) => `${item.id}-${item.size}-${index}`}
-        renderItem={renderItem}
-        contentContainerStyle={styles.listContent}
-      />
+      {cart.length > 0 ? (
+        <>
+          <FlatList
+            data={cart}
+            keyExtractor={(item, index) => `${item.id}-${item.size}-${index}`}
+            renderItem={renderItem}
+            contentContainerStyle={styles.listContent}
+          />
 
-      <View style={styles.footer}>
-        <View style={styles.totalContainer}>
-          <Text style={styles.totalLabel}>Total</Text>
-          <Text style={styles.totalAmount}>PKR {getCartTotal()}</Text>
-        </View>
+          <View style={styles.footer}>
+            <View style={styles.totalContainer}>
+              <Text style={styles.totalLabel}>Total</Text>
+              <Text style={styles.totalAmount}>PKR {getCartTotal()}</Text>
+            </View>
 
-        <TouchableOpacity
-          style={styles.checkoutButton}
-          onPress={handleCheckout}
-        >
-          <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity
+              style={styles.checkoutButton}
+              onPress={handleCheckout}
+            >
+              <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      ) : (
+        <EmptyState
+          icon="cart"
+          title="No Items Yet"
+          message="Still not hungry? :("
+          buttonText="Order Deliciousness"
+          onButtonPress={() => router.push('/tabs/home')}
+        />
+      )}
     </SafeAreaView>
   );
 };
@@ -120,23 +119,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-  },
-  header: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    paddingHorizontal: 20,
   },
   listContent: {
-    padding: 15,
+    marginTop: 10,
   },
   cartItem: {
     flexDirection: 'row',
-    padding: 15,
+    paddingVertical: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
   },
@@ -188,7 +178,6 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   footer: {
-    paddingHorizontal: 15,
     paddingTop: 15,
     borderTopWidth: 1,
     borderTopColor: '#F0F0F0',

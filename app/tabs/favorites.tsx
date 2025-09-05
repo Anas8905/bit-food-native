@@ -1,5 +1,5 @@
-import BackButton from "@/components/BackButton";
 import EmptyState from "@/components/EmptyState";
+import Navbar from "@/components/ui/Navbar";
 import { useCart } from "@/hooks/useCart";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -38,32 +38,25 @@ export default function Favorites() {
     </TouchableOpacity>
   );
 
-  if (favorites.length === 0) {
-    return (
-      <EmptyState
-        icon="heart"
-        title="No favorites saved"
-        message="Hunt the heart icon in the top right to add your favorites here."
-        buttonText="Let's find some favorites"
-        onButtonPress={() => router.push('/tabs/home')}
-      />
-    );
-  }
-
   return (
     <SafeAreaView style={styles.container}>
-    <View style={styles.header}>
-      <BackButton onPress={() => router.replace('/tabs/home')} />
-      <Text style={styles.headerTitle}>FAVORITES</Text>
-      <View style={{ width: 40 }} />
-    </View>
-
-    <FlatList
-      data={favorites}
-      keyExtractor={(item, index) => `${item.id}-${item.size}-${index}`}
-      renderItem={renderItem}
-      contentContainerStyle={styles.listContent}
-    />
+      <Navbar />
+      {favorites.length > 0 ? (
+        <FlatList
+          data={favorites}
+          keyExtractor={(item, index) => `${item.id}-${item.size}-${index}`}
+          renderItem={renderItem}
+          contentContainerStyle={styles.listContent}
+        />
+      ) : (
+        <EmptyState
+          icon="heart"
+          title="No favorites saved"
+          message="Hunt the heart icon in the top right to add your favorites here."
+          buttonText="Let's find some favorites"
+          onButtonPress={() => router.push('/tabs/home')}
+        />
+      )}
     </SafeAreaView>
   )
 }
@@ -72,19 +65,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
   },
   listContent: {
     padding: 15,

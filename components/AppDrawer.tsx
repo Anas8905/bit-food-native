@@ -29,7 +29,7 @@ export default function AppDrawer() {
             <Text style={styles.closeIcon}>✕</Text>
           </TouchableOpacity>
 
-          <View style={{ marginTop: 16 }}>
+          <View style={{ marginTop: 16, gap: 4 }}>
             <Text style={styles.userName}>{user?.fullName}</Text>
             <Text style={styles.phone}>{user?.phoneNumber}</Text>
           </View>
@@ -37,14 +37,14 @@ export default function AppDrawer() {
       )}
       renderContent={({ close }) => (
         <View>
-          <DrawerItem
+          {/* <DrawerItem
             label="Profile"
             icon={<Feather name="user" size={20} />}
             onPress={() => {
-              router.push('/profile');
+              router.push('/tabs/profile');
               close();
             }}
-          />
+          /> */}
           <DrawerItem
             label="Order History"
             icon={<Feather name="clock" size={20} />}
@@ -53,8 +53,8 @@ export default function AppDrawer() {
               close();
             }}
           />
-          <DrawerItem label="Notifications" icon={<Feather name="bell" size={20} />} />
-          <DrawerItem label="Offers & Promos" icon={<Feather name="tag" size={20} />} />
+          {/* <DrawerItem label="Notifications" icon={<Feather name="bell" size={20} />} />
+          <DrawerItem label="Offers & Promos" icon={<Feather name="tag" size={20} />} /> */}
           <DrawerItem label="Privacy Policy" icon={<Feather name="shield" size={20} />} />
           <DrawerItem label="FAQs" icon={<Feather name="help-circle" size={20} />} />
         </View>

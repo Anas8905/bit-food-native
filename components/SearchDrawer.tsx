@@ -27,6 +27,7 @@ export default function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
     seePizza,
     popularPizzas,
     filteredPizzas,
+    isCatalogLoading,
     isResultsLoading,
     hasQuery,
     hasResults
@@ -128,23 +129,30 @@ export default function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
           <View style={[hasQuery ? styles.lowMargin : styles.highMargin]}>
             <Text style={styles.popularTitle}>Popular Searches</Text>
 
-            {popularPizzas.length ? (
-              <View style={styles.pillsWrap}>
-                {popularPizzas.map((item) => (
-                  <TouchableOpacity
-                    key={item.id}
-                    onPress={() => handlePizzaSelect(item.id)}
-                    style={styles.pill}
-                    accessibilityRole="button"
-                    accessibilityLabel={`View ${item.name}`}
-                    disabled={isNavigatingRef.current}
-                  >
-                    <Text style={styles.name}>{item.name}</Text>
-                  </TouchableOpacity>
-                ))}
+            {isCatalogLoading ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="small" color="#FA4A0C" />
               </View>
             ) : (
-              <Text style={styles.notFoundText}>No popular pizzas available</Text>
+              popularPizzas.length ? (
+                <View style={styles.popularGrid}>
+                  {popularPizzas.map((item) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      onPress={() => handlePizzaSelect(item.id)}
+                      style={styles.gridItem}
+                      accessibilityRole="button"
+                      accessibilityLabel={`View ${item.name}`}
+                      disabled={isNavigatingRef.current}
+                    >
+                      <Ionicons name="restaurant-outline" size={20} color="#FA4A0C" />
+                      <Text style={styles.itemText}>{item.name}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              ) : (
+                <Text style={styles.notFoundText}>No popular pizzas available</Text>
+              )
             )}
           </View>
         </ScrollView>
@@ -225,22 +233,23 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     marginBottom: 10,
   },
-  pillsWrap: {
+  popularGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginHorizontal: 2,
+    justifyContent: 'space-between',
+  },
+  gridItem: {
+    backgroundColor: '#F6F6F6',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 10,
+    width: '48%',
+    alignItems: 'center',
+  },
+  itemText: {
+    fontWeight: '500',
+    color: '#333',
     marginTop: 6,
-    gap: 8,
-  },
-  pill: {
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: '#32343E4D',
-  },
-  name: {
-    color: '#32343E',
   },
   notFound: {
     marginTop: -10,

@@ -3,6 +3,7 @@ import BackButton from '@/components/BackButton';
 import EmptyState from '@/components/EmptyState';
 import { useCart } from '@/hooks/useCart';
 import { CartItem } from '@/types/cart';
+import { isAndroid } from '@/utils/common.utils';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -132,6 +133,7 @@ export default function OrderScreen() {
       <View style={styles.header}>
         <BackButton onPress={() => router.replace('/tabs/home')} />
         <Text style={styles.title}>ORDERS</Text>
+        <View style={{ width: 40 }} />
       </View>
 
       {/* Tab Navbar */}
@@ -188,17 +190,19 @@ export default function OrderScreen() {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      marginTop: 50,
+      marginTop: isAndroid ? 45 : 0,
     },
     header: {
-      alignItems: 'center',
       flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       gap: 10,
       paddingHorizontal: 16,
+      marginTop: isAndroid ? 0 : 10,
     },
     headerText: {
       fontSize: 18,
-      fontWeight: '600',
+      fontWeight: 'bold',
     },
     backButton: {
       backgroundColor: '#f0f2f5',

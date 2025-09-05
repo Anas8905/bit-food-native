@@ -3,7 +3,7 @@ import EmptyState from '@/components/EmptyState';
 import { useAddress } from '@/hooks/useAddress';
 import { useAuth } from '@/hooks/useAuth';
 import { User } from '@/types/auth';
-import { norm } from '@/utils/common.utils';
+import { isAndroid, norm } from '@/utils/common.utils';
 import { AntDesign, Feather, FontAwesome5, FontAwesome6 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -21,7 +22,7 @@ import {
 
 const screenWidth = Dimensions.get('window').width;
 
-export default function EditProfileScreen() {
+export default function ProfileScreen() {
   const router = useRouter();
   const { user, updateProfile } = useAuth();
   const { addresses, selectAddress, selectedAddress, removeAddress } = useAddress();
@@ -78,140 +79,143 @@ export default function EditProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <BackButton onPress={() => router.back()} />
-        <Text style={styles.title}>EDIT PROFILE</Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.innerContainer}>
+        {/* Header */}
+        <View style={styles.header}>
+          <BackButton onPress={() => router.back()} />
+          <Text style={styles.title}>PROFILE</Text>
+          <View style={{ width: 40 }} />
+        </View>
 
-      {/* Form Fields */}
-      <View style={styles.fieldGroup}>
-        <Text style={styles.label}>FULL NAME</Text>
-        <TextInput
-          value={fullName}
-          onChangeText={setFullName}
-          style={styles.input}
-          placeholder="Full Name"
-          editable={!isUpdating}
-        />
+        {/* Form Fields */}
+        <View style={styles.fieldGroup}>
+          <Text style={styles.label}>FULL NAME</Text>
+          <TextInput
+            value={fullName}
+            onChangeText={setFullName}
+            style={styles.input}
+            placeholder="Full Name"
+            editable={!isUpdating}
+          />
 
-        <Text style={styles.label}>PHONE NUMBER</Text>
-        <TextInput
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          style={styles.input}
-          keyboardType="phone-pad"
-          editable={!isUpdating}
-        />
+          <Text style={styles.label}>PHONE NUMBER</Text>
+          <TextInput
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            style={styles.input}
+            keyboardType="phone-pad"
+            editable={!isUpdating}
+          />
 
-        <Text style={styles.label}>EMAIL</Text>
-        <TextInput
-          value={email}
-          onChangeText={setEmail}
-          style={styles.input}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          editable={!isUpdating}
-        />
-      </View>
+          <Text style={styles.label}>EMAIL</Text>
+          <TextInput
+            value={email}
+            onChangeText={setEmail}
+            style={styles.input}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            editable={!isUpdating}
+          />
+        </View>
 
-      {/* Addresses Header */}
-      <View style={styles.addressHeader}>
-        <Text style={styles.label}>Addresses</Text>
-        <TouchableOpacity
-          style={styles.addMore}
-          onPress={() => router.replace('/tabs/address')}
-          disabled={isUpdating || !!selectedId}
-        >
-          <Text style={styles.addMoreText}>
-            { addresses.length > 0 ? "+ Add More" : "+ Add New" }
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Addresses List */}
-      {addresses.length > 0 ? (
-      <ScrollView
-        style={styles.addressesScrollView}
-        contentContainerStyle={{ paddingBottom: 10 }}
-        showsVerticalScrollIndicator={false}
-      >
-        {addresses.map((addr) => (
+        {/* Addresses Header */}
+        <View style={styles.addressHeader}>
+          <Text style={styles.label}>Addresses</Text>
           <TouchableOpacity
-            key={addr.id}
-            onPress={() => updateSelectedAddress(addr.id)}
-            disabled={isUpdating || !!selectedId}
-            style={[
-              styles.addressCard,
-              selectedId === addr.id && styles.disableAddress,
-              selectedAddress?.id === addr.id && styles.selectedCard,
-            ]}
-          >
-            <View style={styles.iconBox}>
-              <AddressIcon label={addr.label} />
-            </View>
-
-            <View style={styles.addressInfo}>
-              <Text style={styles.addressType}>{addr.label.toUpperCase()}</Text>
-              <Text style={styles.addressText}>{addr.address}</Text>
-            </View>
-            <View style={styles.actions}>
-              <TouchableOpacity style={styles.iconBtn}>
-                <FontAwesome6
-                  name="edit"
-                  size={15}
-                  color="#FF4D00"
-                  onPress={() => router.push(`/address/${addr.id}`)}
-                  disabled={isUpdating || !!selectedId}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.iconBtn}>
-                <Feather
-                  name="trash-2"
-                  size={16}
-                  color="#FF4D00"
-                  onPress={() => removeAddress(addr.id)}
-                  disabled={isUpdating || !!selectedId}
-                />
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    ) : (
-        <EmptyState
-          icon="address"
-          title="No Address"
-          message="Click the add new button to add your address."
-          isAddrScrn={true}
-        />
-    )}
-
-      {/* Footer Buttons */}
-      <View style={styles.footerContainer}>
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={styles.cancelBtn}
-            onPress={() => router.back()}
+            style={styles.addMore}
+            onPress={() => router.replace('/tabs/address')}
             disabled={isUpdating || !!selectedId}
           >
-            <Text style={styles.cancelText}>Discard Changes</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.saveBtn}
-            onPress={saveProfile}
-            disabled={isUpdating || !!selectedId}
-          >
-            {isUpdating ? (
-                <ActivityIndicator color="white" size={16} />
-              ) : (
-                <Text style={styles.saveText}>SAVE</Text>
-            )}
+            <Text style={styles.addMoreText}>
+              { addresses.length > 0 ? "+ Add More" : "+ Add New" }
+            </Text>
           </TouchableOpacity>
         </View>
+
+        {/* Addresses List */}
+        {addresses.length > 0 ? (
+        <ScrollView
+          style={styles.addressesScrollView}
+          contentContainerStyle={{ paddingBottom: 10 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {addresses.map((addr) => (
+            <TouchableOpacity
+              key={addr.id}
+              onPress={() => updateSelectedAddress(addr.id)}
+              disabled={isUpdating || !!selectedId}
+              style={[
+                styles.addressCard,
+                selectedId === addr.id && styles.disableAddress,
+                selectedAddress?.id === addr.id && styles.selectedCard,
+              ]}
+            >
+              <View style={styles.iconBox}>
+                <AddressIcon label={addr.label} />
+              </View>
+
+              <View style={styles.addressInfo}>
+                <Text style={styles.addressType}>{addr.label.toUpperCase()}</Text>
+                <Text style={styles.addressText}>{addr.address}</Text>
+              </View>
+              <View style={styles.actions}>
+                <TouchableOpacity style={styles.iconBtn}>
+                  <FontAwesome6
+                    name="edit"
+                    size={15}
+                    color="#FF4D00"
+                    onPress={() => router.push(`/address/${addr.id}`)}
+                    disabled={isUpdating || !!selectedId}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.iconBtn}>
+                  <Feather
+                    name="trash-2"
+                    size={16}
+                    color="#FF4D00"
+                    onPress={() => removeAddress(addr.id)}
+                    disabled={isUpdating || !!selectedId}
+                  />
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      ) : (
+          <EmptyState
+            icon="address"
+            title="No Address"
+            message="Click the add new button to add your address."
+            isAddrScrn={true}
+          />
+      )}
+
+        {/* Footer Buttons */}
+        <View style={styles.footerContainer}>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity
+              style={styles.cancelBtn}
+              onPress={() => router.back()}
+              disabled={isUpdating || !!selectedId}
+            >
+              <Text style={styles.cancelText}>Discard Changes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.saveBtn}
+              onPress={saveProfile}
+              disabled={isUpdating || !!selectedId}
+            >
+              {isUpdating ? (
+                  <ActivityIndicator color="white" size={16} />
+                ) : (
+                  <Text style={styles.saveText}>SAVE</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -219,14 +223,16 @@ export default function EditProfileScreen() {
     container: {
       flex: 1,
       backgroundColor: '#fff',
+    },
+    innerContainer: {
+      paddingTop: isAndroid ? 20 : 10,
       paddingHorizontal: 20,
-      paddingTop: 40,
     },
     header: {
       flexDirection: 'row',
       alignItems: 'center',
+      justifyContent: 'space-between',
       gap: 10,
-      marginTop: 20,
     },
     addressesScrollView: {
       maxHeight: 350,
@@ -247,8 +253,8 @@ export default function EditProfileScreen() {
       marginRight: 12,
     },
     title: {
-      fontSize: 16,
-      fontWeight: '600',
+      fontSize: 18,
+      fontWeight: 'bold',
     },
     avatarCircle: {
       width: 100,

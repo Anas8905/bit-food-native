@@ -3,10 +3,11 @@ import { Address, AddressFormProps } from '@/types/address';
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import MapView, { Marker, MarkerDragStartEndEvent, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import { useAddress } from '../hooks/useAddress';
+import { isAndroid } from '@/utils/common.utils';
 
 export default function AddressMap({ addressId, saveButtonText = 'Save Address' }: AddressFormProps) {
   const router = useRouter();
@@ -143,7 +144,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.inputs}>
         <TextInput
           placeholder="Address (street, area, city or nearby landmark)"
@@ -154,7 +155,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
           spellCheck={false}
           autoCorrect={false}
           multiline
-          numberOfLines={3}
+          numberOfLines={2}
         />
 
         <Dropdown
@@ -233,18 +234,18 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
           )}
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   inputs: {
-    padding: 12,
-    paddingTop: Platform.select({ ios: 16, android: 12 }),
+    paddingBottom: 12,
+    paddingTop: isAndroid ? 0 : 6,
+    paddingHorizontal: 18,
   },
   input: {
     backgroundColor: '#f0f4f8',
@@ -289,7 +290,7 @@ const styles = StyleSheet.create({
     bottom: 20,
   },
   actionEdit: {
-    bottom: 45,
+    bottom: isAndroid ? 45 : 14,
   },
   autocomplete: {
     flex: 0,

@@ -208,7 +208,7 @@ export const mockAuthAPI = {
     };
   },
 
-  verifyOTP: async (otp) => {
+  verifyOTP: async (phoneNumber, otp) => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
 

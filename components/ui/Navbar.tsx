@@ -1,11 +1,12 @@
 import { useAddress } from '@/hooks/useAddress';
+import { useCart } from '@/hooks/useCart';
 import { useDrawer } from '@/hooks/useDrawer';
+import { isAndroid } from '@/utils/common.utils';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import {
   Alert,
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,14 +14,12 @@ import {
 } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
-type NavbarProps = {
-  cartCount?: number;
-};
-
-export default function Navbar({ cartCount = 0 }: NavbarProps) {
+export default function Navbar() {
   const router = useRouter();
   const { openDrawer } = useDrawer();
   const { addresses, selectedAddress, selectAddress } = useAddress();
+  const { cartItemsCount } = useCart();
+
 
   const labels = useMemo(
     () => (addresses ?? []).map(({ id, label }) => ({ label, value: id })),
@@ -43,8 +42,7 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
         <Ionicons name="menu" size={24} color="black" />
       </TouchableOpacity>
 
-
-      {/* Center Text */}
+      {/* Center */}
       <View style={styles.centerText}>
         <Text style={styles.label}>DELIVER TO</Text>
         {labels.length > 0 ? (
@@ -72,9 +70,9 @@ export default function Navbar({ cartCount = 0 }: NavbarProps) {
         onPress={() => router.push('/tabs/cart')}
       >
         <Ionicons name="cart-outline" size={20} color="black" />
-        {cartCount > 0 && (
+        {cartItemsCount > 0 && (
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>{cartCount}</Text>
+            <Text style={styles.badgeText}>{cartItemsCount}</Text>
           </View>
         )}
       </TouchableOpacity>
@@ -86,9 +84,8 @@ const styles = StyleSheet.create({
   navbar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: Platform.OS === 'ios' ? 60 : 70,
-    paddingTop: Platform.OS === 'ios' ? 10 : 20,
-    paddingHorizontal: 16,
+    height: isAndroid ? 70 : 60,
+    paddingTop: isAndroid ? 0 : 10,
   },
   input: {
     width: '100%',
@@ -124,7 +121,7 @@ const styles = StyleSheet.create({
   },
   centerText: {
     alignItems: 'center',
-    width: '25%'
+    minWidth: 94,
   },
   label: {
     fontSize: 10,

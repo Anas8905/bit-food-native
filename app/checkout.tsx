@@ -18,6 +18,7 @@ import BackButton from '../components/BackButton';
 import { useAuth } from '@/hooks/useAuth';
 import { useCart } from '@/hooks/useCart';
 import { useAddress } from '@/hooks/useAddress';
+import { isAndroid } from '@/utils/common.utils';
 
 export default function CheckoutScreen() {
   const router = useRouter();
@@ -76,7 +77,7 @@ export default function CheckoutScreen() {
         <View style={{ width: 40 }} />
       </View>
 
-      <ScrollView style={styles.content}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <MaterialIcons name="location-pin" size={20} color="#FA4A0C" />
@@ -101,7 +102,7 @@ export default function CheckoutScreen() {
             <Text style={styles.sectionTitle}>Customer Details</Text>
             <TouchableOpacity
               style={styles.changeButton}
-              onPress={() => router.push('/profile')}
+              onPress={() => router.push('/tabs/profile')}
             >
               <Text style={styles.changeButtonText}>Edit</Text>
             </TouchableOpacity>
@@ -193,13 +194,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    paddingHorizontal: 15,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingVertical: isAndroid ? 10 : 15,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
   },
@@ -211,7 +212,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   section: {
-    padding: 15,
+    paddingVertical: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
   },

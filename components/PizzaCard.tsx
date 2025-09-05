@@ -35,8 +35,7 @@ const PizzaCard = ({ pizza, onPress }) => {
 const styles = StyleSheet.create({
 
   container: {
-    width: isAndroid ? 180 : 176,
-    marginHorizontal: 8,
+    width: isAndroid ? 178 : 174,
     marginBottom: 15,
     borderRadius: 12,
     backgroundColor: '#fff',

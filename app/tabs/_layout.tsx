@@ -1,15 +1,12 @@
 import { useCart } from '@/hooks/useCart';
-import { Fontisto, Ionicons } from '@expo/vector-icons';
+import { Feather, Fontisto, Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import MapIcon from '../../assets/images/map.svg';
 import HomeIcon from '../../assets/images/home.svg';
-import SearchIcon from '../../assets/images/search.svg';
 
 export default function TabLayout() {
-  const { cart, favorites } = useCart();
-  const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
-  const favItemsCount = favorites.length;
+  const { cartItemsCount, favItemsCount } = useCart();
 
   return (
     <Tabs
@@ -35,11 +32,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="search"
+        name="profile"
         options={{
-          title: 'Search',
+          title: 'Profile',
           tabBarIcon: ({ color }) => (
-            <SearchIcon width={20} height={20} color={color} />
+            <Feather name="user" size={20} color={color} />
           ),
         }}
       />
