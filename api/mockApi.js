@@ -251,6 +251,39 @@ export const mockPizzaAPI = {
     return { success: true, pizzas: allPizzas };
   },
 
+  searchPizzas: async (query) => {
+    await delay(200);
+
+    const searchQuery = query.trim().toLowerCase();
+    if (!searchQuery) {
+      return {
+        success: true,
+        pizzasByCategory: {},
+        allPizzas: [],
+      };
+    }
+
+    const filteredPizzas = pizzas.filter(pizza =>
+      pizza.name.toLowerCase().includes(searchQuery) ||
+      (pizza.description && pizza.description.toLowerCase().includes(searchQuery))
+    );
+
+    const grouped = {};
+    filteredPizzas.forEach(pizza => {
+      const category = pizza.category || 'Uncategorized';
+      if (!grouped[category]) {
+        grouped[category] = [];
+      }
+      grouped[category].push(pizza);
+    });
+
+    return {
+      success: true,
+      pizzasByCategory: grouped,
+      allPizzas: filteredPizzas,
+    };
+  },
+
   searchCatalog: async (params) => {
     const {
       query = '',

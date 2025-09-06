@@ -1,25 +1,25 @@
+import { usePizzaData } from '@/hooks/usePizzaData';
+import { isAndroid } from '@/utils/common.utils';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import React, { useRef } from 'react';
 import {
   ActivityIndicator,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import DrawerBase from './DrawBase';
-import { usePizzaData } from '@/hooks/usePizzaData';
-import { isAndroid } from '@/utils/common.utils';
 import BackButton from './BackButton';
+import DrawerBase from './DrawBase';
 
 interface SearchDrawerProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
+export default function SearchDrawer({ isOpen, onClose }: SearchDrawerProps): React.JSX.Element {
   const innerInputRef = useRef<TextInput>(null);
   const isNavigatingRef = useRef(false);
   const {
@@ -27,11 +27,12 @@ export default function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
     setSearchQuery,
     seePizza,
     popularPizzas,
-    filteredPizzas,
+    searchResults,
     isCatalogLoading,
-    isResultsLoading,
+    isSearchLoading,
     hasQuery,
-    hasResults
+    hasResults,
+    shouldShowLoading
   } = usePizzaData()
 
   const closeDrawer = () => {
@@ -90,17 +91,17 @@ export default function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
         >
           {hasQuery ? (
             <>
-              <View style={[styles.resultTop, !isResultsLoading && styles.resultBottom]}>
+              <View style={[styles.resultTop, !(isSearchLoading || shouldShowLoading) && styles.resultBottom]}>
                 <Text style={styles.resultTitle}>Results</Text>
               </View>
 
-              {isResultsLoading ? (
+              {isSearchLoading || shouldShowLoading ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="small" color="#FA4A0C" />
                 </View>
               ) : hasResults ? (
-                Object.keys(filteredPizzas).map((category) => {
-                  const items = filteredPizzas[category];
+                Object.keys(searchResults).map((category) => {
+                  const items = searchResults[category];
                   return (
                     <View key={category}>
                       {items.map((item) => (
@@ -108,7 +109,7 @@ export default function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
                           key={item.id}
                           onPress={() => handlePizzaSelect(item.id)}
                           style={styles.resultItem}
-                          disabled={isResultsLoading || isNavigatingRef.current}
+                          disabled={isNavigatingRef.current}
                         >
                           <Ionicons name="restaurant-outline" size={20} color="#FA4A0C" />
                           <Text style={styles.itemName}>{item.name}</Text>

@@ -6,7 +6,17 @@ export interface Pizza {
   id: number | string;
   name: string;
   description?: string;
-  [key: string]: any;
+  category?: string;
+  rating?: number;
+  reviewCount?: string;
+  deliveryTime?: number;
+  deliveryFee?: string;
+  variations?: {
+    size: string;
+    price: number;
+  }[];
+  image?: unknown;
+  price?: number;
 }
 
 export interface UsePizzaDataReturn {
@@ -15,11 +25,13 @@ export interface UsePizzaDataReturn {
   pizzas: Record<string, Pizza[]>;
   filteredPizzas: Record<string, Pizza[]>;
   filteredByCategory: Record<string, Pizza[]>;
+  searchResults: Record<string, Pizza[]>;
   allPizzas: Pizza[];
   selectedCategories: string[];
   toggleCategory: (c: string) => void;
   isCatalogLoading: boolean;
   isResultsLoading: boolean;
+  isSearchLoading: boolean;
   refreshing: boolean;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
@@ -28,6 +40,7 @@ export interface UsePizzaDataReturn {
   handleRefresh: () => Promise<void>;
   hasQuery: boolean;
   hasResults: boolean;
+  shouldShowLoading: boolean;
 }
 
 export const usePizzaData = (): UsePizzaDataReturn => {
@@ -39,6 +52,8 @@ export const usePizzaData = (): UsePizzaDataReturn => {
   const [isResultsLoading, setIsResultsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<Record<string, Pizza[]>>({});
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(['All']);
 
   const fetchAllPizzas = useCallback(async (isRefresh = false) => {
@@ -67,12 +82,11 @@ export const usePizzaData = (): UsePizzaDataReturn => {
         if (isRefresh) setRefreshing(true);
         setIsResultsLoading(true);
 
-        const q = searchQuery.trim();
         const categoriesFilter = selectedCategories.includes('All') ? [] : selectedCategories;
 
         const { categories, pizzasByCategory } =
           await mockPizzaAPI.searchCatalog({
-            query: q,
+            query: '',
             categories: categoriesFilter,
             groupByCategory: true,
           });
@@ -86,14 +100,38 @@ export const usePizzaData = (): UsePizzaDataReturn => {
         setIsResultsLoading(false);
       }
     },
-    [searchQuery, selectedCategories]
+    [selectedCategories]
   );
 
   const filteredByCategory = useMemo(() => {
-    // The server already returned only the categories we asked for (or all non-empty if 'All').
-    // Keeping this memo mainly for compatibility with existing UI.
     return filteredPizzas;
   }, [filteredPizzas]);
+
+  const fetchSearchResults = useCallback(async (query: string) => {
+    if (!query.trim()) {
+      setSearchResults({});
+      return;
+    }
+
+    try {
+      setIsSearchLoading(true);
+      const { pizzasByCategory } = await mockPizzaAPI.searchPizzas(query);
+      setSearchResults(pizzasByCategory as Record<string, Pizza[]>);
+    } catch (error) {
+      console.error('Error searching pizzas', error);
+      setSearchResults({});
+    } finally {
+      setIsSearchLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchSearchResults(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, fetchSearchResults]);
 
   const allPizzas = useMemo(() => Object.values(pizzas).flat(), [pizzas]);
 
@@ -101,7 +139,8 @@ export const usePizzaData = (): UsePizzaDataReturn => {
   const allCategories = useMemo(() => Object.keys(pizzas), [pizzas]);
 
   const hasQuery = searchQuery.trim().length > 0;
-  const hasResults = hasQuery && Object.keys(filteredPizzas).length > 0;
+  const hasResults = hasQuery && Object.keys(searchResults).length > 0;
+  const shouldShowLoading = hasQuery && !hasResults && !isSearchLoading;
 
   const toggleCategory = useCallback((category: string) => {
     setSelectedCategories(prev => {
@@ -140,10 +179,12 @@ export const usePizzaData = (): UsePizzaDataReturn => {
     pizzas,
     filteredPizzas,
     filteredByCategory,
+    searchResults,
     allPizzas,
     popularPizzas,
     isCatalogLoading,
     isResultsLoading,
+    isSearchLoading,
     refreshing,
     searchQuery,
     setSearchQuery,
@@ -153,5 +194,6 @@ export const usePizzaData = (): UsePizzaDataReturn => {
     handleRefresh,
     hasQuery,
     hasResults,
+    shouldShowLoading,
   };
 };
