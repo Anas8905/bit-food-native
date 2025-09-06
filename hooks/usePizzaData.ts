@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { debounce } from 'lodash';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { mockPizzaAPI } from '../api/mockApi';
 
 export interface Pizza {
@@ -130,13 +131,19 @@ export const usePizzaData = (): UsePizzaDataReturn => {
     }
   }, []);
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      fetchSearchResults(searchQuery);
-    }, 300);
+  const debouncedSearch = useRef(
+    debounce((query: string) => {
+      fetchSearchResults(query);
+    }, 700)
+  ).current;
 
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery, fetchSearchResults]);
+  useEffect(() => {
+    debouncedSearch(searchQuery);
+    
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [searchQuery, debouncedSearch]);
 
   const allPizzas = useMemo(() => Object.values(pizzas).flat(), [pizzas]);
 

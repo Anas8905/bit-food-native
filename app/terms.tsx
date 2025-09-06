@@ -1,13 +1,13 @@
+import { useAuth } from '@/hooks/useAuth';
+import { getData } from '@/services/asyncStorage';
+import { User } from '@/types/auth';
 import { Checkbox } from 'expo-checkbox';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
-import { getData } from '@/services/asyncStorage';
-import { KEYS } from '@/constants/Keys';
-import { useAuth } from '@/hooks/useAuth';
-import { User } from '@/types/auth';
+import { KEYS } from '@/constants/keys';
 
 export default function TermsScreen() {
   const router = useRouter();

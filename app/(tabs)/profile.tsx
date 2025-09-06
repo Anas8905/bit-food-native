@@ -304,7 +304,7 @@ export default function ProfileScreen() {
       fontWeight: '500',
     },
     addressCard: {
-      backgroundColor: '#f0f4f8',
+      backgroundColor: '#F0F5FA',
       borderRadius: 12,
       padding: 14,
       marginTop: 12,
@@ -316,9 +316,7 @@ export default function ProfileScreen() {
       opacity: 0.5,
     },
     selectedCard: {
-      borderColor: '#ff6534',
-      borderWidth: 2,
-      backgroundColor: '#fff',
+      backgroundColor: '#B8D7F6',
     },
     iconBox: {
       backgroundColor: '#fff',

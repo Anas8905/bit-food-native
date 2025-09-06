@@ -1,7 +1,7 @@
 import { usePizzaData } from '@/hooks/usePizzaData';
 import { isAndroid } from '@/utils/common.utils';
 import { Feather, Ionicons } from '@expo/vector-icons';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   ActivityIndicator,
   ScrollView,
@@ -39,6 +39,12 @@ export default function SearchDrawer({ isOpen, onClose }: SearchDrawerProps): Re
     setSearchQuery('');
     onClose();
   };
+
+  useEffect(() => {
+    if (!isOpen && searchQuery) {
+      setSearchQuery('');
+    }
+  }, [isOpen, searchQuery, setSearchQuery]);
 
   const handlePizzaSelect = (id: number | string) => {
     if (isNavigatingRef.current) return;

@@ -1,10 +1,10 @@
-import { getData, removeData, resetAsyncStorage, saveData } from '@/services/asyncStorage';
+import { KEYS } from '@/constants/keys';
+import { useAddress } from '@/hooks/useAddress';
+import { getData, removeData, saveData } from '@/services/asyncStorage';
 import { AuthContextType, AuthResponse, User } from '@/types/auth';
+import { useRouter } from 'expo-router';
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { mockAuthAPI } from '../api/mockApi';
-import { KEYS } from '@/constants/Keys';
-import { useAddress } from '@/hooks/useAddress';
-import { useRouter } from 'expo-router';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

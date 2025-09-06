@@ -1,7 +1,7 @@
+import { KEYS } from '@/constants/keys';
 import { Address } from '@/types/address';
 import { norm } from '@/utils/common.utils';
 import { getData, removeData, saveData } from './asyncStorage';
-import { KEYS } from '@/constants/Keys';
 
 export const getAddresses = async(): Promise<Address[]> => {
   return await getData<Address[]>(KEYS.ADDRESSES) ?? [];

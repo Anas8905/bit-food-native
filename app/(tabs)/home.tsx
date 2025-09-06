@@ -1,6 +1,9 @@
+import HorizontalPizzaCard from '@/components/HorizontalPizzaCard';
 import { useNetwork } from '@/hooks/useNetwork';
+import { isAndroid } from '@/utils/common.utils';
 import { Feather } from '@expo/vector-icons';
-import React, { useEffect, useRef, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -16,12 +19,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import NoInternet from '../../components/NoInternet';
 import SearchDrawer from '../../components/SearchDrawer';
 import Navbar from '../../components/ui/Navbar';
-import { usePizzaData } from '../../hooks/usePizzaData';
-import { isAndroid } from '@/utils/common.utils';
 import VerticalPizzaCard from '../../components/VerticalPizzaCard';
-import HorizontalPizzaCard from '@/components/HorizontalPizzaCard';
+import { usePizzaData } from '../../hooks/usePizzaData';
 
-export default function HomeScreen() {
+export default function HomeScreen(): React.JSX.Element {
   const { isConnected } = useNetwork();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const {
@@ -51,6 +52,14 @@ export default function HomeScreen() {
       return () => clearTimeout(t);
     }
   }, [isDrawerOpen]);
+
+  useFocusEffect(
+    useCallback(() => {      
+      return () => {
+        setIsDrawerOpen(false);
+      };
+    }, [])
+  );
 
   if (!isConnected) {
     return <NoInternet onRetry={handleRefresh} />;
