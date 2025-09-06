@@ -97,7 +97,10 @@ export default function OrderScreen() {
             <Text style={styles.price}>PKR {item.price}</Text>
           </View>
         </View>
-        <TouchableOpacity style={styles.orderIdBtn} onPress={() => router.navigate(`/track?orderId=${item.id}`)}>
+        <TouchableOpacity
+          style={styles.orderIdBtn}
+          onPress={isHistoryTab ? undefined : () => router.navigate(`/track?orderId=${item.id}`)}
+        >
           <Text style={styles.orderId}>#{item.id}</Text>
         </TouchableOpacity>
         <View style={styles.buttonsRow}>

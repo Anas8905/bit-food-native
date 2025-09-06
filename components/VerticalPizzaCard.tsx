@@ -2,7 +2,7 @@ import { isAndroid } from '@/utils/common.utils';
 import { Ionicons } from '@expo/vector-icons';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const PizzaCard = ({ pizza, onPress }) => {
+export default function VerticalPizzaCard({ pizza, onPress }) {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image source={pizza.image} style={styles.image} />
@@ -26,14 +26,16 @@ const PizzaCard = ({ pizza, onPress }) => {
             {pizza.description}
           </Text>
         )}
-        <Text style={styles.price}>PKR {pizza.price || pizza.variations[1].price}</Text>
+        <Text style={styles.price}>
+          PKR {pizza.price || pizza.variations[1].price}
+        </Text>
       </View>
     </TouchableOpacity>
-  );
+  )
 };
 
-const styles = StyleSheet.create({
 
+const styles = StyleSheet.create({
   container: {
     width: isAndroid ? 178 : 174,
     marginBottom: 15,
@@ -80,14 +82,14 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 14,
     fontWeight: 500,
-    paddingHorizontal: 8,
     marginBottom: 4,
+    paddingHorizontal: 8,
   },
   description: {
     fontSize: 10,
     color: '#666',
-    paddingHorizontal: 8,
     marginBottom: 4,
+    paddingHorizontal: 8,
   },
   price: {
     fontSize: 14,
@@ -97,5 +99,3 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
 });
-
-export default PizzaCard;

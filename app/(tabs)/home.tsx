@@ -14,11 +14,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import NoInternet from '../../components/NoInternet';
-import PizzaCard from '../../components/PizzaCard';
 import SearchDrawer from '../../components/SearchDrawer';
 import Navbar from '../../components/ui/Navbar';
-import { Pizza, usePizzaData } from '../../hooks/usePizzaData';
+import { usePizzaData } from '../../hooks/usePizzaData';
 import { isAndroid } from '@/utils/common.utils';
+import VerticalPizzaCard from '../../components/VerticalPizzaCard';
+import HorizontalPizzaCard from '@/components/HorizontalPizzaCard';
 
 export default function HomeScreen() {
   const { isConnected } = useNetwork();
@@ -115,66 +116,71 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
 
-        <ScrollView
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
+        <FlatList
+          data={
+            selectedCategories.length === 1 && selectedCategories[0] === 'All'
+              ? allPizzas
+              : []
+          }
+          keyExtractor={(item) => String(item.id)}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
           showsVerticalScrollIndicator={false}
-        >
-        {/* Categorized pizzas */}
-        <View style={{ position: 'relative' }}>
-          {Object.keys(filteredByCategory).length > 0 ? (
-            Object.keys(filteredByCategory).map((category) => {
-              const items = filteredByCategory[category];
-              return (
-                <View key={category}>
-                  <Text style={styles.categoryTitle}>{category}</Text>
-                  <FlatList<Pizza>
-                    data={items}
-                    keyExtractor={(item) => String(item.id)}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    renderItem={({ item }) => (
-                      <PizzaCard pizza={item} onPress={() => seePizza(item.id)} />
-                    )}
-                    ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
-                    // refreshing={refreshing}
-                    // onRefresh={handleRefresh}
-                  />
+          renderItem={({ item }) => (
+            <HorizontalPizzaCard pizza={item} onPress={() => seePizza(item.id)} />
+          )}
+          ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+          ListHeaderComponent={
+            <View style={{ position: 'relative' }}>
+              {/* Categorized pizzas */}
+              {Object.keys(filteredByCategory).length > 0 ? (
+                Object.keys(filteredByCategory).map((category) => {
+                  const items = filteredByCategory[category];
+                  return (
+                    <View key={category} style={{ marginBottom: 16 }}>
+                      <Text style={styles.categoryTitle}>{category}</Text>
+                      <FlatList
+                        data={items}
+                        keyExtractor={(item) => String(item.id)}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        renderItem={({ item }) => (
+                          <VerticalPizzaCard
+                            pizza={item}
+                            onPress={() => seePizza(item.id)}
+                          />
+                        )}
+                        ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
+                      />
+                    </View>
+                  );
+                })
+              ) : (
+                <View style={styles.noResultsContainer}>
+                  <Text style={styles.noResultsText}>No pizzas available</Text>
                 </View>
-              );
-            })
-          ) : (
-            <View style={styles.noResultsContainer}>
-              <Text style={styles.noResultsText}>No pizzas available</Text>
-            </View>
-          )}
+              )}
 
-          {/* All pizzas */}
-          {selectedCategories.length === 1 && selectedCategories[0] === 'All' && allPizzas.length > 0 && (
-            <View>
-              <Text style={styles.allPizzasTitle}>All Pizzas</Text>
-              <FlatList
-                data={allPizzas}
-                keyExtractor={item => String(item.id)}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                // refreshing={refreshing}
-                // onRefresh={handleRefresh}
-                renderItem={({ item }) => (
-                  <PizzaCard pizza={item} onPress={() => seePizza(item.id)} />
+              {/* All Pizzas */}
+              {selectedCategories.length === 1 &&
+                selectedCategories[0] === 'All' &&
+                allPizzas.length > 0 && (
+                  <Text style={[styles.allPizzasTitle, { marginTop: 8 }]}>
+                    All Pizzas
+                  </Text>
                 )}
-                ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
-              />
             </View>
-          )}
-          {isResultsLoading && <View style={styles.sectionOverlay} />}
-          </View>
-        </ScrollView>
+          }
+        />
+
       </View>
 
       <SearchDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
       />
+      {isResultsLoading && <View style={[StyleSheet.absoluteFill, styles.sectionOverlay]} />}
     </SafeAreaView>
   );
 };
@@ -186,6 +192,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   innerContainer: {
+    flex: 1,
     marginTop: isAndroid ? 0 : 6,
   },
   inputs: {
@@ -268,7 +275,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: 'rgba(255,255,255,0.45)',
+    backgroundColor: 'rgba(0,0,0,0.15)',
   },
 });
 

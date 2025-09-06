@@ -54,6 +54,7 @@ export const usePizzaData = (): UsePizzaDataReturn => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Record<string, Pizza[]>>({});
   const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(['All']);
 
   const fetchAllPizzas = useCallback(async (isRefresh = false) => {
@@ -110,16 +111,20 @@ export const usePizzaData = (): UsePizzaDataReturn => {
   const fetchSearchResults = useCallback(async (query: string) => {
     if (!query.trim()) {
       setSearchResults({});
+      setHasSearched(false);
       return;
     }
 
     try {
       setIsSearchLoading(true);
+      setHasSearched(false);
       const { pizzasByCategory } = await mockPizzaAPI.searchPizzas(query);
       setSearchResults(pizzasByCategory as Record<string, Pizza[]>);
+      setHasSearched(true);
     } catch (error) {
       console.error('Error searching pizzas', error);
       setSearchResults({});
+      setHasSearched(true);
     } finally {
       setIsSearchLoading(false);
     }
@@ -140,7 +145,7 @@ export const usePizzaData = (): UsePizzaDataReturn => {
 
   const hasQuery = searchQuery.trim().length > 0;
   const hasResults = hasQuery && Object.keys(searchResults).length > 0;
-  const shouldShowLoading = hasQuery && !hasResults && !isSearchLoading;
+  const shouldShowLoading = hasQuery && (isSearchLoading || !hasSearched);
 
   const toggleCategory = useCallback((category: string) => {
     setSelectedCategories(prev => {
