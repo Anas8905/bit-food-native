@@ -11,7 +11,7 @@ export default function Favorites() {
   const { favorites, removeFromFavorites } = useCart();
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.favItem} onPress={() => router.push(`/pizza/${item.id}`)}>
+    <TouchableOpacity style={styles.favItem} onPress={() => router.navigate(`/pizza/${item.id}`)}>
       <Image source={item.image} style={styles.itemImage} />
 
       <View style={styles.itemDetails}>
@@ -39,8 +39,8 @@ export default function Favorites() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Navbar />
+    <View style={styles.container}>
+      {/* <Navbar /> */}
       {favorites.length > 0 ? (
         <FlatList
           data={favorites}
@@ -54,10 +54,10 @@ export default function Favorites() {
           title="No favorites saved"
           message="Hunt the heart icon in the top right to add your favorites here."
           buttonText="Let's find some favorites"
-          onButtonPress={() => router.push('/tabs/home')}
+          onButtonPress={() => router.navigate('/home')}
         />
       )}
-    </SafeAreaView>
+    </View>
   )
 }
 
@@ -65,14 +65,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    paddingHorizontal: 20,
   },
   listContent: {
     padding: 15,
   },
   favItem: {
     flexDirection: 'row',
-    padding: 15,
+    paddingVertical: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
   },

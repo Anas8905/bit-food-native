@@ -50,16 +50,17 @@ export default function OTPScreen() {
     const otpString = otp.join('');
 
     if (otpString.length !== 4) {
-      Alert.alert('Error', 'Please enter a valid 4-digit OTP');
-      return;
+      return Alert.alert('Error', 'Please enter a valid 4-digit OTP');
     }
 
     try {
       setLoading(true);
-      await verifyOTP(otpString);
-      router.push('/terms')
+      const response = await verifyOTP(otpString);
+      if (response.success) {
+        router.replace('/terms');
+      } else return Alert.alert('Error', 'Failed to verify OTP');
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to verify OTP');
+        Alert.alert('Error', error.message || 'Failed to verify OTP');
     } finally {
       setLoading(false);
     }

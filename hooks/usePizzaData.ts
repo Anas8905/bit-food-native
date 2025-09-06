@@ -116,7 +116,7 @@ export const usePizzaData = (): UsePizzaDataReturn => {
 
   const seePizza = useCallback((id: number | string) => {
     setSearchQuery('');
-    router.push(`/pizza/${id}`);
+    router.navigate(`/pizza/${id}`);
   }, [router]);
 
 

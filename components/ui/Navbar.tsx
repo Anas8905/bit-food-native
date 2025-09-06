@@ -57,7 +57,7 @@ export default function Navbar() {
             style={styles.input}
           />
         ) : (
-          <TouchableOpacity style={styles.locationRow} onPress={() => router.push('/tabs/address')}>
+          <TouchableOpacity style={styles.locationRow} onPress={() => router.navigate('/address')}>
             <Text style={styles.location}>Select location</Text>
             <Ionicons name="chevron-down" size={12} color="black" />
           </TouchableOpacity>
@@ -67,7 +67,7 @@ export default function Navbar() {
       {/* Cart Button */}
       <TouchableOpacity
         style={[styles.circleButton]}
-        onPress={() => router.push('/tabs/cart')}
+        onPress={() => router.navigate('/cart')}
       >
         <Ionicons name="cart-outline" size={20} color="black" />
         {cartItemsCount > 0 && (

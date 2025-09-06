@@ -1,5 +1,6 @@
 export interface AuthContextType {
     user: User | null;
+    setUser: (user: User) => void;
     loading: boolean;
     login: (user: User) => Promise<AuthResponse>;
     verifyOTP: (otp: string) => Promise<AuthResponse>;

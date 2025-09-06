@@ -91,8 +91,7 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
     }
 
     if (hasVariations && !selectedSize) {
-      Alert.alert('Error', 'Please select a size');
-      return;
+      return Alert.alert('Error', 'Please select a size');
     }
 
     const cartItem: CartItem = {
@@ -113,7 +112,7 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
       },
       {
         text: 'Go to Cart',
-        onPress: () => router.push('/tabs/cart')
+        onPress: () => router.navigate('/cart')
       },
     ]);
   };

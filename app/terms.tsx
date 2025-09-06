@@ -1,21 +1,40 @@
 import { Checkbox } from 'expo-checkbox';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
+import { getData } from '@/services/asyncStorage';
+import { KEYS } from '@/constants/Keys';
+import { useAuth } from '@/hooks/useAuth';
+import { User } from '@/types/auth';
 
 export default function TermsScreen() {
   const router = useRouter();
+  const { setUser } = useAuth();
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!termsAccepted || !privacyAccepted) {
-      Alert.alert('Error', 'Please accept all terms to continue');
-      return;
+      return Alert.alert('Error', 'Please accept all terms to continue');
     }
-    router.push('/tabs/address');
+
+    try {
+      setIsSubmitting(true);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const user: User | null = await getData(KEYS.USER);
+      if (user) {
+        setUser(user);
+        router.replace('/address');
+      } else {
+        return Alert.alert('Error', 'You are not logged in.');
+      };
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -56,7 +75,9 @@ export default function TermsScreen() {
             style={styles.button}
             onPress={handleSubmit}
           >
-            <Text style={styles.buttonText}>SUBMIT</Text>
+            <Text style={styles.buttonText}>
+              {isSubmitting ? (<ActivityIndicator color="white" size={19} />) : "SUBMIT"}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -102,7 +123,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#FA4A0C',
-    paddingVertical: 15,
+    paddingVertical: 14,
     borderRadius: 8,
     alignItems: 'center',
   },

@@ -1,4 +1,4 @@
-import { getData, removeData, saveData } from '@/services/asyncStorage';
+import { getData, removeData, resetAsyncStorage, saveData } from '@/services/asyncStorage';
 import { AuthContextType, AuthResponse, User } from '@/types/auth';
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { mockAuthAPI } from '../api/mockApi';
@@ -80,7 +80,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await mockAuthAPI.verifyOTP(tempUser.phoneNumber, otp);
 
       if (response.success) {
-        setUser(tempUser);
         await saveData(KEYS.USER, tempUser);
         await removeData(KEYS.TEMP_USER);
       }
@@ -103,13 +102,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const value = useMemo(
     () => ({
       user,
+      setUser,
       loading,
       login,
       verifyOTP,
       updateProfile,
       logout,
     }),
-    [user, loading, login, verifyOTP, updateProfile, logout]
+    [user, setUser, loading, login, verifyOTP, updateProfile, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -58,7 +58,7 @@ export default function OrderScreen() {
           },
           {
             text: 'Go to Cart',
-            onPress: () => router.push('/tabs/cart')
+            onPress: () => router.navigate('/cart')
           },
         ]);
       } finally {
@@ -85,7 +85,7 @@ export default function OrderScreen() {
     const renderItem = ({ item }: { item: typeof orders[0] }) => (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => router.push(`/pizza/${item.id}`)}
+        onPress={() => router.navigate(`/pizza/${item.id}`)}
       >
         <View style={styles.pizzaContent}>
           <Image source={item.image} style={styles.image} />
@@ -97,12 +97,12 @@ export default function OrderScreen() {
             <Text style={styles.price}>PKR {item.price}</Text>
           </View>
         </View>
-        <TouchableOpacity style={styles.orderIdBtn} onPress={() => router.push(`/track?orderId=${item.id}`)}>
+        <TouchableOpacity style={styles.orderIdBtn} onPress={() => router.navigate(`/track?orderId=${item.id}`)}>
           <Text style={styles.orderId}>#{item.id}</Text>
         </TouchableOpacity>
         <View style={styles.buttonsRow}>
             <TouchableOpacity
-              onPress={!isHistoryTab ? () => router.push(`/track?orderId=${item.id}`) : undefined}
+              onPress={!isHistoryTab ? () => router.navigate(`/track?orderId=${item.id}`) : undefined}
               style={[styles.orderBtn, isHistoryTab ? styles.rateButton : styles.track]}
             >
               <Text style={isHistoryTab ? styles.rateText : styles.trackText}>
@@ -131,7 +131,7 @@ export default function OrderScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <View style={styles.header}>
-        <BackButton onPress={() => router.replace('/tabs/home')} />
+        <BackButton onPress={() => router.back()} />
         <Text style={styles.title}>ORDERS</Text>
         <View style={{ width: 40 }} />
       </View>
@@ -170,7 +170,7 @@ export default function OrderScreen() {
             title="No orders"
             message="Still not hungry? :("
             buttonText="Order Deliciousness"
-            onButtonPress={() => router.push('/tabs/home')}
+            onButtonPress={() => router.navigate('/home')}
           />
         ) : (
           <EmptyState
@@ -178,7 +178,7 @@ export default function OrderScreen() {
             title="No ongoing orders"
             message="Still not hungry? :("
             buttonText="Order Deliciousness"
-            onButtonPress={() => router.push('/tabs/home')}
+            onButtonPress={() => router.navigate('/home')}
           />
         )
         }
@@ -190,6 +190,7 @@ export default function OrderScreen() {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
+      backgroundColor: '#fff',
       marginTop: isAndroid ? 45 : 0,
     },
     header: {

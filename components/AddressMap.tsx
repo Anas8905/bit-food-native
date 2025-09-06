@@ -1,13 +1,18 @@
 import { DEFAULT_REGION, LABEL_OPTIONS, makeId } from '@/constants/address';
-import { Address, AddressFormProps } from '@/types/address';
+import { Address } from '@/types/address';
+import { isAndroid } from '@/utils/common.utils';
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import MapView, { Marker, MarkerDragStartEndEvent, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import { useAddress } from '../hooks/useAddress';
-import { isAndroid } from '@/utils/common.utils';
+
+export interface AddressFormProps {
+  addressId?: string;
+  saveButtonText?: string;
+}
 
 export default function AddressMap({ addressId, saveButtonText = 'Save Address' }: AddressFormProps) {
   const router = useRouter();
@@ -19,37 +24,44 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
   const [region, setRegion] = useState<Region>(DEFAULT_REGION);
   const [busy, setBusy] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(!!addressId);
+  const [isEditMode] = useState(!!addressId);
 
   const editMode = !!addressId;
+
+  const addressObj = useCallback(() => {
+    if (!editMode || !addressId) return null;
+    return addresses.find(i => i.id === addressId) || null;
+  }, [addressId, addresses, editMode]);
 
   useEffect(() => {
     if (!editMode) {
       setAddress('');
       setLabel('');
       setPin(null);
+      setRegion(DEFAULT_REGION);
       return;
     }
 
-    const addressObj = addresses.find(i => i.id === addressId);
-    if (!addressObj) {
+    const currentAddressObj = addressObj();
+    if (!currentAddressObj) {
       setAddress('');
       setLabel('');
       setPin(null);
+      setRegion(DEFAULT_REGION);
       return;
     }
 
-    setAddress(addressObj.address ?? '');
-    setLabel(addressObj.label ?? '');
+    setAddress(currentAddressObj.address ?? '');
+    setLabel(currentAddressObj.label ?? '');
 
-    const coords = { latitude: addressObj.latitude, longitude: addressObj.longitude };
+    const coords = { latitude: currentAddressObj.latitude, longitude: currentAddressObj.longitude };
     setPin(coords);
     setRegion({
       ...coords,
       latitudeDelta: 0.012,
       longitudeDelta: 0.012
     });
-  }, [addressId, addresses, editMode]);
+  }, [editMode, addressObj]);
 
   const focusRegion = (latitude: number, longitude: number) => ({
     latitude, longitude, latitudeDelta: 0.012, longitudeDelta: 0.012,
@@ -84,8 +96,10 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('Permission Denied', 'We need location permission to use your current position.');
-        return;
+        return Alert.alert(
+          'Permission Denied',
+          'We need location permission to use your current position.'
+        );
       }
 
       const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({
@@ -195,7 +209,6 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
-        initialRegion={region}
         region={region}
         onRegionChangeComplete={(r: Region) => setRegion(r)}
       >

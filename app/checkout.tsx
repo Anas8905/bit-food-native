@@ -38,8 +38,7 @@ export default function CheckoutScreen() {
 
   const handlePlaceOrder = async () => {
     if (cart.length === 0) {
-      Alert.alert('Error', 'Your cart is empty');
-      return;
+      return Alert.alert('Error', 'Your cart is empty');
     }
 
     try {
@@ -63,7 +62,7 @@ export default function CheckoutScreen() {
       clearCart();
       router.replace(`/track?orderId=${order.id}` as any);
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to place order');
+        Alert.alert('Error', error.message || 'Failed to place order');
     } finally {
       setLoading(false);
     }
@@ -72,7 +71,7 @@ export default function CheckoutScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <BackButton onPress={() => router.replace('/tabs/cart')} />
+        <BackButton onPress={() => router.back()} />
         <Text style={styles.headerTitle}>Checkout</Text>
         <View style={{ width: 40 }} />
       </View>
@@ -102,7 +101,7 @@ export default function CheckoutScreen() {
             <Text style={styles.sectionTitle}>Customer Details</Text>
             <TouchableOpacity
               style={styles.changeButton}
-              onPress={() => router.push('/tabs/profile')}
+              onPress={() => router.navigate('/profile')}
             >
               <Text style={styles.changeButtonText}>Edit</Text>
             </TouchableOpacity>
@@ -194,7 +193,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
   },
   header: {
     flexDirection: 'row',
@@ -301,7 +300,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   footer: {
-    padding: 15,
+    paddingVertical: 15,
     borderTopWidth: 1,
     borderTopColor: '#F0F0F0',
   },

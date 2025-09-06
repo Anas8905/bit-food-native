@@ -18,8 +18,7 @@ export const resetAsyncStorage = async (): Promise<void> => {
     await AsyncStorage.clear();
     const keys = await AsyncStorage.getAllKeys();
     if (!keys.length) {
-        Alert.alert("Empty", "Async storage is empty.")
-        return;
+        return Alert.alert("Empty", "Async storage is empty.")
     }
     console.log("All keys:", keys);
 };

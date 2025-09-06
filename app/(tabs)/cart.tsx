@@ -9,11 +9,9 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import EmptyState from '../../components/EmptyState';
 import { useCart } from '@/hooks/useCart';
 import { useAddress } from '@/hooks/useAddress';
-import Navbar from '@/components/ui/Navbar';
 
 export default function CartScreen() {
   const router = useRouter();
@@ -23,13 +21,12 @@ export default function CartScreen() {
 
   const handleCheckout = () => {
     if (cart.length === 0) {
-      Alert.alert('Error', 'Your cart is empty');
-      return;
+      return Alert.alert('Error', 'Your cart is empty');
     }
 
     if (!selectedAddress) {
-      router.push(`/tabs/address`)
-    } else router.push(`/checkout`)
+      router.navigate(`/address`)
+    } else router.navigate(`/checkout`)
   };
 
   const renderItem = ({ item }) => (
@@ -76,11 +73,9 @@ export default function CartScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Navbar />
-
+    <View style={styles.container}>
       {cart.length > 0 ? (
-        <>
+        <View style={styles.innerContainer}>
           <FlatList
             data={cart}
             keyExtractor={(item, index) => `${item.id}-${item.size}-${index}`}
@@ -101,28 +96,32 @@ export default function CartScreen() {
               <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
             </TouchableOpacity>
           </View>
-        </>
+        </View>
       ) : (
         <EmptyState
           icon="cart"
           title="No Items Yet"
           message="Still not hungry? :("
           buttonText="Order Deliciousness"
-          onButtonPress={() => router.push('/tabs/home')}
+          onButtonPress={() => router.navigate('/home')}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
+  },
+  innerContainer: {
+    flex: 1,
     paddingHorizontal: 20,
+    paddingBottom: 8,
   },
   listContent: {
-    marginTop: 10,
+    marginTop: 6,
   },
   cartItem: {
     flexDirection: 'row',

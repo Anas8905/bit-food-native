@@ -1,28 +1,37 @@
+import { useAddress } from '@/hooks/useAddress';
 import { useAuth } from '@/hooks/useAuth';
-import { useRouter } from 'expo-router';
+import { usePathname, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function SplashScreen() {
   const { user, loading } = useAuth();
-  const router = useRouter()
+  const { addresses } = useAddress();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const addressExists = addresses.length > 0;
+
 
   useEffect(() => {
-    const checkAuth = async () => {
-      // Wait for auth to load and navigate accordingly
-      if (!loading) {
-        setTimeout(() => {
-          if (user) {
-            router.push('/tabs/home');
-          } else {
-            router.replace('/welcome')
-          }
-        }, 2000); // 2 seconds delay for splash screen
-      }
-    };
+    if (loading) return;
 
-    checkAuth();
-  }, [loading, user, router]);
+    const timer = setTimeout(() => {
+      if (user) {
+        if (addressExists && pathname !== "/home") {
+          router.replace("/home");
+        } else if (!addressExists && pathname !== "/address") {
+          router.replace("/address");
+        }
+      } else {
+        if (pathname !== "/welcome") {
+          router.replace("/welcome");
+        }
+      }
+    }, 2000); // 2s splash delay
+
+    return () => clearTimeout(timer);
+  }, [loading, user, addressExists, pathname, router]);
 
   return (
     <View style={styles.container}>

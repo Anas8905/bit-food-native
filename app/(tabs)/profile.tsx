@@ -58,8 +58,7 @@ export default function ProfileScreen() {
 
   const saveProfile = async () => {
     if (!fullName || !email || !phoneNumber) {
-      Alert.alert('Missing fields', 'Please fill all fields.');
-      return;
+      return Alert.alert('Missing fields', 'Please fill all fields.');
     }
 
     setIsUpdating(true);
@@ -124,7 +123,7 @@ export default function ProfileScreen() {
           <Text style={styles.label}>Addresses</Text>
           <TouchableOpacity
             style={styles.addMore}
-            onPress={() => router.replace('/tabs/address')}
+            onPress={() => router.navigate('/address')}
             disabled={isUpdating || !!selectedId}
           >
             <Text style={styles.addMoreText}>
@@ -165,7 +164,7 @@ export default function ProfileScreen() {
                     name="edit"
                     size={15}
                     color="#FF4D00"
-                    onPress={() => router.push(`/address/${addr.id}`)}
+                    onPress={() => router.navigate(`/address/${addr.id}`)}
                     disabled={isUpdating || !!selectedId}
                   />
                 </TouchableOpacity>

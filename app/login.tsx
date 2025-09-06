@@ -20,26 +20,23 @@ export default function LoginScreen() {
 
   const sendOTP = async () => {
     if (!fullName.trim()) {
-      Alert.alert('Error', 'Please enter your full name');
-      return;
+      return Alert.alert('Error', 'Please enter your full name');
     }
 
     if (!email.trim()) {
-      Alert.alert('Error', 'Please enter your email');
-      return;
+      return Alert.alert('Error', 'Please enter your email');
     }
 
     if (!national) {
-      Alert.alert('Error', 'Please enter your phone number');
-      return;
+      return Alert.alert('Error', 'Please enter your phone number');
     }
 
     try {
       setLoading(true);
       await login({ fullName, email, phoneNumber });
-      router.push('/otp')
+      router.navigate('/otp')
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to send OTP');
+        Alert.alert('Error', error.message || 'Failed to send OTP');
     } finally {
       setLoading(false);
     }
@@ -48,7 +45,7 @@ export default function LoginScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <BackButton onPress={() => router.replace('/welcome')} />
+        <BackButton onPress={() => router.back()} />
       </View>
 
       <View style={styles.content}>

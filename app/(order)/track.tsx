@@ -96,10 +96,10 @@ export default function TrackScreen() {
           </View>
           <TouchableOpacity
             style={[styles.btnShape, styles.backBtn]}
-            onPress={() => router.push('/tabs/home')}
+            onPress={() => router.back()}
           >
             <MaterialIcons name="keyboard-backspace" size={20} color="#777" />
-            <Text style={styles.backBtnText}>Back to Home</Text>
+            <Text style={styles.backBtnText}>Go Back</Text>
         </TouchableOpacity>
         </View>
       </View>
@@ -110,6 +110,7 @@ export default function TrackScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
     paddingHorizontal: 20,
   },
   loadingContainer: {

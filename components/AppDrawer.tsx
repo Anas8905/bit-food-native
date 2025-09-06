@@ -13,7 +13,6 @@ export default function AppDrawer() {
   const handleLogout = async () => {
     await logout();
     closeDrawer();
-    router.push('/login');
   };
 
   return (
@@ -41,7 +40,7 @@ export default function AppDrawer() {
             label="Profile"
             icon={<Feather name="user" size={20} />}
             onPress={() => {
-              router.push('/tabs/profile');
+              router.navigate('/profile');
               close();
             }}
           /> */}
@@ -49,7 +48,7 @@ export default function AppDrawer() {
             label="Order History"
             icon={<Feather name="clock" size={20} />}
             onPress={() => {
-              router.push('/reorder');
+              router.navigate('/reorder');
               close();
             }}
           />

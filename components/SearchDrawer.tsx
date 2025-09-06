@@ -12,6 +12,7 @@ import {
 import DrawerBase from './DrawBase';
 import { usePizzaData } from '@/hooks/usePizzaData';
 import { isAndroid } from '@/utils/common.utils';
+import BackButton from './BackButton';
 
 interface SearchDrawerProps {
   isOpen: boolean;
@@ -59,9 +60,7 @@ export default function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
       preventUpdates={isNavigatingRef.current}
       renderHeader={() => (
         <View style={styles.header}>
-          <TouchableOpacity onPress={closeDrawer} style={styles.closeBtn}>
-            <Text style={styles.closeIcon}>✕</Text>
-          </TouchableOpacity>
+          <BackButton onPress={closeDrawer} />
           <Text style={styles.headerTitle}>Search</Text>
         </View>
       )}
@@ -163,20 +162,14 @@ export default function SearchDrawer({ isOpen, onClose }: SearchDrawerProps) {
 
 const styles = StyleSheet.create({
   header: {
-    marginBottom: 12,
+    marginTop: 15,
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  closeBtn: {
-    padding: 6,
-    marginRight: 8,
-  },
-  closeIcon: {
-    fontSize: 18,
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: 500,
+    marginLeft: 8,
   },
   resultTitle: {
     fontSize: 18,
