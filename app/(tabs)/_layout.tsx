@@ -1,9 +1,10 @@
 import { useCart } from '@/hooks/useCart';
-import { Feather, Fontisto, Ionicons } from '@expo/vector-icons';
+import { Fontisto, Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import MapIcon from '../../assets/images/map.svg';
 import HomeIcon from '../../assets/images/home.svg';
+import ProfileIcon from '../../assets/images/profile.svg';
 
 export default function TabLayout() {
   const { cartItemsCount, favItemsCount } = useCart();
@@ -37,7 +38,7 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color }) => (
-            <Feather name="user" size={20} color={color} />
+            <ProfileIcon width={20} height={20} color={color} />
           ),
         }}
       />

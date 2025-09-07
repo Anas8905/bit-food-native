@@ -7,12 +7,14 @@ import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import {
   Alert,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
+import MenuIcon from '../../assets/images/menu.svg';
 
 export default function Navbar() {
   const router = useRouter();
@@ -38,9 +40,9 @@ export default function Navbar() {
   return (
     <View style={styles.navbar}>
       {/* Menu Button */}
-      <TouchableOpacity onPress={openDrawer}>
-        <Ionicons name="menu" size={24} color="black" />
-      </TouchableOpacity>
+      <Pressable onPress={openDrawer}>
+        <MenuIcon width={46} height={46} color="#101010" />
+      </Pressable>
 
       {/* Center */}
       <View style={styles.centerText}>
