@@ -111,10 +111,11 @@ export default function Navbar() {
 
 const styles = StyleSheet.create({
   navbar: {
+    backgroundColor: '#fff',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: isAndroid ? 70 : 60,
-    paddingTop: isAndroid ? 0 : 10,
+    alignItems: 'center',
+    height: 60,
   },
   input: {
     width: '100%',

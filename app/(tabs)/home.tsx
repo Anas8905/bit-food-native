@@ -54,7 +54,7 @@ export default function HomeScreen(): React.JSX.Element {
   }, [isDrawerOpen]);
 
   useFocusEffect(
-    useCallback(() => {      
+    useCallback(() => {
       return () => {
         setIsDrawerOpen(false);
       };
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flex: 1,
-    marginTop: isAndroid ? 0 : 6,
+    marginTop: 6,
   },
   inputs: {
     position: 'relative',

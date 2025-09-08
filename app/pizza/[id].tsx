@@ -19,6 +19,7 @@ import BackButton from '../../components/BackButton';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { CartItem } from '@/types/cart';
 import { useAlert } from '@/context/AlertContext';
+import { isAndroid } from '@/utils/common.utils';
 interface Variation {
   size: string;
   price: number;
@@ -51,20 +52,19 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
   const { height: screenH } = useWindowDimensions();
 
   const hasVariations = Array.isArray(pizza?.variations) && pizza.variations.length > 0;
-  const imageHeight = 400;
-  const OVERLAP = 32;
+  const imageHeight = 444;
+  const OVERLAP = isAndroid ? 18 : 48;
   const sheetTop = imageHeight - OVERLAP;
-  const HEADER_HEIGHT = 110;
+  const HEADER_HEIGHT = isAndroid ? 196 : 154;
 
   const snapPoints = useMemo(() => {
     if (!hasVariations) return [400];
 
-    const maxSheetHeight = screenH - (insets.top + HEADER_HEIGHT + 12);
+    const expandedHeight = screenH - (insets.top + HEADER_HEIGHT + 12);
     const collapsedHeight = screenH - sheetTop;
-    const expandedHeight = maxSheetHeight;
 
     return [collapsedHeight, expandedHeight];
-  }, [screenH, sheetTop, insets.top, hasVariations]);
+  }, [screenH, sheetTop, insets.top, hasVariations, HEADER_HEIGHT]);
 
   const sheetRef = useRef<BottomSheet>(null);
 
@@ -501,7 +501,6 @@ const styles = StyleSheet.create({
     color: '#FA4A0C',
   },
   dipContainer: {
-    marginTop: 10,
     paddingVertical: 12,
     paddingHorizontal: 16,
     backgroundColor: '#FFD5C7',

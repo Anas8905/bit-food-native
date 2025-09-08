@@ -21,7 +21,6 @@ const pizzas = [
         { size: '9" - Medium (2)', price: 1100 },
         { size: '12" - Large (2-3)', price: 1600 },
         { size: '15" - Party (3-4)', price: 2100 },
-        { size: '21" - Humangasor (4-6)', price: 3700 },
       ]
     },
     {
@@ -39,7 +38,6 @@ const pizzas = [
         { size: '9" - Medium (2)', price: 1200 },
         { size: '12" - Large (2-3)', price: 1700 },
         { size: '15" - Party (3-4)', price: 2300 },
-        { size: '21" - Humangasor (4-6)', price: 3700 },
       ]
     },
     {
@@ -57,7 +55,6 @@ const pizzas = [
         { size: '9" - Medium (2)', price: 1100 },
         { size: '12" - Large (2-3)', price: 1600 },
         { size: '15" - Party (3-4)', price: 2200 },
-        { size: '21" - Humangasor (4-6)', price: 3700 },
       ]
     },
     {
@@ -75,7 +72,6 @@ const pizzas = [
         { size: '9" - Medium (2)', price: 1100 },
         { size: '12" - Large (2-3)', price: 1600 },
         { size: '15" - Party (3-4)', price: 2100 },
-        { size: '21" - Humangasor (4-6)', price: 3700 },
       ]
     },
     {
@@ -93,7 +89,6 @@ const pizzas = [
         { size: '9" - Medium (2)', price: 950 },
         { size: '12" - Large (2-3)', price: 1400 },
         { size: '15" - Party (3-4)', price: 2100 },
-        { size: '21" - Humangasor (4-6)', price: 3700 },
       ]
     },
     {
@@ -111,7 +106,6 @@ const pizzas = [
         { size: '9" - Medium (2)', price: 1000 },
         { size: '12" - Large (2-3)', price: 1500 },
         { size: '15" - Party (3-4)', price: 2100 },
-        { size: '21" - Humangasor (4-6)', price: 3700 },
       ]
     },
     {

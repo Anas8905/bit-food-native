@@ -72,7 +72,7 @@ export default function OrderScreen() {
       try {
         setLoadingId(order.id);
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         removeFromCart(order.id, order.size);
         showAlert('Success', 'Ordered has removed from cart!')
       } finally {
@@ -196,7 +196,6 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#fff',
-      marginTop: isAndroid ? 45 : 0,
     },
     header: {
       flexDirection: 'row',
@@ -204,7 +203,7 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between',
       gap: 10,
       paddingHorizontal: 16,
-      marginTop: isAndroid ? 0 : 10,
+      marginTop: isAndroid ? 60 : 10,
     },
     headerText: {
       fontSize: 18,

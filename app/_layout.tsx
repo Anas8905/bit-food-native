@@ -11,6 +11,7 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { navScreens, screens } from '@/constants/screens';
 import { AlertProvider } from '@/context/AlertContext';
 import Navbar from '@/components/ui/Navbar';
+import { isAndroid } from '@/utils/common.utils';
 
 export default function RootLayout() {
   const pathname = usePathname();
@@ -27,7 +28,7 @@ export default function RootLayout() {
                 <AlertProvider>
                   <DrawerProvider>
                     {showNavbar && (
-                      <SafeAreaView>
+                      <SafeAreaView style={{ backgroundColor: '#fff' }}>
                         <View style={styles.container}>
                           <Navbar />
                         </View>
@@ -53,5 +54,6 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
+    paddingTop: isAndroid ?  46 : 0,
   },
 })

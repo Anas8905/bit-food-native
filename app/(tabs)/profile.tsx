@@ -225,7 +225,7 @@ export default function ProfileScreen() {
       backgroundColor: '#fff',
     },
     innerContainer: {
-      paddingTop: isAndroid ? 20 : 10,
+      paddingTop: isAndroid ? 56 : 10,
       paddingHorizontal: 20,
     },
     header: {

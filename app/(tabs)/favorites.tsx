@@ -1,10 +1,8 @@
 import EmptyState from "@/components/EmptyState";
-import Navbar from "@/components/ui/Navbar";
 import { useCart } from "@/hooks/useCart";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Favorites() {
   const router = useRouter();
@@ -40,7 +38,6 @@ export default function Favorites() {
 
   return (
     <View style={styles.container}>
-      {/* <Navbar /> */}
       {favorites.length > 0 ? (
         <FlatList
           data={favorites}
@@ -64,7 +61,7 @@ export default function Favorites() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
   },
   listContent: {
     padding: 15,
