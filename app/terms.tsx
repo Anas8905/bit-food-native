@@ -1,18 +1,15 @@
 import { useAuth } from '@/hooks/useAuth';
-import { getData } from '@/services/asyncStorage';
-import { User } from '@/types/auth';
 import { Checkbox } from 'expo-checkbox';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
-import { KEYS } from '@/constants/keys';
-import { useAlert } from '@/context/AlertContext';
+import { useAlert } from '@/hooks/useAlert';
 
-export default function TermsScreen() {
+export default function TermsScreen(): React.JSX.Element {
   const router = useRouter();
-  const { setUser } = useAuth();
+  const { tempUser, setUser } = useAuth();
   const { showAlert } = useAlert();
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
@@ -27,9 +24,8 @@ export default function TermsScreen() {
       setIsSubmitting(true);
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const user: User | null = await getData(KEYS.USER);
-      if (user) {
-        setUser(user);
+      if (tempUser) {
+        setUser(tempUser);
         router.replace('/address');
       } else {
         return showAlert('Error', 'You are not logged in.');
@@ -73,14 +69,14 @@ export default function TermsScreen() {
         </View>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
+          <Pressable
             style={styles.button}
             onPress={handleSubmit}
           >
             <Text style={styles.buttonText}>
               {isSubmitting ? (<ActivityIndicator color="white" size={19} />) : "SUBMIT"}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
     </SafeAreaView>

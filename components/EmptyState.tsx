@@ -1,6 +1,6 @@
 import { FontAwesome5, Fontisto, Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import OrderIcon from "../assets/images/order.svg"
+import OrderIcon from "../assets/images/order.svg";
 
 type EmptyStateProps = {
   icon: string;
@@ -18,7 +18,7 @@ export default function EmptyState({
   buttonText,
   onButtonPress,
   isAddrScrn,
-}: EmptyStateProps) {
+}: EmptyStateProps): React.JSX.Element {
   const getIcon = () => {
     switch (icon) {
       case 'cart':

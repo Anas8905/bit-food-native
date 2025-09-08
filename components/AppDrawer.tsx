@@ -5,14 +5,18 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDrawer } from '../hooks/useDrawer';
 import { useAuth } from '../hooks/useAuth';
 import DrawerBase from './DrawBase';
+import { useAddress } from '@/hooks/useAddress';
 
-export default function AppDrawer() {
+export default function AppDrawer(): React.JSX.Element {
   const { isOpen, closeDrawer } = useDrawer();
   const { user, logout } = useAuth();
+  const { refresh } = useAddress();
 
   const handleLogout = async () => {
     await logout();
+    await refresh();
     closeDrawer();
+    router.replace('/welcome');
   };
 
   return (

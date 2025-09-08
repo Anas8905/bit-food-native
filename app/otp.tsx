@@ -4,11 +4,11 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, TouchableOpa
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
 import { useAuth } from '@/hooks/useAuth';
-import { useAlert } from '@/context/AlertContext';
+import { useAlert } from '@/hooks/useAlert';
 
-export default function OTPScreen() {
+export default function OTPScreen(): React.JSX.Element {
   const router = useRouter();
-  const { user, verifyOTP } = useAuth();
+  const { tempUser, verifyOTP,  } = useAuth();
   const { showAlert } = useAlert();
   const [otp, setOtp] = useState(['', '', '', '']);
   const [timer, setTimer] = useState(60);
@@ -82,7 +82,7 @@ export default function OTPScreen() {
 
       <View style={styles.content}>
         <Text style={styles.title}>
-          Enter the 4-digit code sent to you at {user?.phoneNumber}
+          Enter the 4-digit code sent to you at {tempUser?.phoneNumber}
         </Text>
 
         <View style={styles.otpContainer}>

@@ -1,5 +1,3 @@
-import { saveData } from "@/services/asyncStorage";
-
 const delay = (ms) => new Promise(res => setTimeout(res, ms));
 
   // Mock data
@@ -203,8 +201,6 @@ export const mockAuthAPI = {
   sendOTP: async (user) => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
-    await saveData("tempUser", user);
-
     return {
       success: true,
       message: 'OTP sent successfully',
@@ -229,7 +225,6 @@ export const mockAuthAPI = {
   updateProfile: async (toUpdate) => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
-    await saveData('user', toUpdate);
     return {
       success: true,
       message: 'Profile updated successfully',

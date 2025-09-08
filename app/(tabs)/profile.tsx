@@ -1,7 +1,7 @@
 import BackButton from '@/components/BackButton';
 import EmptyState from '@/components/EmptyState';
-import { useAlert } from '@/context/AlertContext';
 import { useAddress } from '@/hooks/useAddress';
+import { useAlert } from '@/hooks/useAlert';
 import { useAuth } from '@/hooks/useAuth';
 import { User } from '@/types/auth';
 import { isAndroid, norm } from '@/utils/common.utils';
@@ -23,7 +23,7 @@ import {
 
 const screenWidth = Dimensions.get('window').width;
 
-export default function ProfileScreen() {
+export default function ProfileScreen(): React.JSX.Element {
   const router = useRouter();
   const { showAlert } = useAlert();
   const { user, updateProfile } = useAuth();

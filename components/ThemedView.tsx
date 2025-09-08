@@ -7,7 +7,7 @@ export type ThemedViewProps = ViewProps & {
   darkColor?: string;
 };
 
-export function ThemedView({ style, lightColor, darkColor, ...otherProps }: ThemedViewProps) {
+export function ThemedView({ style, lightColor, darkColor, ...otherProps }: ThemedViewProps): React.JSX.Element{
   const backgroundColor = useThemeColor(
     {
       ...(lightColor && { light: lightColor }),

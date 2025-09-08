@@ -1,7 +1,7 @@
 import { orders } from '@/api/mockApi';
 import BackButton from '@/components/BackButton';
 import EmptyState from '@/components/EmptyState';
-import { useAlert } from '@/context/AlertContext';
+import { useAlert } from '@/hooks/useAlert';
 import { useCart } from '@/hooks/useCart';
 import { CartItem } from '@/types/cart';
 import { isAndroid } from '@/utils/common.utils';
@@ -27,7 +27,7 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: 'ongoing', label: 'Ongoing' },
 ];
 
-export default function OrderScreen() {
+export default function OrderScreen(): React.JSX.Element {
     const { cart, addToCart, removeFromCart, isInCart } = useCart();
     const { showAlert } = useAlert();
     const [activeTab, setActiveTab] = useState<TabKey>('history');

@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function Favorites() {
+export default function Favorites(): React.JSX.Element {
   const router = useRouter();
   const { favorites, removeFromFavorites } = useCart();
 

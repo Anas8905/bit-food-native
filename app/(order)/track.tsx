@@ -1,5 +1,10 @@
-import { useEffect, useState } from 'react';
+import CountdownTimer from '@/components/CountDownTimer';
+import Navbar from '@/components/ui/Navbar';
+import { useAlert } from '@/hooks/useAlert';
+import { isAndroid } from '@/utils/common.utils';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   StyleSheet,
@@ -9,14 +14,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { mockOrderAPI } from '../../api/mockApi';
-import CountdownTimer from '@/components/CountDownTimer';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { isAndroid } from '@/utils/common.utils';
-import Navbar from '@/components/ui/Navbar';
-import { useAlert } from '@/context/AlertContext';
 
 
-export default function TrackScreen() {
+export default function TrackScreen(): React.JSX.Element {
   const { orderId } = useLocalSearchParams();
   const router = useRouter();
   const { showAlert } = useAlert();

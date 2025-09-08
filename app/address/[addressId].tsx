@@ -4,7 +4,7 @@ import { isAndroid } from '@/utils/common.utils';
 import { useLocalSearchParams } from 'expo-router';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 
-export default function EditAddressScreen() {
+export default function EditAddressScreen(): React.JSX.Element {
   const { addressId } = useLocalSearchParams<{ addressId: string }>();
 
   return (

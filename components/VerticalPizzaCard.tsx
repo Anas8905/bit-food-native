@@ -2,7 +2,7 @@ import { isAndroid } from '@/utils/common.utils';
 import { Ionicons } from '@expo/vector-icons';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export default function VerticalPizzaCard({ pizza, onPress }) {
+export default function VerticalPizzaCard({ pizza, onPress }: { pizza: any; onPress: () => void }): React.JSX.Element {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image source={pizza.image} style={styles.image} />

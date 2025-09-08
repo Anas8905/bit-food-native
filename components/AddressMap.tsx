@@ -1,21 +1,31 @@
 import { DEFAULT_REGION, LABEL_OPTIONS, makeId } from '@/constants/address';
-import { useAlert } from '@/context/AlertContext';
 import { Address } from '@/types/address';
 import { isAndroid } from '@/utils/common.utils';
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import MapView, { Marker, MarkerDragStartEndEvent, PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import { useAddress } from '../hooks/useAddress';
+import { useAlert } from '@/hooks/useAlert';
 
 export interface AddressFormProps {
   addressId?: string | null;
   saveButtonText?: string;
 }
 
-export default function AddressMap({ addressId, saveButtonText = 'Save Address' }: AddressFormProps) {
+const focusRegion = (latitude: number, longitude: number): Region => ({
+  latitude,
+  longitude,
+  latitudeDelta: 0.012,
+  longitudeDelta: 0.012,
+});
+
+export default function AddressMap({
+    addressId,
+    saveButtonText = 'Save Address',
+  }: AddressFormProps): React.JSX.Element {
   const router = useRouter();
   const mapRef = useRef<MapView | null>(null);
   const { addAddress, addresses } = useAddress();
@@ -30,13 +40,16 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
 
   const editMode = !!addressId;
 
-  const addressObj = useCallback(() => {
+  const currentAddressObj = useMemo(() => {
     if (!editMode || !addressId) return null;
     return addresses.find(i => i.id === addressId) || null;
-  }, [addressId, addresses, editMode]);
+  }, [editMode, addressId, addresses]);
+
+  const hasCenteredRef = useRef(false);
 
   useEffect(() => {
     if (!editMode) {
+      hasCenteredRef.current = false;
       setAddress('');
       setLabel('');
       setPin(null);
@@ -44,7 +57,6 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
       return;
     }
 
-    const currentAddressObj = addressObj();
     if (!currentAddressObj) {
       setAddress('');
       setLabel('');
@@ -56,18 +68,20 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
     setAddress(currentAddressObj.address ?? '');
     setLabel(currentAddressObj.label ?? '');
 
-    const coords = { latitude: currentAddressObj.latitude, longitude: currentAddressObj.longitude };
+    const coords = {
+      latitude: currentAddressObj.latitude,
+      longitude: currentAddressObj.longitude,
+    };
     setPin(coords);
-    setRegion({
-      ...coords,
-      latitudeDelta: 0.012,
-      longitudeDelta: 0.012
-    });
-  }, [editMode, addressObj]);
+    const next = focusRegion(coords.latitude, coords.longitude);
+    setRegion(next);
 
-  const focusRegion = (latitude: number, longitude: number) => ({
-    latitude, longitude, latitudeDelta: 0.012, longitudeDelta: 0.012,
-  });
+    if (!hasCenteredRef.current) {
+      requestAnimationFrame(() => mapRef.current?.animateToRegion(next, 0));
+      hasCenteredRef.current = true;
+    }
+
+  }, [editMode, currentAddressObj]);
 
   const geocodeAndPreview = async () => {
     if (!address.trim()) {
@@ -83,7 +97,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
 
       const { latitude, longitude } = result;
       setPin({ latitude, longitude });
-      const next: Region = focusRegion(latitude, longitude);
+      const next = focusRegion(latitude, longitude);
       setRegion(next);
       mapRef.current?.animateToRegion(next, 600);
     } catch {
@@ -107,8 +121,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
       let { status } = await Location.getForegroundPermissionsAsync();
 
       if (status !== 'granted') {
-        const permissionResponse = await Location.requestForegroundPermissionsAsync();
-        status = permissionResponse.status;
+        status = (await Location.requestForegroundPermissionsAsync()).status;
       }
 
       if (status !== 'granted') {
@@ -125,7 +138,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
       const { latitude, longitude } = location.coords;
       setPin({ latitude, longitude });
 
-      const next: Region = focusRegion(latitude, longitude);
+      const next = focusRegion(latitude, longitude);
       setRegion(next);
       mapRef.current?.animateToRegion(next, 600);
       await reverseGeocode(latitude, longitude);
@@ -141,16 +154,14 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
   };
 
   const reverseGeocode = async (latitude: number, longitude: number) => {
-    try {
-      const results = await Location.reverseGeocodeAsync({ latitude, longitude });
-      if (results?.length) {
-        const r = results[0];
-        const parts = [r.name, r.street, r.city, r.region, r.postalCode, r.country]
-          .filter(Boolean)
-          .join(', ');
-        setAddress(parts);
-      }
-    } catch {}
+    const results = await Location.reverseGeocodeAsync({ latitude, longitude });
+    if (results?.length) {
+      const r = results[0];
+      const parts = [r.name, r.street, r.city, r.region, r.postalCode, r.country]
+        .filter(Boolean)
+        .join(', ');
+      setAddress(parts);
+    }
   }
 
   const saveAddress = async () => {
@@ -230,7 +241,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
-        region={region}
+        initialRegion={region}
         onRegionChangeComplete={(r: Region) => setRegion(r)}
       >
         {pin && (
@@ -239,7 +250,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
             draggable
             title={label || 'Delivery location'}
             description={address}
-            onDragEnd={async (e: MarkerDragStartEndEvent) => {
+            onDragEnd={async (e) => {
               const { latitude, longitude } = e.nativeEvent.coordinate;
               setPin({ latitude, longitude });
               await reverseGeocode(latitude, longitude);

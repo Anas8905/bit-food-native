@@ -18,9 +18,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCart } from '@/hooks/useCart';
 import { useAddress } from '@/hooks/useAddress';
 import { isAndroid } from '@/utils/common.utils';
-import { useAlert } from '@/context/AlertContext';
+import { useAlert } from '@/hooks/useAlert';
 
-export default function CheckoutScreen() {
+export default function CheckoutScreen(): React.JSX.Element {
   const router = useRouter();
   const { user } = useAuth();
   const { showAlert } = useAlert();

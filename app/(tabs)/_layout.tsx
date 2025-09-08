@@ -6,7 +6,7 @@ import MapIcon from '../../assets/images/map.svg';
 import HomeIcon from '../../assets/images/home.svg';
 import ProfileIcon from '../../assets/images/profile.svg';
 
-export default function TabLayout() {
+export default function TabLayout(): React.JSX.Element {
   const { cartItemsCount, favItemsCount } = useCart();
 
   return (

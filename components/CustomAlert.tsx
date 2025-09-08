@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '600',
     textAlign: 'center',
-    color: 'rgba(0, 0, 0, 0.9)', // Changed from '#000'
+    color: 'rgba(0, 0, 0, 0.9)',
     paddingTop: 20,
     paddingHorizontal: 20,
     paddingBottom: 8,
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 13,
     textAlign: 'center',
-    color: 'rgba(0, 0, 0, 0.8)',
+    color: '#111',
     paddingHorizontal: 20,
     paddingBottom: 20,
     lineHeight: 18,

@@ -4,34 +4,28 @@ import { usePathname, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function SplashScreen() {
-  const { user, loading } = useAuth();
+export default function SplashScreen(): React.JSX.Element {
+  const { user, hydrated } = useAuth();
   const { addresses } = useAddress();
   const router = useRouter();
   const pathname = usePathname();
 
   const addressExists = addresses.length > 0;
 
-
   useEffect(() => {
-    if (loading) return;
+    if (!hydrated) return;
 
     const timer = setTimeout(() => {
       if (user) {
-        if (addressExists && pathname !== "/home") {
-          router.replace("/home");
-        } else if (!addressExists && pathname !== "/address") {
-          router.replace("/address");
-        }
+        if (addressExists && pathname !== "/home") router.replace("/home");
+        else if (!addressExists && pathname !== "/address") router.replace("/address");
       } else {
-        if (pathname !== "/welcome") {
-          router.replace("/welcome");
-        }
+        if (pathname !== "/welcome") router.replace("/welcome");
       }
     }, 2000); // 2s splash delay
 
     return () => clearTimeout(timer);
-  }, [loading, user, addressExists, pathname, router]);
+  }, [hydrated, user, addressExists, pathname, router]);
 
   return (
     <View style={styles.container}>

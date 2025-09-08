@@ -2,7 +2,7 @@ import { useCart } from '@/hooks/useCart';
 import { Ionicons, Octicons } from '@expo/vector-icons';
 import { Checkbox } from 'expo-checkbox';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -18,8 +18,8 @@ import { DIP_OPTIONS, mockPizzaAPI } from '../../api/mockApi';
 import BackButton from '../../components/BackButton';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { CartItem } from '@/types/cart';
-import { useAlert } from '@/context/AlertContext';
 import { isAndroid } from '@/utils/common.utils';
+import { useAlert } from '@/hooks/useAlert';
 interface Variation {
   size: string;
   price: number;
@@ -192,7 +192,7 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
     };
 
     addToCart(cartItem, quantity);
-    showAlert('Success', `${pizza.name} Added to cart!`, [
+    showAlert('Success', `${pizza.name} added to cart!`, [
       {
         text: 'Go to Cart',
         onPress: () => router.navigate('/cart'),

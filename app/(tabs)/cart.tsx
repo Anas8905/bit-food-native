@@ -11,9 +11,9 @@ import {
 import EmptyState from '../../components/EmptyState';
 import { useCart } from '@/hooks/useCart';
 import { useAddress } from '@/hooks/useAddress';
-import { useAlert } from '@/context/AlertContext';
+import { useAlert } from '@/hooks/useAlert';
 
-export default function CartScreen() {
+export default function CartScreen(): React.JSX.Element {
   const router = useRouter();
   const { cart, removeFromCart, updateQuantity, getCartTotal } = useCart();
   const { selectedAddress } = useAddress();

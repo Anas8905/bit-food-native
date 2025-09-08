@@ -2,6 +2,8 @@ import { useRouter } from 'expo-router';
 import { debounce } from 'lodash';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { mockPizzaAPI } from '../api/mockApi';
+import { useNetwork } from './useNetwork';
+import { useAlert } from './useAlert';
 
 export interface Pizza {
   id: number | string;
@@ -16,7 +18,7 @@ export interface Pizza {
     size: string;
     price: number;
   }[];
-  image?: unknown;
+  image?: any;
   price?: number;
 }
 
@@ -46,6 +48,8 @@ export interface UsePizzaDataReturn {
 
 export const usePizzaData = (): UsePizzaDataReturn => {
   const router = useRouter();
+  const { isConnected } = useNetwork();
+  const { showAlert } = useAlert();
   const [filteredCategories, setFilteredCategories] = useState<string[]>([]);
   const [pizzas, setPizzas] = useState<Record<string, Pizza[]>>({});
   const [filteredPizzas, setFilteredPizzas] = useState<Record<string, Pizza[]>>({});
@@ -139,7 +143,7 @@ export const usePizzaData = (): UsePizzaDataReturn => {
 
   useEffect(() => {
     debouncedSearch(searchQuery);
-    
+
     return () => {
       debouncedSearch.cancel();
     };
@@ -172,9 +176,13 @@ export const usePizzaData = (): UsePizzaDataReturn => {
 
 
   const handleRefresh = useCallback(async () => {
+    if (!isConnected) {
+      return showAlert('Connection Error', 'Network still not available.');
+    }
+
     await fetchFilteredPizzas(true);
     await fetchAllPizzas(true);
-  }, [fetchFilteredPizzas, fetchAllPizzas]);
+  }, [fetchFilteredPizzas, fetchAllPizzas, isConnected]);
 
   useEffect(() => {
     fetchAllPizzas();

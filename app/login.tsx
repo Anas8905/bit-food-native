@@ -11,10 +11,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
 import { useAuth } from '@/hooks/useAuth';
-import { useAlert } from '@/context/AlertContext';
+import { useAlert } from '@/hooks/useAlert';
 
 
-export default function LoginScreen() {
+export default function LoginScreen(): React.JSX.Element {
   const router = useRouter()
   const { login } = useAuth();
   const { showAlert } = useAlert();

@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen(): React.JSX.Element {
   const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>

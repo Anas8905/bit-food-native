@@ -2,7 +2,7 @@ import AddressMap from '@/components/AddressMap';
 import { isAndroid } from '@/utils/common.utils';
 import { StyleSheet, View } from 'react-native';
 
-export default function AddressScreen() {
+export default function AddressScreen(): React.JSX.Element {
   return (
     <View style={styles.container}>
       <AddressMap addressId={null} />

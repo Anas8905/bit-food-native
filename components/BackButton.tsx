@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-const BackButton = ({ onPress }) => {
+const BackButton = ({ onPress }: { onPress: () => void }): React.JSX.Element => {
   return (
     <TouchableOpacity style={styles.button} onPress={onPress}>
       <Ionicons name="chevron-back" size={24} color="black" />

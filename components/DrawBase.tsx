@@ -81,7 +81,7 @@ export default function DrawerBase({
   renderFooter,
   children,
   styles: stylesOverride = {},
-}: DrawerBaseProps) {
+}: DrawerBaseProps): React.JSX.Element | null {
   const drawerWidth = useMemo(() => parseWidth(width), [width]);
   const offscreenX = side === 'left' ? -drawerWidth : drawerWidth;
 

@@ -1,11 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, AppState } from 'react-native';
 import { getData, removeData, saveData } from '@/services/asyncStorage';
+import React, { useEffect, useRef, useState } from 'react';
+import { AppState, Text, View } from 'react-native';
 
-export default function CountdownTimer({ order, styles }) {
+interface Order {
+  id: string;
+  estimatedDeliveryTime: number;
+}
+
+interface Styles {
+  cardHeader: object;
+  estimatedTime: object;
+  estimatedTimeLabel: object;
+}
+
+export default function CountdownTimer({ order, styles }: { order: Order; styles: Styles }): React.JSX.Element {
   const [timeLeft, setTimeLeft] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const intervalRef = useRef<any>(null);
+  const intervalRef = useRef<number | null>(null);
   const appState = useRef(AppState.currentState);
 
   const STORAGE_KEY = `countdown_${order.id}`;
@@ -26,7 +37,7 @@ export default function CountdownTimer({ order, styles }) {
     const initializeCountdown = async () => {
       try {
         // Check if we have a stored end time for this order
-        const storedEndTime = await getData<any>(STORAGE_KEY);
+        const storedEndTime = await getData<string>(STORAGE_KEY);
 
         let endTime;
         if (storedEndTime) {
@@ -64,7 +75,7 @@ export default function CountdownTimer({ order, styles }) {
       if (appState.current === 'background' && nextAppState === 'active') {
         // App came to foreground - recalculate time left
         try {
-          const storedEndTime = await getData<any>(STORAGE_KEY);
+          const storedEndTime = await getData<string>(STORAGE_KEY);
           if (storedEndTime) {
             const endTime = parseInt(storedEndTime);
             const remaining = calculateTimeLeft(endTime);
@@ -96,7 +107,9 @@ export default function CountdownTimer({ order, styles }) {
         if (newTime <= 0) {
           // Countdown finished - clean up storage
           removeData(STORAGE_KEY).catch(console.error);
-          clearInterval(intervalRef.current);
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+          }
           return 0;
         }
 
@@ -129,7 +142,7 @@ export default function CountdownTimer({ order, styles }) {
 
   if (isLoading) {
     return (
-      <View style={styles.card}>
+      <View>
         <View style={styles.cardHeader}>
           <Text style={styles.estimatedTime}>--:--</Text>
           <Text style={styles.estimatedTimeLabel}>LOADING...</Text>

@@ -1,7 +1,7 @@
 import { useAddress } from '@/hooks/useAddress';
+import { useAlert } from '@/hooks/useAlert';
 import { useCart } from '@/hooks/useCart';
 import { useDrawer } from '@/hooks/useDrawer';
-import { isAndroid } from '@/utils/common.utils';
 import { Ionicons } from '@expo/vector-icons';
 import { usePathname, useRouter } from 'expo-router';
 import { useMemo } from 'react';
@@ -13,9 +13,8 @@ import {
 } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import MenuIcon from '../../assets/images/menu.svg';
-import { useAlert } from '@/context/AlertContext';
 
-export default function Navbar() {
+export default function Navbar(): React.JSX.Element{
   const router = useRouter();
   const pathname = usePathname();
   const { openDrawer } = useDrawer();
@@ -57,7 +56,7 @@ export default function Navbar() {
 
   const updateDeliveryAddress = async (id: string) => {
     if (id === selectedAddress?.id) return;
-    
+
     try {
       await selectAddress(id);
       showAlert('Success', 'Your delivery address is updated.');
