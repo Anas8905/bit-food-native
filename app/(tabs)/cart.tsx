@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import {
-  Alert,
   FlatList,
   Image,
   StyleSheet,
@@ -12,16 +11,18 @@ import {
 import EmptyState from '../../components/EmptyState';
 import { useCart } from '@/hooks/useCart';
 import { useAddress } from '@/hooks/useAddress';
+import { useAlert } from '@/context/AlertContext';
 
 export default function CartScreen() {
   const router = useRouter();
   const { cart, removeFromCart, updateQuantity, getCartTotal } = useCart();
   const { selectedAddress } = useAddress();
+  const { showAlert } = useAlert();
 
 
   const handleCheckout = () => {
     if (cart.length === 0) {
-      return Alert.alert('Error', 'Your cart is empty');
+      return showAlert('Error', 'Your cart is empty.');
     }
 
     if (!selectedAddress) {

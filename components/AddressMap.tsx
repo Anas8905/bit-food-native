@@ -4,10 +4,11 @@ import { isAndroid } from '@/utils/common.utils';
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import MapView, { Marker, MarkerDragStartEndEvent, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import { useAddress } from '../hooks/useAddress';
+import { useAlert } from '@/context/AlertContext';
 
 export interface AddressFormProps {
   addressId?: string;
@@ -18,6 +19,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
   const router = useRouter();
   const mapRef = useRef<MapView | null>(null);
   const { addAddress, addresses } = useAddress();
+  const { showAlert } = useAlert();
   const [address, setAddress] = useState('');
   const [label, setLabel] = useState('');
   const [pin, setPin] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -69,14 +71,14 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
 
   const geocodeAndPreview = async () => {
     if (!address.trim()) {
-      return Alert.alert('Enter an address', 'Please type the street, area, city, etc.');
+      return showAlert('Enter an address', 'Please type the street, area, city, etc.');
     }
 
     setBusy(true);
     try {
       const [result] = await Location.geocodeAsync(address.trim());
       if (!result) {
-        return Alert.alert('Not found', 'Could not locate that address. Please refine it.');
+        return showAlert('Not found', 'Could not locate that address. Please refine it.');
       }
 
       const { latitude, longitude } = result;
@@ -85,7 +87,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
       setRegion(next);
       mapRef.current?.animateToRegion(next, 600);
     } catch {
-      Alert.alert('Error', 'Geocoding failed. Check your connection and try again.');
+      showAlert('Error', 'Geocoding failed. Check your connection and try again.');
     } finally {
       setBusy(false);
     }
@@ -96,7 +98,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        return Alert.alert(
+        return showAlert(
           'Permission Denied',
           'We need location permission to use your current position.'
         );
@@ -113,7 +115,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
       mapRef.current?.animateToRegion(next, 600);
       await reverseGeocode(latitude, longitude);
     } catch {
-      Alert.alert('Error', 'Could not get your current location.');
+      showAlert('Error', 'Could not get your current location.');
     } finally {
       setBusy(false);
     }
@@ -134,7 +136,7 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
 
   const saveAddress = async () => {
     if (!pin) {
-      return Alert.alert('Warning', 'Geocode first, then adjust the pin if needed.');
+      return showAlert('Warning', 'Geocode first, then adjust the pin if needed.');
     }
 
     setIsSaving(true);
@@ -149,9 +151,9 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
 
     try {
       await addAddress(addr, true);
-      Alert.alert('Success', 'This address is now saved and selected for delivery.');
+      showAlert('Success', 'This address is now saved and selected for delivery.');
     } catch {
-      Alert.alert('Error', 'Failed to save address. Please try again.');
+      showAlert('Error', 'Failed to save address. Please try again.');
     } finally {
       setIsSaving(false);
     }

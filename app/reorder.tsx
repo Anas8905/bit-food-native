@@ -1,6 +1,7 @@
 import { orders } from '@/api/mockApi';
 import BackButton from '@/components/BackButton';
 import EmptyState from '@/components/EmptyState';
+import { useAlert } from '@/context/AlertContext';
 import { useCart } from '@/hooks/useCart';
 import { CartItem } from '@/types/cart';
 import { isAndroid } from '@/utils/common.utils';
@@ -8,7 +9,6 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
     FlatList,
     Image,
     Pressable,
@@ -29,6 +29,7 @@ const TABS: { key: TabKey; label: string }[] = [
 
 export default function OrderScreen() {
     const { cart, addToCart, removeFromCart, isInCart } = useCart();
+    const { showAlert } = useAlert();
     const [activeTab, setActiveTab] = useState<TabKey>('history');
     const [loadingId, setLoadingId] = useState<string | null>(null);
 
@@ -51,14 +52,15 @@ export default function OrderScreen() {
         await new Promise(resolve => setTimeout(resolve, 1000));
         addToCart(cartItem, pizza.quantity);
 
-        Alert.alert('Success', 'Added to cart!', [
+        showAlert('Success', 'Added to cart!', [
           {
             text: 'Stay Here',
             style: 'cancel',
           },
           {
             text: 'Go to Cart',
-            onPress: () => router.navigate('/cart')
+            onPress: () => router.navigate('/cart'),
+            style: 'default',
           },
         ]);
       } finally {
@@ -70,9 +72,9 @@ export default function OrderScreen() {
       try {
         setLoadingId(order.id);
         await new Promise(resolve => setTimeout(resolve, 1000));
+        
         removeFromCart(order.id, order.size);
-
-        Alert.alert('Success', 'Ordered has removed from cart!')
+        showAlert('Success', 'Ordered has removed from cart!')
       } finally {
         setLoadingId(null);
       }

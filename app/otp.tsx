@@ -1,13 +1,15 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
 import { useAuth } from '@/hooks/useAuth';
+import { useAlert } from '@/context/AlertContext';
 
 export default function OTPScreen() {
   const router = useRouter();
   const { user, verifyOTP } = useAuth();
+  const { showAlert } = useAlert();
   const [otp, setOtp] = useState(['', '', '', '']);
   const [timer, setTimer] = useState(60);
   const [loading, setLoading] = useState(false);
@@ -50,7 +52,7 @@ export default function OTPScreen() {
     const otpString = otp.join('');
 
     if (otpString.length !== 4) {
-      return Alert.alert('Error', 'Please enter a valid 4-digit OTP');
+      return showAlert('Error', 'Please enter a valid 4-digit OTP');
     }
 
     try {
@@ -58,9 +60,9 @@ export default function OTPScreen() {
       const response = await verifyOTP(otpString);
       if (response.success) {
         router.replace('/terms');
-      } else return Alert.alert('Error', 'Failed to verify OTP');
+      } else return showAlert('Error', 'Failed to verify OTP.');
     } catch (error: any) {
-        Alert.alert('Error', error.message || 'Failed to verify OTP');
+        showAlert('Error', error.message || 'Failed to verify OTP');
     } finally {
       setLoading(false);
     }
@@ -69,7 +71,7 @@ export default function OTPScreen() {
   const handleResendOTP = () => {
     setTimer(60);
     // Implement resend OTP logic here
-    Alert.alert('Success', 'OTP resent successfully');
+    showAlert('Success', 'OTP resent successfully.');
   };
 
   return (

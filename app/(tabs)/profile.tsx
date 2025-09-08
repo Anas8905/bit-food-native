@@ -1,5 +1,6 @@
 import BackButton from '@/components/BackButton';
 import EmptyState from '@/components/EmptyState';
+import { useAlert } from '@/context/AlertContext';
 import { useAddress } from '@/hooks/useAddress';
 import { useAuth } from '@/hooks/useAuth';
 import { User } from '@/types/auth';
@@ -9,7 +10,6 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Dimensions,
   SafeAreaView,
   ScrollView,
@@ -24,6 +24,7 @@ const screenWidth = Dimensions.get('window').width;
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const { showAlert } = useAlert();
   const { user, updateProfile } = useAuth();
   const { addresses, selectAddress, selectedAddress, removeAddress } = useAddress();
   const [fullName, setFullName] = useState(user?.fullName);
@@ -48,9 +49,9 @@ export default function ProfileScreen() {
     try {
       setSelectedId(id);
       await selectAddress(id);
-      Alert.alert('Success', 'Your selected address is updated.');
+      showAlert('Success', 'Your selected address is updated.');
     } catch {
-      Alert.alert('Failed to update selected address.');
+      showAlert('Error', 'Failed to update selected address.');
     } finally {
       setSelectedId(null);
     }
@@ -58,7 +59,7 @@ export default function ProfileScreen() {
 
   const saveProfile = async () => {
     if (!fullName || !email || !phoneNumber) {
-      return Alert.alert('Missing fields', 'Please fill all fields.');
+      return showAlert('Missing fields', 'Please fill all fields.');
     }
 
     setIsUpdating(true);
@@ -68,10 +69,10 @@ export default function ProfileScreen() {
       const response = await updateProfile(updatedUser);
 
       if (response.success) {
-        Alert.alert('Profile Updated', `Name: ${fullName}\nPhone: ${phoneNumber}\nEmail: ${email}`);
+        return showAlert('Profile Updated', `Name: ${fullName}\nPhone: ${phoneNumber}\nEmail: ${email}`);
       }
     } catch {
-      Alert.alert('Update Failed', 'Profile is not updated.');
+      showAlert('Update Failed', 'Profile is not updated.');
     } finally {
       setIsUpdating(false);
     }

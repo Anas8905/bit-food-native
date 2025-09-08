@@ -6,8 +6,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import {
-  Alert,
-  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -15,34 +13,35 @@ import {
 } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import MenuIcon from '../../assets/images/menu.svg';
+import { useAlert } from '@/context/AlertContext';
 
 export default function Navbar() {
   const router = useRouter();
   const { openDrawer } = useDrawer();
   const { addresses, selectedAddress, selectAddress } = useAddress();
   const { cartItemsCount } = useCart();
-
+  const { showAlert } = useAlert();
 
   const labels = useMemo(
     () => (addresses ?? []).map(({ id, label }) => ({ label, value: id })),
     [addresses]
   );
 
-    const updateDeliveryAddress = async (id: string) => {
-      try {
-        await selectAddress(id);
-        Alert.alert('Success', 'Your delivery address is updated.');
-      } catch {
-        Alert.alert('Failed to update delivery address.');
-      }
+  const updateDeliveryAddress = async (id: string) => {
+    try {
+      await selectAddress(id);
+      showAlert('Success', 'Your delivery address is updated.');
+    } catch {
+      showAlert('Failed to update delivery address.');
     }
+  }
 
   return (
     <View style={styles.navbar}>
       {/* Menu Button */}
-      <Pressable onPress={openDrawer}>
+      <TouchableOpacity onPress={openDrawer} style={[styles.circleButton]}>
         <MenuIcon width={46} height={46} color="#101010" />
-      </Pressable>
+      </TouchableOpacity>
 
       {/* Center */}
       <View style={styles.centerText}>

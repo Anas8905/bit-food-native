@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
   ActivityIndicator,
-  Alert,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -14,11 +13,13 @@ import CountdownTimer from '@/components/CountDownTimer';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { isAndroid } from '@/utils/common.utils';
 import Navbar from '@/components/ui/Navbar';
+import { useAlert } from '@/context/AlertContext';
 
 
 export default function TrackScreen() {
   const { orderId } = useLocalSearchParams();
   const router = useRouter();
+  const { showAlert } = useAlert();
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -29,7 +30,7 @@ export default function TrackScreen() {
         const { order } = await mockOrderAPI.getOrderById(orderId);
         setOrder(order);
       } catch (error: any) {
-        Alert.alert('Error', error.message || 'Failed to load order details');
+        showAlert('Error', error.message || 'Failed to load order details');
         router.back();
       } finally {
         setLoading(false);

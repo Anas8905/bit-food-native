@@ -1,9 +1,8 @@
 import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Image,
   ScrollView,
   StyleSheet,
@@ -19,14 +18,16 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCart } from '@/hooks/useCart';
 import { useAddress } from '@/hooks/useAddress';
 import { isAndroid } from '@/utils/common.utils';
+import { useAlert } from '@/context/AlertContext';
 
 export default function CheckoutScreen() {
   const router = useRouter();
   const { user } = useAuth();
+  const { showAlert } = useAlert();
   const { cart, getCartTotal, clearCart } = useCart();
   const { selectedAddress: selectedAddr } = useAddress();
-  const [selectedAddress, setSelectedAddress] = useState(selectedAddr);
-  const [paymentMethod, setPaymentMethod] = useState('COD');
+  const [selectedAddress] = useState(selectedAddr);
+  const [paymentMethod] = useState('COD');
   const [deliveryInstructions, setDeliveryInstructions] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +39,7 @@ export default function CheckoutScreen() {
 
   const handlePlaceOrder = async () => {
     if (cart.length === 0) {
-      return Alert.alert('Error', 'Your cart is empty');
+      return showAlert('Error', 'Your cart is empty.');
     }
 
     try {
@@ -62,7 +63,7 @@ export default function CheckoutScreen() {
       clearCart();
       router.replace(`/track?orderId=${order.id}` as any);
     } catch (error: any) {
-        Alert.alert('Error', error.message || 'Failed to place order');
+      showAlert('Error', error.message || 'Failed to place order.');
     } finally {
       setLoading(false);
     }

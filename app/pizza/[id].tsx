@@ -5,7 +5,6 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Image,
   ImageSourcePropType,
   StyleSheet,
@@ -19,6 +18,7 @@ import { DIP_OPTIONS, mockPizzaAPI } from '../../api/mockApi';
 import BackButton from '../../components/BackButton';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { CartItem } from '@/types/cart';
+import { useAlert } from '@/context/AlertContext';
 interface Variation {
   size: string;
   price: number;
@@ -40,6 +40,7 @@ interface PizzaItem {
 export default function PizzaDetailScreen(): React.ReactElement | null {
   const { id } = useLocalSearchParams();
   const router = useRouter();
+  const { showAlert } = useAlert();
   const { addToCart, isFavorite, toggleFavorite } = useCart();
   const [pizza, setPizza] = useState<PizzaItem | null>(null);
   const [selectedSize, setSelectedSize] = useState<Variation | null>(null);
@@ -163,7 +164,7 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
         }
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Failed to load pizza details';
-        Alert.alert('Error', message);
+        showAlert('Error', message);
         router.back();
       } finally {
         setLoading(false);
@@ -179,7 +180,7 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
     }
 
     if (hasVariations && !selectedSize) {
-      return Alert.alert('Error', 'Please select a size');
+      return showAlert('Error', 'Please select a size.');
     }
 
     const cartItem: CartItem = {
@@ -193,14 +194,15 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
     };
 
     addToCart(cartItem, quantity);
-    Alert.alert('Success', 'Added to cart!', [
+    showAlert('Success', `${pizza.name} Added to cart!`, [
+      {
+        text: 'Go to Cart',
+        onPress: () => router.navigate('/cart'),
+        style: 'default',
+      },
       {
         text: 'Continue Shopping',
         style: 'cancel',
-      },
-      {
-        text: 'Go to Cart',
-        onPress: () => router.navigate('/cart')
       },
     ]);
   };
@@ -227,9 +229,7 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
     );
   }
 
-  if (!pizza) {
-    return null;
-  }
+  if (!pizza) return null;
 
   return (
     <SafeAreaView style={styles.container}>

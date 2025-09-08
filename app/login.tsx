@@ -1,14 +1,23 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
 import { useAuth } from '@/hooks/useAuth';
+import { useAlert } from '@/context/AlertContext';
 
 
 export default function LoginScreen() {
   const router = useRouter()
   const { login } = useAuth();
+  const { showAlert } = useAlert();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [national, setNational] = useState('');
@@ -20,23 +29,23 @@ export default function LoginScreen() {
 
   const sendOTP = async () => {
     if (!fullName.trim()) {
-      return Alert.alert('Error', 'Please enter your full name');
+      return showAlert('Error', 'Please enter your full name.');
     }
 
     if (!email.trim()) {
-      return Alert.alert('Error', 'Please enter your email');
+      return showAlert('Error', 'Please enter your email.');
     }
 
     if (!national) {
-      return Alert.alert('Error', 'Please enter your phone number');
+      return showAlert('Error', 'Please enter your phone number.');
     }
 
     try {
       setLoading(true);
       await login({ fullName, email, phoneNumber });
-      router.navigate('/otp')
+      router.navigate('/otp');
     } catch (error: any) {
-        Alert.alert('Error', error.message || 'Failed to send OTP');
+      showAlert('Error', error.message || 'Failed to send OTP');
     } finally {
       setLoading(false);
     }

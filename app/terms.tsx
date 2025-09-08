@@ -4,21 +4,23 @@ import { User } from '@/types/auth';
 import { Checkbox } from 'expo-checkbox';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
 import { KEYS } from '@/constants/keys';
+import { useAlert } from '@/context/AlertContext';
 
 export default function TermsScreen() {
   const router = useRouter();
   const { setUser } = useAuth();
+  const { showAlert } = useAlert();
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
     if (!termsAccepted || !privacyAccepted) {
-      return Alert.alert('Error', 'Please accept all terms to continue');
+      return showAlert('Error', 'Please accept all terms to continue.');
     }
 
     try {
@@ -30,7 +32,7 @@ export default function TermsScreen() {
         setUser(user);
         router.replace('/address');
       } else {
-        return Alert.alert('Error', 'You are not logged in.');
+        return showAlert('Error', 'You are not logged in.');
       };
     } finally {
       setIsSubmitting(false);
