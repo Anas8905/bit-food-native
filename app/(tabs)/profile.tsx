@@ -11,6 +11,7 @@ import { useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -46,6 +47,8 @@ export default function ProfileScreen() {
   }
 
   const updateSelectedAddress = async (id: string) => {
+    if (id === selectedAddress?.id) return;
+
     try {
       setSelectedId(id);
       await selectAddress(id);
@@ -141,7 +144,7 @@ export default function ProfileScreen() {
           showsVerticalScrollIndicator={false}
         >
           {addresses.map((addr) => (
-            <TouchableOpacity
+            <Pressable
               key={addr.id}
               onPress={() => updateSelectedAddress(addr.id)}
               disabled={isUpdating || !!selectedId}
@@ -179,7 +182,7 @@ export default function ProfileScreen() {
                   />
                 </TouchableOpacity>
               </View>
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </ScrollView>
       ) : (

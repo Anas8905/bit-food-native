@@ -56,6 +56,8 @@ export default function Navbar() {
   }
 
   const updateDeliveryAddress = async (id: string) => {
+    if (id === selectedAddress?.id) return;
+    
     try {
       await selectAddress(id);
       showAlert('Success', 'Your delivery address is updated.');

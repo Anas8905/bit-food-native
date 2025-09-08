@@ -11,7 +11,7 @@ import MapView, { Marker, MarkerDragStartEndEvent, PROVIDER_GOOGLE, Region } fro
 import { useAddress } from '../hooks/useAddress';
 
 export interface AddressFormProps {
-  addressId?: string;
+  addressId?: string | null;
   saveButtonText?: string;
 }
 

@@ -5,7 +5,7 @@ import { StyleSheet, View } from 'react-native';
 export default function AddressScreen() {
   return (
     <View style={styles.container}>
-      <AddressMap />
+      <AddressMap addressId={null} />
     </View>
   );
 }

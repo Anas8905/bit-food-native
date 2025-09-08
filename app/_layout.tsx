@@ -19,35 +19,35 @@ export default function RootLayout() {
   const showNavbar = navScreens.includes(pathname);
 
   return (
-    <SafeAreaProvider>
-      <NetworkProvider>
-        <AddressProvider>
-          <CartProvider>
-            <AuthProvider>
-              <GestureHandlerRootView style={{ flex: 1 }}>
-                <AlertProvider>
-                  <DrawerProvider>
-                    {showNavbar && (
-                      <SafeAreaView style={{ backgroundColor: '#fff' }}>
-                        <View style={styles.container}>
-                          <Navbar />
-                        </View>
-                      </SafeAreaView>
-                    )}
-                    <Stack screenOptions={{ headerShown: false }}>
-                      {screens.map((name) => (
-                        <Stack.Screen key={name} name={name} />
-                      ))}
-                    </Stack>
-                    <AppDrawer />
-                  </DrawerProvider>
-                </AlertProvider>
-              </GestureHandlerRootView>
-            </AuthProvider>
-          </CartProvider>
-        </AddressProvider>
-      </NetworkProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <NetworkProvider>
+            <AlertProvider>
+              <AddressProvider>
+                <AuthProvider>
+                  <CartProvider>
+                          <DrawerProvider>
+                            {showNavbar && (
+                              <SafeAreaView style={{ backgroundColor: '#fff' }}>
+                                <View style={styles.container}>
+                                  <Navbar />
+                                </View>
+                              </SafeAreaView>
+                            )}
+                            <Stack screenOptions={{ headerShown: false }}>
+                              {screens.map((name) => (
+                                <Stack.Screen key={name} name={name} />
+                              ))}
+                            </Stack>
+                            <AppDrawer />
+                          </DrawerProvider>
+                  </CartProvider>
+                </AuthProvider>
+              </AddressProvider>
+            </AlertProvider>
+        </NetworkProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 

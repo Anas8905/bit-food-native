@@ -189,8 +189,8 @@ const styles = StyleSheet.create({
   alertContainer: {
     backgroundColor: 'rgba(255, 255, 255, 1)',
     borderRadius: 16,
-    minWidth: Math.min(270, screenWidth - 40),
-    maxWidth: screenWidth - 40,
+    minWidth: Math.min(270, screenWidth - 140),
+    maxWidth: screenWidth - 140,
     overflow: 'hidden',
     backdropFilter: 'blur(20px)',
     borderWidth: 0.5,

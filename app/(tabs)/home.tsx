@@ -56,9 +56,10 @@ export default function HomeScreen(): React.JSX.Element {
   useFocusEffect(
     useCallback(() => {
       return () => {
+        toggleCategory("All");
         setIsDrawerOpen(false);
       };
-    }, [])
+    }, [toggleCategory])
   );
 
   if (!isConnected) {
@@ -147,7 +148,7 @@ export default function HomeScreen(): React.JSX.Element {
                 Object.keys(filteredByCategory).map((category) => {
                   const items = filteredByCategory[category];
                   return (
-                    <View key={category} style={{ marginBottom: 16 }}>
+                    <View key={category}>
                       <Text style={styles.categoryTitle}>{category}</Text>
                       <FlatList
                         data={items}
@@ -175,7 +176,7 @@ export default function HomeScreen(): React.JSX.Element {
               {selectedCategories.length === 1 &&
                 selectedCategories[0] === 'All' &&
                 allPizzas.length > 0 && (
-                  <Text style={[styles.allPizzasTitle, { marginTop: 8 }]}>
+                  <Text style={styles.allPizzasTitle}>
                     All Pizzas
                   </Text>
                 )}
@@ -284,7 +285,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.15)',
+    backgroundColor: 'rgba(225,225,225,0.25)',
   },
 });
 

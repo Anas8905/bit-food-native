@@ -7,7 +7,6 @@ export const screens = [
     "login",
     "otp",
     "reorder",
-    "settings",
     "splash",
     "terms",
     "welcome",

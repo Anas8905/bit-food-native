@@ -23,8 +23,8 @@ export default function AppDrawer() {
       side="left"
       duration={300}
       renderHeader={() => (
-        <View>
-          <TouchableOpacity onPress={closeDrawer} style={{ marginBottom: 10 }}>
+        <View style={{ marginTop: 20, }}>
+          <TouchableOpacity onPress={closeDrawer} style={styles.closeBtn}>
             <Text style={styles.closeIcon}>✕</Text>
           </TouchableOpacity>
 
@@ -35,15 +35,7 @@ export default function AppDrawer() {
         </View>
       )}
       renderContent={({ close }) => (
-        <View>
-          {/* <DrawerItem
-            label="Profile"
-            icon={<Feather name="user" size={20} />}
-            onPress={() => {
-              router.navigate('/profile');
-              close();
-            }}
-          /> */}
+        <View style={{ marginTop: 10, gap: 22, }}>
           <DrawerItem
             label="Order History"
             icon={<Feather name="clock" size={20} />}
@@ -52,8 +44,6 @@ export default function AppDrawer() {
               close();
             }}
           />
-          {/* <DrawerItem label="Notifications" icon={<Feather name="bell" size={20} />} />
-          <DrawerItem label="Offers & Promos" icon={<Feather name="tag" size={20} />} /> */}
           <DrawerItem label="Privacy Policy" icon={<Feather name="shield" size={20} />} />
           <DrawerItem label="FAQs" icon={<Feather name="help-circle" size={20} />} />
         </View>
@@ -70,7 +60,7 @@ export default function AppDrawer() {
   );
 }
 
-function DrawerItem({
+const DrawerItem = ({
   label,
   icon,
   onPress,
@@ -78,21 +68,47 @@ function DrawerItem({
   label: string;
   icon?: React.ReactNode;
   onPress?: () => void;
-}) {
+}) => {
   return (
     <TouchableOpacity style={styles.drawerItem} onPress={onPress}>
-      {icon ? <View style={{ marginRight: 12 }}>{icon}</View> : null}
+      {icon ? <View>{icon}</View> : null}
       <Text style={styles.itemText}>{label}</Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  closeIcon: { fontSize: 20, alignSelf: 'flex-start' },
-  userName: { fontSize: 18, fontWeight: 'bold' },
-  phone: { fontSize: 14, color: '#888' },
-  drawerItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14 },
-  itemText: { fontSize: 16 },
-  logoutBtn: { flexDirection: 'row', alignItems: 'center', paddingVertical: 6 },
-  logoutText: { fontSize: 16, marginLeft: 10 },
+  closeBtn: {
+    marginBottom: 10,
+    alignSelf: 'flex-start',
+    paddingHorizontal: 5,
+  },
+  closeIcon: {
+    fontSize: 20,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  phone: {
+    fontSize: 14,
+    color: '#888',
+  },
+  drawerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  itemText: {
+    fontSize: 16,
+  },
+  logoutBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 6
+  },
+  logoutText: {
+    fontSize: 16,
+  },
 });
