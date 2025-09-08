@@ -175,9 +175,7 @@ export default function PizzaDetailScreen(): React.ReactElement | null {
   }, [id, router]);
 
   const handleAddToCart = (): void => {
-    if (!pizza) {
-      return;
-    }
+    if (!pizza) return;
 
     if (hasVariations && !selectedSize) {
       return showAlert('Error', 'Please select a size.');

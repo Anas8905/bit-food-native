@@ -1,4 +1,5 @@
 import { DEFAULT_REGION, LABEL_OPTIONS, makeId } from '@/constants/address';
+import { useAlert } from '@/context/AlertContext';
 import { Address } from '@/types/address';
 import { isAndroid } from '@/utils/common.utils';
 import * as Location from 'expo-location';
@@ -8,7 +9,6 @@ import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View 
 import { Dropdown } from 'react-native-element-dropdown';
 import MapView, { Marker, MarkerDragStartEndEvent, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import { useAddress } from '../hooks/useAddress';
-import { useAlert } from '@/context/AlertContext';
 
 export interface AddressFormProps {
   addressId?: string;
@@ -96,26 +96,45 @@ export default function AddressMap({ addressId, saveButtonText = 'Save Address' 
   const useCurrentLocation = async () => {
     setBusy(true);
     try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
+      const isLocationEnabled = await Location.hasServicesEnabledAsync();
+      if (!isLocationEnabled) {
         return showAlert(
-          'Permission Denied',
-          'We need location permission to use your current position.'
+          'Location Services Disabled',
+          'Please enable location services in your device settings to use this feature.'
         );
       }
 
-      const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({
-        accuracy: Location.LocationAccuracy.Balanced
+      let { status } = await Location.getForegroundPermissionsAsync();
+
+      if (status !== 'granted') {
+        const permissionResponse = await Location.requestForegroundPermissionsAsync();
+        status = permissionResponse.status;
+      }
+
+      if (status !== 'granted') {
+        return showAlert(
+          'Permission Denied',
+          'We need location permission to use your current position. Please enable location access in your device settings.'
+        );
+      }
+
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.LocationAccuracy.Balanced,
       });
 
+      const { latitude, longitude } = location.coords;
       setPin({ latitude, longitude });
 
       const next: Region = focusRegion(latitude, longitude);
       setRegion(next);
       mapRef.current?.animateToRegion(next, 600);
       await reverseGeocode(latitude, longitude);
-    } catch {
-      showAlert('Error', 'Could not get your current location.');
+    } catch (error) {
+      console.error('Location error:', error);
+      showAlert(
+        'Error',
+        'Could not get your current location. Please check your location settings and try again.'
+      );
     } finally {
       setBusy(false);
     }

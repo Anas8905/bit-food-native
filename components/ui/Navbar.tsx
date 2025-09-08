@@ -3,7 +3,7 @@ import { useCart } from '@/hooks/useCart';
 import { useDrawer } from '@/hooks/useDrawer';
 import { isAndroid } from '@/utils/common.utils';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { usePathname, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import {
   StyleSheet,
@@ -17,6 +17,7 @@ import { useAlert } from '@/context/AlertContext';
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const { openDrawer } = useDrawer();
   const { addresses, selectedAddress, selectAddress } = useAddress();
   const { cartItemsCount } = useCart();
@@ -26,6 +27,33 @@ export default function Navbar() {
     () => (addresses ?? []).map(({ id, label }) => ({ label, value: id })),
     [addresses]
   );
+
+  const selectLocation = () => {
+    if (addresses.length <= 0) {
+      if (pathname === "/address") {
+        return showAlert(
+          'No Delivery Address',
+          "Please add a delivery address and try again.",
+        )
+      } else {
+        return showAlert(
+          'No Delivery Address',
+          "Please add a delivery address and try again.",
+          [
+            {
+              text: 'Add Address',
+              onPress: () => router.navigate('/address'),
+              style: 'default',
+            },
+            {
+              text: 'Cancel',
+              style: 'destructive',
+            },
+          ]
+        )
+      }
+    }
+  }
 
   const updateDeliveryAddress = async (id: string) => {
     try {
@@ -58,7 +86,7 @@ export default function Navbar() {
             style={styles.input}
           />
         ) : (
-          <TouchableOpacity style={styles.locationRow} onPress={() => router.navigate('/address')}>
+          <TouchableOpacity style={styles.locationRow} onPress={selectLocation}>
             <Text style={styles.location}>Select location</Text>
             <Ionicons name="chevron-down" size={12} color="black" />
           </TouchableOpacity>

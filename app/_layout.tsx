@@ -7,10 +7,10 @@ import { AuthProvider } from '../context/AuthContext';
 import { CartProvider } from '../context/CartContext';
 import { DrawerProvider } from '../context/DrawerContext';
 import { NetworkProvider } from '../context/NetworkContext';
-import Navbar from '@/components/ui/Navbar';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { navScreens, screens } from '@/constants/screens';
 import { AlertProvider } from '@/context/AlertContext';
+import Navbar from '@/components/ui/Navbar';
 
 export default function RootLayout() {
   const pathname = usePathname();
