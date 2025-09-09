@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../components/BackButton';
 import { useAuth } from '@/hooks/useAuth';
 import { useAlert } from '@/hooks/useAlert';
+import { formatPhoneNumber } from '@/utils/phoneFormatter';
 
 
 export default function LoginScreen(): React.JSX.Element {
@@ -22,10 +23,8 @@ export default function LoginScreen(): React.JSX.Element {
   const [email, setEmail] = useState('');
   const [national, setNational] = useState('');
   const [loading, setLoading] = useState(false);
-  const MAX_E164 = 15;
   const countryCode = "+92";
-  const maxNationalDigits = Math.max(0, MAX_E164 - countryCode.length);
-  const phoneNumber = `${countryCode}${national}`;
+  const { phoneNumber, maxNationalDigits } = formatPhoneNumber(national, countryCode);
 
   const sendOTP = async () => {
     if (!fullName.trim()) {

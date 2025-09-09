@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		2672D0B516E4AB7F47FEBF2B /* libPods-bitfoodnative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CF7779B7C44407DF419BD19 /* libPods-bitfoodnative.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
+		595020E9348D750098AD8A58 /* libPods-bitfoodnative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E222705A7AEDE25BAD40E7F /* libPods-bitfoodnative.a */; };
+		AB04B93F13897BC2EA8C0D28 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 22E52A443DA09408E9AC8979 /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		C453DDBB1FF43D15F73F66E7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D62D3C1A6E6C4FEA726D9033 /* PrivacyInfo.xcprivacy */; };
-		E3648A80A530B9D0316ACB86 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A51432508C5BEA082955245 /* ExpoModulesProvider.swift */; };
+		E1355604219D4A6C913C268F /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A7C2E30C178143A823541DA /* ExpoModulesProvider.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -20,13 +20,13 @@
 		13B07F961A680F5B00A75B9A /* bitfoodnative.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bitfoodnative.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = bitfoodnative/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = bitfoodnative/Info.plist; sourceTree = "<group>"; };
-		2BBED0B57964BAEF8D7E1682 /* Pods-bitfoodnative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bitfoodnative.debug.xcconfig"; path = "Target Support Files/Pods-bitfoodnative/Pods-bitfoodnative.debug.xcconfig"; sourceTree = "<group>"; };
-		6A51432508C5BEA082955245 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-bitfoodnative/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		6EE7DFF9CC6D6191A170B645 /* Pods-bitfoodnative.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bitfoodnative.release.xcconfig"; path = "Target Support Files/Pods-bitfoodnative/Pods-bitfoodnative.release.xcconfig"; sourceTree = "<group>"; };
-		8CF7779B7C44407DF419BD19 /* libPods-bitfoodnative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bitfoodnative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		22E52A443DA09408E9AC8979 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = bitfoodnative/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		41CE442D6B89B85DE568DDE7 /* Pods-bitfoodnative.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bitfoodnative.release.xcconfig"; path = "Target Support Files/Pods-bitfoodnative/Pods-bitfoodnative.release.xcconfig"; sourceTree = "<group>"; };
+		5121884650F37F223C09BF86 /* Pods-bitfoodnative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bitfoodnative.debug.xcconfig"; path = "Target Support Files/Pods-bitfoodnative/Pods-bitfoodnative.debug.xcconfig"; sourceTree = "<group>"; };
+		5A7C2E30C178143A823541DA /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-bitfoodnative/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		8E222705A7AEDE25BAD40E7F /* libPods-bitfoodnative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bitfoodnative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = bitfoodnative/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		D62D3C1A6E6C4FEA726D9033 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = bitfoodnative/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = bitfoodnative/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* bitfoodnative-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "bitfoodnative-Bridging-Header.h"; path = "bitfoodnative/bitfoodnative-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -37,13 +37,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2672D0B516E4AB7F47FEBF2B /* libPods-bitfoodnative.a in Frameworks */,
+				595020E9348D750098AD8A58 /* libPods-bitfoodnative.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		05A3F7CD7C7ADC652D821307 /* bitfoodnative */ = {
+			isa = PBXGroup;
+			children = (
+				5A7C2E30C178143A823541DA /* ExpoModulesProvider.swift */,
+			);
+			name = bitfoodnative;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* bitfoodnative */ = {
 			isa = PBXGroup;
 			children = (
@@ -53,7 +61,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				D62D3C1A6E6C4FEA726D9033 /* PrivacyInfo.xcprivacy */,
+				22E52A443DA09408E9AC8979 /* PrivacyInfo.xcprivacy */,
 			);
 			name = bitfoodnative;
 			sourceTree = "<group>";
@@ -62,19 +70,9 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				8CF7779B7C44407DF419BD19 /* libPods-bitfoodnative.a */,
+				8E222705A7AEDE25BAD40E7F /* libPods-bitfoodnative.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		5559E56DD1E98B275DC3BBF0 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				2BBED0B57964BAEF8D7E1682 /* Pods-bitfoodnative.debug.xcconfig */,
-				6EE7DFF9CC6D6191A170B645 /* Pods-bitfoodnative.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -91,8 +89,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				5559E56DD1E98B275DC3BBF0 /* Pods */,
-				F05E63EBA2D16B7BB3BF70B3 /* ExpoModulesProviders */,
+				D8A5049694D657F1179303CD /* Pods */,
+				FCB43C3979633D446FCF890F /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -107,14 +105,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		88A23BE4024B7996F0DF0022 /* bitfoodnative */ = {
-			isa = PBXGroup;
-			children = (
-				6A51432508C5BEA082955245 /* ExpoModulesProvider.swift */,
-			);
-			name = bitfoodnative;
-			sourceTree = "<group>";
-		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
 			isa = PBXGroup;
 			children = (
@@ -124,10 +114,20 @@
 			path = bitfoodnative/Supporting;
 			sourceTree = "<group>";
 		};
-		F05E63EBA2D16B7BB3BF70B3 /* ExpoModulesProviders */ = {
+		D8A5049694D657F1179303CD /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				88A23BE4024B7996F0DF0022 /* bitfoodnative */,
+				5121884650F37F223C09BF86 /* Pods-bitfoodnative.debug.xcconfig */,
+				41CE442D6B89B85DE568DDE7 /* Pods-bitfoodnative.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		FCB43C3979633D446FCF890F /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				05A3F7CD7C7ADC652D821307 /* bitfoodnative */,
 			);
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
@@ -140,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "bitfoodnative" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				F6F00573E3BF9A467C5BD59C /* [Expo] Configure project */,
+				C4680F724192A27F767DEF20 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				43C3DE64396C1997C299228A /* [CP] Embed Pods Frameworks */,
+				74ABBA18A255374AD2E518C7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				C453DDBB1FF43D15F73F66E7 /* PrivacyInfo.xcprivacy in Resources */,
+				AB04B93F13897BC2EA8C0D28 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,7 +240,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		43C3DE64396C1997C299228A /* [CP] Embed Pods Frameworks */ = {
+		74ABBA18A255374AD2E518C7 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -304,7 +304,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-bitfoodnative/Pods-bitfoodnative-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F6F00573E3BF9A467C5BD59C /* [Expo] Configure project */ = {
+		C4680F724192A27F767DEF20 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -331,7 +331,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				E3648A80A530B9D0316ACB86 /* ExpoModulesProvider.swift in Sources */,
+				E1355604219D4A6C913C268F /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,7 +340,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2BBED0B57964BAEF8D7E1682 /* Pods-bitfoodnative.debug.xcconfig */;
+			baseConfigurationReference = 5121884650F37F223C09BF86 /* Pods-bitfoodnative.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -376,7 +376,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6EE7DFF9CC6D6191A170B645 /* Pods-bitfoodnative.release.xcconfig */;
+			baseConfigurationReference = 41CE442D6B89B85DE568DDE7 /* Pods-bitfoodnative.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
