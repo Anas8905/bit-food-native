@@ -1,27 +1,9 @@
-// stores/auth.ts
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { mockAuthAPI } from '@/api/mockApi';
-import type { AuthResponse, User } from '@/types/auth';
 import { useAddressStore } from './address';
 import { useCartStore } from './cart';
 import { asyncStorage } from '@/services/asyncStorage';
-
-type AuthState = {
-  user: User | null;
-  tempUser: User | null;
-  loading: boolean;
-  hydrated: boolean;
-
-  setUser: (u: User | null) => void;
-  setLoading: (v: boolean) => void;
-
-  login: (user: User) => Promise<AuthResponse>;
-  verifyOTP: (otp: string) => Promise<AuthResponse>;
-  updateProfile: (userData: User) => Promise<AuthResponse>;
-  clearLocalAuthData: () => Promise<void>;
-  logout: () => Promise<void>;
-};
 
 export const useAuthStore = create<AuthState>()(
   persist(

@@ -2,17 +2,6 @@ import { getData, removeData, saveData } from '@/services/asyncStorage';
 import React, { useEffect, useRef, useState } from 'react';
 import { AppState, Text, View } from 'react-native';
 
-interface Order {
-  id: string;
-  estimatedDeliveryTime: number;
-}
-
-interface Styles {
-  cardHeader: object;
-  estimatedTime: object;
-  estimatedTimeLabel: object;
-}
-
 export default function CountdownTimer({ order, styles }: { order: Order; styles: Styles }): React.JSX.Element {
   const [timeLeft, setTimeLeft] = useState(0);
   const [isLoading, setIsLoading] = useState(true);

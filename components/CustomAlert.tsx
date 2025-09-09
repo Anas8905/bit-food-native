@@ -11,34 +11,6 @@ import Modal from 'react-native-modal';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-export interface AlertButton {
-  text: string;
-  onPress?: () => void;
-  style?: 'default' | 'cancel' | 'destructive';
-}
-
-export interface CustomAlertProps {
-  visible: boolean;
-  title?: string | undefined;
-  message?: string | undefined;
-  buttons?: AlertButton[];
-  onDismiss?: () => void;
-  type?: 'default' | 'destructive';
-}
-
-interface AlertConfig {
-  visible: boolean;
-  title?: string | undefined;
-  message?: string | undefined;
-  buttons: AlertButton[];
-}
-
-export interface UseCustomAlertReturn {
-  showAlert: (title?: string, message?: string, buttons?: AlertButton[]) => void;
-  hideAlert: () => void;
-  AlertComponent: () => React.JSX.Element;
-}
-
 const CustomAlert: React.FC<CustomAlertProps> = ({
   visible,
   title,

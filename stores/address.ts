@@ -1,7 +1,5 @@
-// stores/address.ts
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { Address } from '@/types/address';
 import { norm } from '@/utils/common.utils';
 import { asyncStorage } from '@/services/asyncStorage';
 
@@ -21,19 +19,6 @@ const computeSelected = (list: Address[], id: string | null): Address | null =>
   id ? list.find((a) => a.id === id) ?? null : list[0] ?? null;
 
 // ---------- store ----------
-type AddressState = {
-  loading: boolean;
-  addresses: Address[];
-  selectedAddress: Address | null;
-  selectedAddressId: string | null;
-
-  refresh: () => Promise<void>;
-  addAddress: (addr: Address, selectAfter?: boolean) => Promise<void>;
-  selectAddress: (id: string | null) => Promise<void>;
-  removeAddress: (id: string) => Promise<void>;
-  reset: () => Promise<void>;
-};
-
 export const useAddressStore = create<AddressState>()(
   persist(
     (set, get) => ({

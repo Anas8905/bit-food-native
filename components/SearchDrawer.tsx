@@ -14,11 +14,6 @@ import {
 import BackButton from './BackButton';
 import DrawerBase from './DrawBase';
 
-interface SearchDrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
 export default function SearchDrawer({ isOpen, onClose }: SearchDrawerProps): React.JSX.Element {
   const innerInputRef = useRef<TextInput>(null);
   const isNavigatingRef = useRef(false);

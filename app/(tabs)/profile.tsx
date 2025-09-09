@@ -3,7 +3,6 @@ import EmptyState from '@/components/EmptyState';
 import { useAddress } from '@/hooks/useAddress';
 import { useAlert } from '@/hooks/useAlert';
 import { useAuth } from '@/hooks/useAuth';
-import { User } from '@/types/auth';
 import { isAndroid, norm } from '@/utils/common.utils';
 import { AntDesign, Feather, FontAwesome5, FontAwesome6 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';

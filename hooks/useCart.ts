@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 import { useCartStore } from '@/stores/cart';
-import type { CartContextType } from '@/types/cart';
 
-export const useCart = (): CartContextType => {
+export const useCart = (): CartStateType => {
   const cart       = useCartStore((s) => s.cart);
   const favorites  = useCartStore((s) => s.favorites);
 

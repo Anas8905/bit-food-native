@@ -1,5 +1,4 @@
 import { DEFAULT_REGION, LABEL_OPTIONS, makeId } from '@/constants/address';
-import { Address } from '@/types/address';
 import { isAndroid } from '@/utils/common.utils';
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';

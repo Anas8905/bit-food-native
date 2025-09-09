@@ -1,15 +1,4 @@
 import { create } from 'zustand';
-import type { AlertButton } from '@/components/CustomAlert';
-
-type AlertState = {
-  visible: boolean;
-  title?: string | undefined;
-  message?: string | undefined;
-  buttons: AlertButton[];
-
-  show: (title?: string, message?: string, buttons?: AlertButton[]) => void;
-  hide: () => void;
-};
 
 export const useAlertStore = create<AlertState>()((set) => ({
   visible: false,

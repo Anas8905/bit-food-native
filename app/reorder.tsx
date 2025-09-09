@@ -3,7 +3,6 @@ import BackButton from '@/components/BackButton';
 import EmptyState from '@/components/EmptyState';
 import { useAlert } from '@/hooks/useAlert';
 import { useCart } from '@/hooks/useCart';
-import { CartItem } from '@/types/cart';
 import { isAndroid } from '@/utils/common.utils';
 import { router } from 'expo-router';
 import { useState } from 'react';

@@ -1,4 +1,3 @@
-import { Pizza } from '@/hooks/usePizzaData';
 import { Ionicons } from '@expo/vector-icons';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 

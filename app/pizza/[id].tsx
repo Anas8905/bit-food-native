@@ -17,7 +17,6 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { DIP_OPTIONS, mockPizzaAPI } from '../../api/mockApi';
 import BackButton from '../../components/BackButton';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import { CartItem } from '@/types/cart';
 import { isAndroid } from '@/utils/common.utils';
 import { useAlert } from '@/hooks/useAlert';
 interface Variation {

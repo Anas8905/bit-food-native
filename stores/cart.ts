@@ -1,28 +1,6 @@
-// stores/cart.ts
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { CartItem } from '@/types/cart';
 import { asyncStorage } from '@/services/asyncStorage';
-
-type CartState = {
-  cart: CartItem[];
-  favorites: CartItem[];
-
-  // Lifecycle
-  hydrate: () => Promise<void>;
-
-  addToCart: (item: CartItem, quantity?: number) => void;
-  removeFromCart: (itemId: string, size?: string) => void;
-  updateQuantity: (itemId: string, size: string | undefined, quantity: number) => void;
-  clearCart: () => void;
-  toggleFavorite: (item: CartItem) => void;
-  removeFromFavorites: (itemId: string, size?: string) => void;
-  clearFavorites: () => void;
-  reset: () => Promise<void>;
-  getCartTotal: () => number;
-  isFavorite: (id: string) => boolean;
-  isInCart: (id: string) => boolean;
-};
 
 export const useCartStore = create<CartState>()(
   persist(

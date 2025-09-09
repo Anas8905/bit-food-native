@@ -1,4 +1,4 @@
-export interface CartItem {
+interface CartItem {
     id: string;
     name: string;
     price: number;
@@ -9,7 +9,7 @@ export interface CartItem {
     [key: string]: any;
 }
 
-export interface CartContextType {
+interface CartStateType {
     cart: CartItem[];
     cartItemsCount: number;
     favItemsCount: number;
@@ -25,3 +25,21 @@ export interface CartContextType {
     isInCart: (id: string) => boolean;
     isFavorite: (id: string) => boolean;
 }
+
+type CartState = {
+  cart: CartItem[];
+  favorites: CartItem[];
+  hydrate: () => Promise<void>;
+
+  addToCart: (item: CartItem, quantity?: number) => void;
+  removeFromCart: (itemId: string, size?: string) => void;
+  updateQuantity: (itemId: string, size: string | undefined, quantity: number) => void;
+  clearCart: () => void;
+  toggleFavorite: (item: CartItem) => void;
+  removeFromFavorites: (itemId: string, size?: string) => void;
+  clearFavorites: () => void;
+  reset: () => Promise<void>;
+  getCartTotal: () => number;
+  isFavorite: (id: string) => boolean;
+  isInCart: (id: string) => boolean;
+};
