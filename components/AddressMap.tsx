@@ -193,6 +193,7 @@ export default function AddressMap({
       <View style={styles.inputs}>
         <TextInput
           placeholder="Address (street, area, city or nearby landmark)"
+          placeholderTextColor="#999"
           value={address}
           onChangeText={setAddress}
           style={[styles.input]}

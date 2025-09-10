@@ -1,13 +1,16 @@
 import { useCart } from '@/hooks/useCart';
-import { Fontisto, Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
 import MapIcon from '../../assets/images/map.svg';
 import HomeIcon from '../../assets/images/home.svg';
 import ProfileIcon from '../../assets/images/profile.svg';
+import HeartIcon from '../../assets/images/heart.svg';
+import CartIcon from '../../assets/images/cart.svg';
+import { TabBarIcon } from '@/components/ui/TabBarIcon';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabLayout(): React.JSX.Element {
   const { cartItemsCount, favItemsCount } = useCart();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
@@ -15,12 +18,11 @@ export default function TabLayout(): React.JSX.Element {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: '#FA4A0C',
+        tabBarActiveTintColor: '#FFFFFF',
         tabBarInactiveTintColor: '#101010',
         tabBarStyle: {
-          height: 60,
-          paddingBottom: 10,
-          paddingTop: 5,
+          paddingTop: 10,
+          height: 40 + insets.bottom,
         },
       }}
     >
@@ -28,8 +30,8 @@ export default function TabLayout(): React.JSX.Element {
         name="address"
         options={{
           title: 'Address',
-          tabBarIcon: ({ color }) => (
-            <MapIcon width={22} height={22} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon Icon={MapIcon} color={color} size={20} focused={focused} />
           ),
         }}
       />
@@ -37,8 +39,8 @@ export default function TabLayout(): React.JSX.Element {
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color }) => (
-            <ProfileIcon width={20} height={20} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon Icon={ProfileIcon} color={color} size={19} focused={focused} />
           ),
         }}
       />
@@ -46,62 +48,54 @@ export default function TabLayout(): React.JSX.Element {
         name="home"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => (
-            <HomeIcon width={26} height={26} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon Icon={HomeIcon} color={color} size={20} focused={focused} />
           ),
         }}
       />
       <Tabs.Screen
         name="favorites"
-        options={{
-          title: 'Favorites',
-          tabBarIcon: ({ color }) => (
-          <View>
-            <Fontisto name="heart-alt" size={18} color={color} />
-            {favItemsCount > 0 && (
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>{favItemsCount}</Text>
-              </View>
-            )}
-          </View>
-          ),
+        options={({ navigation }) => {
+          const isFocused = navigation.isFocused();
+          return {
+            title: 'Favorites',
+            ...(favItemsCount > 0 && {
+              tabBarBadge: favItemsCount > 99 ? '99+' : favItemsCount
+            }),
+            tabBarBadgeStyle: {
+              backgroundColor: isFocused ? 'royalblue' : '#FA4F0C',
+              fontSize: 10,
+              top: isFocused ? -8 : -5,
+              left: isFocused ? 18 : 14,
+            },
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon Icon={HeartIcon} color={color} size={22} focused={focused} />
+            ),
+          };
         }}
       />
       <Tabs.Screen
         name="cart"
-        options={{
-          title: 'Cart',
-          tabBarIcon: ({ color }) => (
-            <View>
-              <Ionicons name="cart-outline" size={24} color={color} />
-              {cartItemsCount > 0 && (
-                <View style={styles.badge}>
-                  <Text style={styles.badgeText}>{cartItemsCount}</Text>
-                </View>
-              )}
-            </View>
-          ),
+        options={({ navigation }) => {
+          const isFocused = navigation.isFocused();
+          return {
+            title: 'Cart',
+            ...(cartItemsCount > 0 && {
+              tabBarBadge: cartItemsCount > 99 ? '99+' : cartItemsCount
+            }),
+            tabBarBadgeStyle: {
+              backgroundColor: isFocused ? 'royalblue' : '#FA4F0C',
+              fontSize: 10,
+              top: isFocused ? -8 : -5,
+              left: isFocused ? 18 : 14,
+            },
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon Icon={CartIcon} color={color} size={20} focused={focused} />
+            ),
+          };
         }}
       />
     </Tabs>
-  );
+        );
 }
 
-const styles = StyleSheet.create({
-  badge: {
-    position: 'absolute',
-    right: -6,
-    top: -9,
-    backgroundColor: '#FA4A0C',
-    borderRadius: 10,
-    width: 18,
-    height: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  badgeText: {
-    color: 'white',
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
-});
